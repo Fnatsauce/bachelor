@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>game</title>
+    </head>
+    <body onload="startGame()">
+        <p>hej</p>
+        <canvas id="gameCanvas"></canvas>
+        <p>hej2</p>
+    </body>
+
+    <script>
+        function startGame() {
+            gameWindow.start();
+            initializeLineSegments();
+        }
+
+        function stopGame() {
+            clearInterval(gameWindow.updateInterval);
+        }
+
+        var lineSegments = []
+        var gameWindow = {
+            canvas : document.getElementById("gameCanvas"),
+
+            start : function() {
+                this.context = this.canvas.getContext("2d");
+                this.drawBackground();
+                this.canvas.width = 1000;
+                this.canvas.height = 600;
+
+                this.updateInterval = setInterval(updateGameArea, 20);
+
+                window.addEventListener('mousemove', function(e) {
+                    var canvasRect = gameWindow.canvas.getBoundingClientRect();
+                    gameWindow.mouseX = e.clientX - canvasRect.left;
+                    gameWindow.mouseY = e.clientY - canvasRect.right;
+                });
+            },
+
+            clear : function() {
+
+            },
+
+            drawBackground : function() {
+
+            }
+        }
+
+        function updateGameArea() {
+            gameWindow.clear();
+            lineSegments.forEach(element => {
+                element.draw();
+            });
+            gameWindow.drawBackground();
+        }
+
+        function lineSegment(points) {
+            this.points = points;
+            this.length = 0;
+            this.filled = true;
+            for(var i = 1; i < points.length; i++) {
+                this.length += Math.sqrt(Math.pow(points[i].x - points[i-1].x, 2) + Math.pow(points[i].y - points[i-1].y, 2));
+            }
+            console.log(this.length);
+
+            this.draw = function() {
+                if(this.filled) {
+                    ctx = gameWindow.context;
+                    ctx.strokeStyle = "rgb(255, 0, 0)";
+                    ctx.lineWidth = 30;
+                    ctx.lineCap = "round";
+                    ctx.lineJoin = "round";
+                    ctx.beginPath();
+                    ctx.moveTo(points[0].x, points[0].y);
+                    points.forEach(element => {
+                        ctx.lineTo(element.x, element.y);
+                    });
+                    ctx.stroke();
+                    ctx.closePath();
+                }
+            }
+
+            this.fill = function() {
+
+            }
+        }
+
+        function initializeLineSegments() {
+            lineSegments.push(new lineSegment([{x:10,y:100},{x:100,y:100},{x:100,y:200}]));
+        }
+    </script>
+</html>
