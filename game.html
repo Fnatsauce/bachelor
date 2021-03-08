@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>game</title>
+        <link rel="stylesheet" type="text/css" href="stylesheet.css"></link>
     </head>
     <body onload="startGame()">
         <p>hej</p>
@@ -13,12 +14,52 @@
         function startGame() {
             gameWindow.start();
             initializeLineSegments();
+            lineSegments.forEach(element => {
+                element.fill();
+            });
+        }
+
+        let start;
+        function animateLine(timestamp) {
+            if (start === undefined)
+                start = timestamp;
+            const elapsed = timestamp - start;
+
+            var ratio = (100/8000)*elapsed;
+            var linesDrawn = lineSegments[currentLineSegment].linesfilled;
+            var lengths = lineSegments[currentLineSegment].length;
+            var fullLength = lengths.reduce(((acc, num) => acc + num), 0);
+            var points = lineSegments[currentLineSegment].points;
+
+            for(var i = 0; i < linesDrawn; i++) {
+                ratio -= (lengths[i]/fullLength*100);
+                lineSegments[currentLineSegment].drawLine(points[i], points[i + 1]);
+            }
+
+            fullRatio = ratio/(lengths[linesDrawn]/fullLength*100);
+
+            var x = points[linesDrawn].x + fullRatio * (points[linesDrawn + 1].x - points[linesDrawn].x);
+            var y = points[linesDrawn].y + fullRatio * (points[linesDrawn + 1].y - points[linesDrawn].y);
+
+            lineSegments[currentLineSegment].drawLine(points[linesDrawn], {x:x, y:y});
+
+            if(ratio > (lengths[linesDrawn]/fullLength)*100) {
+                lineSegments[currentLineSegment].linesfilled++;
+            }
+
+            if (elapsed < 8000) { // Stop the animation after 8 seconds
+                window.requestAnimationFrame(animateLine);
+            } else {
+                lineSegments[currentLineSegment].filled = true;
+
+            }
         }
 
         function stopGame() {
             clearInterval(gameWindow.updateInterval);
         }
 
+        var currentLineSegment = 4
         var lineSegments = []
         var gameWindow = {
             canvas : document.getElementById("gameCanvas"),
@@ -39,7 +80,7 @@
             },
 
             clear : function() {
-
+                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
             },
 
             drawBackground : function() {
@@ -53,41 +94,53 @@
                 element.draw();
             });
             gameWindow.drawBackground();
+            
         }
 
-        function lineSegment(points) {
+        function lineSegment(points, id) {
+            this.id = id;
             this.points = points;
-            this.length = 0;
-            this.filled = true;
+            this.length = [];
+            this.linesfilled = 0;
+            this.lineIncrement = 0;
+            this.filled = false;
+            ctx = gameWindow.context;
             for(var i = 1; i < points.length; i++) {
-                this.length += Math.sqrt(Math.pow(points[i].x - points[i-1].x, 2) + Math.pow(points[i].y - points[i-1].y, 2));
+                this.length.push(Math.sqrt(Math.pow(this.points[i].x - this.points[i-1].x, 2) + Math.pow(this.points[i].y - this.points[i-1].y, 2)));
             }
             console.log(this.length);
+            console.log(this.length.reduce((acc, num) => acc + num, 0));
 
             this.draw = function() {
                 if(this.filled) {
-                    ctx = gameWindow.context;
-                    ctx.strokeStyle = "rgb(255, 0, 0)";
-                    ctx.lineWidth = 30;
-                    ctx.lineCap = "round";
-                    ctx.lineJoin = "round";
-                    ctx.beginPath();
-                    ctx.moveTo(points[0].x, points[0].y);
-                    points.forEach(element => {
-                        ctx.lineTo(element.x, element.y);
-                    });
-                    ctx.stroke();
-                    ctx.closePath();
+                    
+                    for(var i = 1; i < points.length; i++) {
+                        this.drawLine(points[i - 1], points[i]);
+                    }
                 }
             }
 
-            this.fill = function() {
+            this.drawLine = function(point1, point2) {
+                ctx.strokeStyle = "rgb(255, 0, 0)";
+                ctx.lineWidth = 30;
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                ctx.beginPath();
+                ctx.moveTo(point1.x, point1.y);
+                ctx.lineTo(point2.x, point2.y);
+                ctx.stroke();
+                ctx.closePath();
+            }
 
+            this.fill = function() {
+                //this.filling = setInterval(this.animatefill, 500);
+                currentLineSegment = this.id;
+                window.requestAnimationFrame(animateLine);
             }
         }
 
         function initializeLineSegments() {
-            lineSegments.push(new lineSegment([{x:10,y:100},{x:100,y:100},{x:100,y:200}]));
+            lineSegments.push(new lineSegment([{x:10,y:100},{x:100,y:200},{x:1000,y:200}], 0));
         }
     </script>
 </html>
