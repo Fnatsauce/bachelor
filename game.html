@@ -5,8 +5,19 @@
         <link rel="stylesheet" type="text/css" href="stylesheet.css"></link>
     </head>
     <body onload="startGame()">
+        <div style="display:none;">
+            <img id="cursorImage"
+                 src="cursor.png">
+            <img id="foregroundImage"
+                src="">
+        </div>
+        <div class="page">
+            <canvas id="canvas1" width="1200" height="600"></canvas>
+            <canvas id="canvas2" width="1200" height="600"></canvas>
+            <canvas id="canvas3" width="1200" height="600"></canvas>
 
-        <canvas id="gameCanvas"></canvas>
+            
+        </div>
 
     </body>
 
@@ -14,78 +25,90 @@
         function startGame() {
             gameWindow.start();
             initializeLineSegments();
-            lineSegments[0].fill();
+            var canvas3 = document.getElementById("canvas3");
+            canvas3.getContext("2d").drawImage(document.getElementById('foregroundImage'), 0, 0);
+            //lineSegments[0].fill();
         }
-
-        
 
         function stopGame() {
             clearInterval(gameWindow.updateInterval);
         }
 
+        const cursorImage = document.getElementById('cursorImage');
         var currentLineSegment = 4
         var lineSegments = []
         var gameWindow = {
-            canvas : document.getElementById("gameCanvas"),
+            canvas1 : document.getElementById("canvas1"),
+            canvas2 : document.getElementById("canvas2"),
 
             start : function() {
-                this.context = this.canvas.getContext("2d");
-                this.drawBackground();
-                this.canvas.width = 1000;
-                this.canvas.height = 600;
+                this.context1 = this.canvas1.getContext("2d");
+                this.context2 = this.canvas2.getContext("2d");
 
                 this.updateInterval = setInterval(updateGameArea, 20);
 
                 window.addEventListener('mousemove', function(e) {
-                    var canvasRect = gameWindow.canvas.getBoundingClientRect();
+                    var canvasRect = gameWindow.canvas1.getBoundingClientRect();
                     gameWindow.mouseX = e.clientX - canvasRect.left;
-                    gameWindow.mouseY = e.clientY - canvasRect.right;
+                    gameWindow.mouseY = e.clientY - canvasRect.top;
                 });
             },
 
             clear : function() {
-                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.context1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
+                this.context2.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
             },
 
-            drawBackground : function() {
-                
+            draw : function() {
+                ctx.fillStyle = "#1E1E1E"
+                this.context1.fillRect(0, 0, canvas1.width, canvas1.height);
+                this.context2.drawImage(cursorImage, this.mouseX - 10, this.mouseY - 10, 20, 20);
             }
         }
 
         function updateGameArea() {
             gameWindow.clear();
+            gameWindow.draw();
             lineSegments.forEach(element => {
-                element.draw();
+                if(!element.filled) {
+                    element.draw();
+                    element.hovered();
+                }
             });
-            gameWindow.drawBackground();
-            
+            lineSegments.forEach(element => {
+                if(element.filled) {
+                    element.draw();
+                    element.hovered();
+                }
+            });
         }
 
-        function lineSegment(points, id) {
+        function lineSegment(points, id, next, hoverBox) {
             this.id = id;
             this.points = points;
             this.length = [];
             this.linesfilled = 0;
             this.lineIncrement = 0;
-            this.filled = false;
-            ctx = gameWindow.context;
+            this.filled = true;
+            this.next = next;
+            this.hoverBox = hoverBox;
+            this.canBeChosen = true;
+            ctx = gameWindow.context1;
             for(var i = 1; i < points.length; i++) {
                 this.length.push(Math.sqrt(Math.pow(this.points[i].x - this.points[i-1].x, 2) + Math.pow(this.points[i].y - this.points[i-1].y, 2)));
             }
-            console.log(this.length);
-            console.log(this.length.reduce((acc, num) => acc + num, 0));
 
             this.draw = function() {
-                if(this.filled) {
-                    for(var i = 1; i < points.length; i++) {
+                for(var i = 1; i < points.length; i++) {
+                    if(this.filled) {
+                        ctx.strokeStyle = "#5B5B5B";
                         this.drawLine(points[i - 1], points[i]);
                     }
                 }
             }
 
             this.drawLine = function(point1, point2) {
-                ctx.strokeStyle = "rgb(255, 0, 0)";
-                ctx.lineWidth = 30;
+                ctx.lineWidth = 35;
                 ctx.lineCap = "round";
                 ctx.lineJoin = "round";
                 ctx.beginPath();
@@ -96,32 +119,51 @@
             }
 
             this.fill = function() {
-                //this.filling = setInterval(this.animatefill, 500);
-                currentLineSegment = this.id;
-                window.requestAnimationFrame(animateLine);
+                if(canBeChosen) {
+                    currentLineSegment = this.id;
+                    start = undefined;
+                    animationStop = Math.floor(Math.random() * 8000);
+                    window.requestAnimationFrame(animateLine);
+                    lineSegments.forEach(line => {
+                        line.canBeChosen = false;
+                    });
+                }
             }
 
-            this.hovered = function(e) {
-
-                lineSegments.forEach(element => {
-                    window.removeEventListener("mousemove", element.hovered);
-                });
-                
+            this.hovered = function() {
+                if(this.canBeChosen) {
+                    var x = points[0].x + (40/this.length[0]) * (points[1].x - points[0].x);
+                    var y = points[0].y + (40/this.length[0]) * (points[1].y - points[0].y);
+                    ctx.strokeStyle = "#0C00FF";
+                    this.drawLine(this.points[0], {x:x, y:y});
+                    ctx.fillStyle = "#FF00BF";
+                    ctx.fillRect(hoverBox.x1, hoverBox.y1, hoverBox.x2 - hoverBox.x1, hoverBox.y2 - hoverBox.y1);
+                    if(gameWindow.mouseX > this.hoverBox.x1 &&
+                        gameWindow.mouseX < this.hoverBox.x2 &&
+                        gameWindow.mouseY > this.hoverBox.y1 &&
+                        gameWindow.mouseY < this.hoverBox.y2
+                    ) {
+                        this.fill();
+                        
+                    }
+                }
             }
         }
 
         let start;
+        let animationStop;
         function animateLine(timestamp) {
             if (start === undefined)
                 start = timestamp;
             const elapsed = timestamp - start;
 
-            var ratio = (100/8000)*elapsed;
+            var ratio = (100/8000) * elapsed;
             var linesDrawn = lineSegments[currentLineSegment].linesfilled;
             var lengths = lineSegments[currentLineSegment].length;
             var fullLength = lengths.reduce(((acc, num) => acc + num), 0);
             var points = lineSegments[currentLineSegment].points;
 
+            ctx.strokeStyle = "#FFFFFF";
             for(var i = 0; i < linesDrawn; i++) {
                 ratio -= (lengths[i]/fullLength*100);
                 lineSegments[currentLineSegment].drawLine(points[i], points[i + 1]);
@@ -138,20 +180,41 @@
                 lineSegments[currentLineSegment].linesfilled++;
             }
 
-            if (elapsed < 8000) { // Stop the animation after 8 seconds
+            if (elapsed < 8000/*animationStop*/) { // Stop the animation after a random amount between 0-8 seconds
                 window.requestAnimationFrame(animateLine);
             } else {
                 lineSegments[currentLineSegment].filled = true;
-                lineSegments.forEach(element => {
-                    console.log("added listener");
-                    window.addEventListener("mousemove", element.hovered);
+                lineSegments[currentLineSegment].next.forEach(element => {
+                    lineSegments[element].canBeChosen = true;
+
                 });
             }
         }
 
         function initializeLineSegments() {
-            lineSegments.push(new lineSegment([{x:10,y:100},{x:100,y:200},{x:500,y:200}], 0));
-            lineSegments.push(new lineSegment([{x:10,y:200},{x:100,y:300},{x:500,y:300}], 1));
+            lineSegments.push(new lineSegment([{x:50,y:100},{x:175,y:300}], 0, [3, 4], {x1:50, x2:100, y1:50, y2:150}));
+            lineSegments.push(new lineSegment([{x:50,y:300},{x:175,y:300}], 1, [3, 4], {x1:50, x2:100, y1:250, y2:350}));
+            lineSegments.push(new lineSegment([{x:50,y:500},{x:175,y:300}], 2, [3, 4], {x1:50, x2:100, y1:450, y2:550}));
+            lineSegments.push(new lineSegment([{x:175,y:300},{x:300,y:100}], 3, [1, 3], {x1:170, x2:200, y1:230, y2:280}));
+            lineSegments.push(new lineSegment([{x:175,y:300},{x:300,y:500}], 4, [1, 3], {x1:170, x2:200, y1:320, y2:370}));
+            lineSegments.push(new lineSegment([{x:300,y:100},{x:400,y:100},{x:450,y:200}], 5, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:300,y:100},{x:400,y:300},{x:450,y:400}], 6, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:300,y:500},{x:400,y:300},{x:450,y:400}], 7, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:300,y:500},{x:400,y:500},{x:450,y:400}], 8, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:450,y:200},{x:500,y:100},{x:600,y:300}], 9, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:450,y:200},{x:500,y:300},{x:600,y:300}], 10, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:450,y:400},{x:500,y:300},{x:600,y:300}], 11, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:450,y:400},{x:500,y:500},{x:600,y:300}], 12, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:600,y:300},{x:675,y:150}], 13, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:600,y:300},{x:650,y:300},{x:700,y:400},{x:750,y:400}], 14, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:600,y:300},{x:700,y:500},{x:750,y:400}], 15, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:675,y:150},{x:700,y:100},{x:725,y:125},{x:900,y:125},{x:1000,y:300}], 16, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:675,y:150},{x:700,y:200},{x:850,y:200},{x:900,y:300},{x:1000,y:300}], 17, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:750,y:400},{x:800,y:300},{x:1000,y:300}], 18, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:750,y:400},{x:800,y:500},{x:900,y:500},{x:1000,y:300}], 19, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:1000,y:300},{x:1100,y:100}], 20, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:1000,y:300},{x:1100,y:300}], 21, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
+            lineSegments.push(new lineSegment([{x:1000,y:300},{x:1100,y:500}], 21, [1, 3], {x1:500, x2:550, y1:100, y2:150}));
         }
     </script>
 </html>
