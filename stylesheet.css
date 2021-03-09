@@ -1,13 +1,9 @@
-body {
-    cursor: wait;
+.asdf {
+    color: #1E1E1E;
 }
 
-.page {
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
+body {
+    cursor: wait;
 }
 
 Canvas {

@@ -9,15 +9,15 @@
             <img id="cursorImage"
                  src="cursor.png">
             <img id="foregroundImage"
-                src="">
+                src="foreground.png">
         </div>
         <div class="page">
             <canvas id="canvas1" width="1200" height="600"></canvas>
             <canvas id="canvas2" width="1200" height="600"></canvas>
             <canvas id="canvas3" width="1200" height="600"></canvas>
-
-            
         </div>
+        
+        
 
     </body>
 
@@ -45,7 +45,7 @@
                 this.context1 = this.canvas1.getContext("2d");
                 this.context2 = this.canvas2.getContext("2d");
 
-                this.updateInterval = setInterval(updateGameArea, 20);
+                this.updateInterval = setInterval(gameWindow.drawCursor, 20);
 
                 window.addEventListener('mousemove', function(e) {
                     var canvasRect = gameWindow.canvas1.getBoundingClientRect();
@@ -56,13 +56,16 @@
 
             clear : function() {
                 this.context1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
+            },
+
+            drawCursor : function() {
                 this.context2.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
+                this.context2.drawImage(cursorImage, this.mouseX - 10, this.mouseY - 10, 20, 20);
             },
 
             draw : function() {
-                ctx.fillStyle = "#1E1E1E"
+                ctx.fillStyle = "#5B5B5B"
                 this.context1.fillRect(0, 0, canvas1.width, canvas1.height);
-                this.context2.drawImage(cursorImage, this.mouseX - 10, this.mouseY - 10, 20, 20);
             }
         }
 
@@ -70,16 +73,8 @@
             gameWindow.clear();
             gameWindow.draw();
             lineSegments.forEach(element => {
-                if(!element.filled) {
-                    element.draw();
-                    element.hovered();
-                }
-            });
-            lineSegments.forEach(element => {
-                if(element.filled) {
-                    element.draw();
-                    element.hovered();
-                }
+                element.draw();
+                element.hovered();
             });
         }
 
@@ -89,7 +84,7 @@
             this.length = [];
             this.linesfilled = 0;
             this.lineIncrement = 0;
-            this.filled = true;
+            this.filled = false;
             this.next = next;
             this.canBeChosen = true;
             ctx = gameWindow.context1;
@@ -133,7 +128,7 @@
                 if(this.canBeChosen) {
                     var x = points[0].x + (40/this.length[0]) * (points[1].x - points[0].x);
                     var y = points[0].y + (40/this.length[0]) * (points[1].y - points[0].y);
-                    ctx.strokeStyle = "#0C00FF";
+                    ctx.strokeStyle = "#FFFFFF";
                     this.drawLine(this.points[0], {x:x, y:y});
                 }
             }
