@@ -16,9 +16,16 @@
             <canvas id="canvas2" width="1200" height="600"></canvas>
             <canvas id="canvas3" width="1200" height="600"></canvas>
         </div>
-        
-        
 
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>Some text in the Modal..</p>
+            </div>
+          
+          </div>
     </body>
 
     <script>
@@ -27,7 +34,8 @@
             initializeLineSegments();
             var canvas3 = document.getElementById("canvas3");
             canvas3.getContext("2d").drawImage(document.getElementById('foregroundImage'), 0, 0);
-            //lineSegments[0].fill();
+            updateGameArea();
+            //lineSegments[16].fill();
         }
 
         function stopGame() {
@@ -45,7 +53,7 @@
                 this.context1 = this.canvas1.getContext("2d");
                 this.context2 = this.canvas2.getContext("2d");
 
-                this.updateInterval = setInterval(updateGameArea, 20);
+                window.requestAnimationFrame(drawCursor);
 
                 window.addEventListener('mousemove', function(e) {
                     var canvasRect = gameWindow.canvas1.getBoundingClientRect();
@@ -58,15 +66,16 @@
                 this.context1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
             },
 
-            drawCursor : function() {
-                this.context2.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
-                this.context2.drawImage(cursorImage, this.mouseX - 10, this.mouseY - 10, 20, 20);
-            },
-
             draw : function() {
-                ctx.fillStyle = "#5B5B5B"
+                this.context1.fillStyle = "#5B5B5B"
                 this.context1.fillRect(0, 0, canvas1.width, canvas1.height);
             }
+        }
+
+        function drawCursor() {
+            gameWindow.context2.clearRect(0, 0, gameWindow.canvas2.width, gameWindow.canvas2.height);
+            gameWindow.context2.drawImage(cursorImage, gameWindow.mouseX - 10, gameWindow.mouseY - 10, 20, 20);
+            window.requestAnimationFrame(drawCursor);
         }
 
         function updateGameArea() {
@@ -86,7 +95,7 @@
             this.lineIncrement = 0;
             this.filled = false;
             this.next = next;
-            this.canBeChosen = true;
+            this.canBeChosen = false;
             ctx = gameWindow.context1;
             for(var i = 1; i < points.length; i++) {
                 this.length.push(Math.sqrt(Math.pow(this.points[i].x - this.points[i-1].x, 2) + Math.pow(this.points[i].y - this.points[i-1].y, 2)));
@@ -95,7 +104,8 @@
             this.draw = function() {
                 for(var i = 1; i < points.length; i++) {
                     if(this.filled) {
-                        ctx.strokeStyle = "#5B5B5B";
+                        ctx.strokeStyle = "#FFFFFF";
+                        ctx.lineCap = "round";
                         this.drawLine(points[i - 1], points[i]);
                     }
                 }
@@ -103,7 +113,7 @@
 
             this.drawLine = function(point1, point2) {
                 ctx.lineWidth = 35;
-                ctx.lineCap = "round";
+                
                 ctx.lineJoin = "round";
                 ctx.beginPath();
                 ctx.moveTo(point1.x, point1.y);
@@ -113,23 +123,33 @@
             }
 
             this.fill = function() {
-                if(canBeChosen) {
+                if(this.canBeChosen) {
                     currentLineSegment = this.id;
                     start = undefined;
                     animationStop = Math.floor(Math.random() * 8000);
-                    window.requestAnimationFrame(animateLine);
                     lineSegments.forEach(line => {
                         line.canBeChosen = false;
                     });
+                    updateGameArea();
+                    window.requestAnimationFrame(animateLine);
                 }
             }
 
             this.hovered = function() {
                 if(this.canBeChosen) {
-                    var x = points[0].x + (40/this.length[0]) * (points[1].x - points[0].x);
-                    var y = points[0].y + (40/this.length[0]) * (points[1].y - points[0].y);
+                    var x, y
+                    if([0, 1, 2].includes(this.id)) {
+                        x = points[0].x - (40/this.length[0]) * (points[1].x - points[0].x);
+                        y = points[0].y - (40/this.length[0]) * (points[1].y - points[0].y);
+                    } else {
+                        x = points[0].x;
+                        y = points[0].y;
+                    }
+                    var x2 = points[0].x + (40/this.length[0]) * (points[1].x - points[0].x);
+                    var y2 = points[0].y + (40/this.length[0]) * (points[1].y - points[0].y);
                     ctx.strokeStyle = "#FFFFFF";
-                    this.drawLine(this.points[0], {x:x, y:y});
+                    ctx.lineCap = "round";
+                    this.drawLine({x:x, y:y}, {x:x2, y:y2});
                 }
             }
         }
@@ -148,6 +168,7 @@
             var points = lineSegments[currentLineSegment].points;
 
             ctx.strokeStyle = "#FFFFFF";
+            ctx.lineCap = "round";
             for(var i = 0; i < linesDrawn; i++) {
                 ratio -= (lengths[i]/fullLength*100);
                 lineSegments[currentLineSegment].drawLine(points[i], points[i + 1]);
@@ -164,41 +185,62 @@
                 lineSegments[currentLineSegment].linesfilled++;
             }
 
-            if (elapsed < 8000/*animationStop*/) { // Stop the animation after a random amount between 0-8 seconds
+            if (elapsed < animationStop) { // Stop the animation after a random amount between 0-8 seconds
                 window.requestAnimationFrame(animateLine);
             } else {
                 lineSegments[currentLineSegment].filled = true;
                 lineSegments[currentLineSegment].next.forEach(element => {
                     lineSegments[element].canBeChosen = true;
-
                 });
+                updateGameArea();
             }
         }
 
         function initializeLineSegments() {
             lineSegments.push(new lineSegment([{x:50,y:100},{x:175,y:300}], 0, [3, 4]));
+            lineSegments[0].canBeChosen = true;
             lineSegments.push(new lineSegment([{x:50,y:300},{x:175,y:300}], 1, [3, 4]));
+            lineSegments[1].canBeChosen = true;
             lineSegments.push(new lineSegment([{x:50,y:500},{x:175,y:300}], 2, [3, 4]));
-            lineSegments.push(new lineSegment([{x:175,y:300},{x:300,y:100}], 3, [1, 3]));
-            lineSegments.push(new lineSegment([{x:175,y:300},{x:300,y:500}], 4, [1, 3]));
-            lineSegments.push(new lineSegment([{x:300,y:100},{x:400,y:100},{x:450,y:200}], 5, [1, 3]));
-            lineSegments.push(new lineSegment([{x:300,y:100},{x:400,y:300},{x:450,y:400}], 6, [1, 3]));
-            lineSegments.push(new lineSegment([{x:300,y:500},{x:400,y:300},{x:450,y:400}], 7, [1, 3]));
-            lineSegments.push(new lineSegment([{x:300,y:500},{x:400,y:500},{x:450,y:400}], 8, [1, 3]));
-            lineSegments.push(new lineSegment([{x:450,y:200},{x:500,y:100},{x:600,y:300}], 9, [1, 3]));
-            lineSegments.push(new lineSegment([{x:450,y:200},{x:500,y:300},{x:600,y:300}], 10, [1, 3]));
-            lineSegments.push(new lineSegment([{x:450,y:400},{x:500,y:300},{x:600,y:300}], 11, [1, 3]));
-            lineSegments.push(new lineSegment([{x:450,y:400},{x:500,y:500},{x:600,y:300}], 12, [1, 3]));
-            lineSegments.push(new lineSegment([{x:600,y:300},{x:675,y:150}], 13, [1, 3]));
-            lineSegments.push(new lineSegment([{x:600,y:300},{x:650,y:300},{x:700,y:400},{x:750,y:400}], 14, [1, 3]));
-            lineSegments.push(new lineSegment([{x:600,y:300},{x:700,y:500},{x:750,y:400}], 15, [1, 3]));
-            lineSegments.push(new lineSegment([{x:675,y:150},{x:700,y:100},{x:725,y:125},{x:900,y:125},{x:1000,y:300}], 16, [1, 3]));
-            lineSegments.push(new lineSegment([{x:675,y:150},{x:700,y:200},{x:850,y:200},{x:900,y:300},{x:1000,y:300}], 17, [1, 3]));
-            lineSegments.push(new lineSegment([{x:750,y:400},{x:800,y:300},{x:1000,y:300}], 18, [1, 3]));
-            lineSegments.push(new lineSegment([{x:750,y:400},{x:800,y:500},{x:900,y:500},{x:1000,y:300}], 19, [1, 3]));
-            lineSegments.push(new lineSegment([{x:1000,y:300},{x:1100,y:100}], 20, [1, 3]));
-            lineSegments.push(new lineSegment([{x:1000,y:300},{x:1100,y:300}], 21, [1, 3]));
-            lineSegments.push(new lineSegment([{x:1000,y:300},{x:1100,y:500}], 21, [1, 3]));
+            lineSegments[2].canBeChosen = true;
+            lineSegments.push(new lineSegment([{x:175,y:300},{x:300,y:100}], 3, [5, 6]));
+            lineSegments.push(new lineSegment([{x:175,y:300},{x:300,y:500}], 4, [7, 8]));
+            lineSegments.push(new lineSegment([{x:300,y:100},{x:400,y:100},{x:450,y:200}], 5, [9, 10]));
+            lineSegments.push(new lineSegment([{x:300,y:100},{x:400,y:300},{x:450,y:400}], 6, [11, 12]));
+            lineSegments.push(new lineSegment([{x:300,y:500},{x:400,y:300},{x:450,y:400}], 7, [11, 12]));
+            lineSegments.push(new lineSegment([{x:300,y:500},{x:400,y:500},{x:450,y:400}], 8, [11, 12]));
+            lineSegments.push(new lineSegment([{x:450,y:200},{x:500,y:100},{x:600,y:300}], 9, [13, 14, 15]));
+            lineSegments.push(new lineSegment([{x:450,y:200},{x:500,y:300},{x:600,y:300}], 10, [13, 14, 15]));
+            lineSegments.push(new lineSegment([{x:450,y:400},{x:500,y:300},{x:600,y:300}], 11, [13, 14, 15]));
+            lineSegments.push(new lineSegment([{x:450,y:400},{x:500,y:500},{x:600,y:300}], 12, [13, 14, 15]));
+            lineSegments.push(new lineSegment([{x:600,y:300},{x:675,y:150}], 13, [16, 17]));
+            lineSegments.push(new lineSegment([{x:600,y:300},{x:650,y:300},{x:700,y:400},{x:750,y:400}], 14, [18, 19]));
+            lineSegments.push(new lineSegment([{x:600,y:300},{x:700,y:500},{x:750,y:400}], 15, [18, 19]));
+            lineSegments.push(new lineSegment([{x:675,y:150},{x:700,y:100},{x:725,y:125},{x:900,y:125},{x:1000,y:300}], 16, [20, 21, 22]));
+            lineSegments.push(new lineSegment([{x:675,y:150},{x:700,y:200},{x:850,y:200},{x:900,y:300},{x:1000,y:300}], 17, [20, 21, 22]));
+            lineSegments.push(new lineSegment([{x:750,y:400},{x:800,y:300},{x:1000,y:300}], 18, [20, 21, 22]));
+            lineSegments.push(new lineSegment([{x:750,y:400},{x:800,y:500},{x:900,y:500},{x:1000,y:300}], 19, [20, 21, 22]));
+            lineSegments.push(new lineSegment([{x:1000,y:300},{x:1100,y:100}], 20, []));
+            lineSegments.push(new lineSegment([{x:1000,y:300},{x:1100,y:300}], 21, []));
+            lineSegments.push(new lineSegment([{x:1000,y:300},{x:1100,y:500}], 21, []));
         }
+
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        } 
     </script>
 </html>
