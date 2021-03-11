@@ -4,7 +4,7 @@
         <title>game</title>
         <link rel="stylesheet" type="text/css" href="stylesheet.css"></link>
     </head>
-    <body onload="startGame()">
+    <body onload="prepareGame()">
         <div style="display:none;">
             <img id="cursorImage"
                  src="cursor.png">
@@ -15,31 +15,189 @@
             <canvas id="canvas1" width="1200" height="600"></canvas>
             <canvas id="canvas2" width="1200" height="600"></canvas>
             <canvas id="canvas3" width="1200" height="600"></canvas>
+
+            <div id="svgholder">
+
+                <svg id="svg" width="1200" height="600" disabled>
+                    <polygon id="poly0" class="poly" points="28 96, 62 155, 93 135, 55 75"
+                    onclick="lineSegments[0].fill()"></polygon>
+
+                    <polygon id="poly1" class="poly" points="33 283, 33 319, 100 319, 100 283"
+                    onclick="lineSegments[1].fill()"></polygon>
+
+                    <polygon id="poly2" class="poly" points="28 502, 55 527, 93 467, 62 447"
+                    onclick="lineSegments[2].fill()"></polygon>
+
+                    <polygon id="poly3" class="poly" points="178 266, 198 298, 228 250, 208 216"
+                    onmouseover="lineSegments[3].fill()"></polygon>
+
+                    <polygon id="poly4" class="poly" points="178 338, 208 385, 228 352, 198 302"
+                    onmouseover="lineSegments[4].fill()"></polygon>
+
+                    <polygon id="poly5" class="poly" points="313 82, 333 117, 359 117, 349 82"
+                    onmouseover="lineSegments[5].fill()"></polygon>
+
+                    <polygon id="poly6" class="poly" points="330 123, 301 141, 323 186, 350 163"
+                    onmouseover="lineSegments[6].fill()"></polygon>
+
+                    <polygon id="poly7" class="poly" points="300 461, 332 478, 350 440, 323 413"
+                    onmouseover="lineSegments[7].fill()"></polygon>
+                    
+                    <polygon id="poly8" class="poly" points="333 482, 301 519, 353 519, 353 482"
+                    onmouseover="lineSegments[8].fill()"></polygon>
+
+                    <polygon id="poly9" class="poly" points="453 155, 475 192, 488 166, 465 131"
+                    onmouseover="lineSegments[9].fill()"></polygon>
+
+                    <polygon id="poly10" class="poly" points="471 205, 449 235, 462 262, 487 236"
+                    onmouseover="lineSegments[10].fill()"></polygon>
+
+                    <polygon id="poly11" class="poly" points="452 354, 473 395, 489 363, 466 329"
+                    onmouseover="lineSegments[11].fill()"></polygon>
+
+                    <polygon id="poly12" class="poly" points="472 402, 453 445, 468 475, 487 437"
+                    onmouseover="lineSegments[12].fill()"></polygon>
+
+                    <polygon id="poly13" class="poly" points="604 252, 632 275, 647 246, 620 222"
+                    onmouseover="lineSegments[13].fill()"></polygon>
+
+                    <polygon id="poly14" class="poly" points="633 282, 633 318, 660 318, 660 282"
+                    onmouseover="lineSegments[14].fill()"></polygon>
+
+                    <polygon id="poly15" class="poly" points="630 322, 603 346, 619 379, 645 353"
+                    onmouseover="lineSegments[15].fill()"></polygon>
+
+                    <polygon id="poly16" class="poly" points="668 123, 698 147, 706 131, 675 109"
+                    onmouseover="lineSegments[16].fill()"></polygon>
+
+                    <polygon id="poly17" class="poly" points="697 155, 677 194, 687 213, 705 172"
+                    onmouseover="lineSegments[17].fill()"></polygon>
+
+                    <polygon id="poly18" class="poly" points="741 378, 758 384, 772 399, 787 370, 756 352"
+                    onmouseover="lineSegments[18].fill()"></polygon>
+                
+                    <polygon id="poly19" class="poly" points="773 408, 755 447, 766 473, 790 441"
+                    onmouseover="lineSegments[19].fill()"></polygon>
+
+                    <polygon id="poly20" class="poly" points="1004 252, 1032 275, 1047 246, 1020 222"
+                    onmouseover="lineSegments[20].fill()"></polygon>
+
+                    <polygon id="poly21" class="poly" points="1033 282, 1033 318, 1060 318, 1060 282"
+                    onmouseover="lineSegments[21].fill()"></polygon>
+
+                    <polygon id="poly22" class="poly" points="1030 322, 1003 346, 1019 379, 1045 353"
+                    onmouseover="lineSegments[22].fill()"></polygon>
+                </svg>
+            </div>
         </div>
 
-        <div id="myModal" class="modal">
-
-            <!-- Modal content -->
+        <div id="winScreen" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
-                <p>Some text in the Modal..</p>
+                <p>Thank you for playing, the last thing we would ask off you is to please fill out this short survey <a id="surveyLink" href="">here</a></p>
             </div>
-          
-          </div>
+        </div>
+        <div id="explanation" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content explanation">
+                <div class="hidden" id="tutorial"></div>
+                <p class="hidden" id="group1Explanation">group 1</p>
+                <p class="hidden" id="group2Explanation">group 2</p>
+                <p class="hidden" id="group2Explanation2">explanation 2</p>
+                <div class="hidden" id="confidence" onclick="setConfidence()">
+                    <label class="radio_button" for="confidence1">
+                        1
+                        <input type="radio" id="confidence1" name="confidence" value="1">
+                    </label>
+                    <label class="radio_button" for="confidence2">
+                        2
+                        <input type="radio" id="confidence2" name="confidence" value="2">
+                    </label>
+                    <label class="radio_button" for="confidence3">
+                        3
+                        <input type="radio" id="confidence3" name="confidence" value="3">
+                    </label>
+                    <label class="radio_button" for="confidence4">
+                        4
+                        <input type="radio" id="confidence4" name="confidence" value="4">
+                    </label>
+                    <label class="radio_button" for="confidence5">
+                        5
+                        <input type="radio" id="confidence5" name="confidence" value="5">
+                    </label>
+                    <label class="radio_button" for="confidence6">
+                        6
+                        <input type="radio" id="confidence6" name="confidence" value="6">
+                    </label>
+                    <label class="radio_button" for="confidence7">
+                        7
+                        <input type="radio" id="confidence7" name="confidence" value="7">
+                    </label>
+                    <label class="radio_button" for="confidence8">
+                        8
+                        <input type="radio" id="confidence8" name="confidence" value="8">
+                    </label>
+                    <label class="radio_button" for="confidence9">
+                        9
+                        <input type="radio" id="confidence9" name="confidence" value="9">
+                    </label>
+                    <label class="radio_button" for="confidence10">
+                        10
+                        <input type="radio" id="confidence10" name="confidence" value="10">
+                    </label>
+                </div>
+                <button onclick="closeExplanation()">Click here when you're done</button>
+            </div>
+        </div>
     </body>
 
     <script>
-        function startGame() {
+        var participantGroup = 0 /* Math.floor(Math.random() * 2); */
+        if(participantGroup == 0) {
+            document.getElementById("group1Explanation").style.display = "block";
+            document.getElementById("confidence").style.display = "flex";
+        } else {
+            document.getElementById("group2Explanation").style.display = "block";
+        }
+
+        function setConfidence() {
+            var rates = document.getElementsByName("confidence");
+            var confidenceValue;
+            for(var i = 0; i < rates.length; i++) {
+                if(rates[i].checked) {
+                    confidenceValue = rates[i].value;
+                }
+            }
+            document.getElementById("surveyLink").href = "https://docs.google.com/forms/d/e/1FAIpQLSf32woLUbtaFRFYw7nI2fjT3jPlSIpEBPTUDmP8yZYLH9BBTQ/viewform?usp=pp_url&entry.146232743=" + confidenceValue
+        }
+
+        function closeExplanation() {
+            document.getElementById("explanation").style.display = "none";
+            startGame();
+        }
+
+        function prepareGame() {
             gameWindow.start();
             initializeLineSegments();
             var canvas3 = document.getElementById("canvas3");
             canvas3.getContext("2d").drawImage(document.getElementById('foregroundImage'), 0, 0);
             updateGameArea();
-            //lineSegments[16].fill();
         }
 
-        function stopGame() {
-            clearInterval(gameWindow.updateInterval);
+        function startGame() {
+            if(participantGroup == 1) {
+                lineSegments.forEach(line => {
+                    line.filled = true;
+                });
+            } else {
+                lineSegments.forEach(line => {
+                    line.filled = false;
+                });
+                var poly = document.getElementsByClassName("poly");
+                for(var i = 0; i < poly.length; i++) {
+                    poly[i].disabled = false;
+                }
+            }
+            updateGameArea();
         }
 
         const cursorImage = document.getElementById('cursorImage');
@@ -224,23 +382,5 @@
             lineSegments.push(new lineSegment([{x:1000,y:300},{x:1100,y:300}], 21, []));
             lineSegments.push(new lineSegment([{x:1000,y:300},{x:1100,y:500}], 21, []));
         }
-
-        // Get the modal
-        var modal = document.getElementById("myModal");
-
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
-
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        } 
     </script>
 </html>
