@@ -14,19 +14,24 @@
         <div class="page">
             <canvas id="canvas1" width="1200" height="600"></canvas>
             <canvas id="canvas2" width="1200" height="600"></canvas>
-            <canvas id="canvas3" width="1200" height="600"></canvas>
 
             <div id="svgholder">
 
                 <svg id="svg" width="1200" height="600" disabled>
                     <polygon id="poly0" class="poly" points="28 96, 62 155, 93 135, 55 75"
-                    onclick="lineSegments[0].fill()"></polygon>
+                    onclick="lineSegments[0].fill(); gameWindow.startCursorCheck()"
+                    onmouseover="document.body.style.cursor = 'pointer'"
+                    onmouseout="document.body.style.cursor = 'default'"></polygon>
 
                     <polygon id="poly1" class="poly" points="33 283, 33 319, 100 319, 100 283"
-                    onclick="lineSegments[1].fill()"></polygon>
+                    onclick="lineSegments[1].fill(); gameWindow.startCursorCheck()"
+                    onmouseover="document.body.style.cursor = 'pointer'"
+                    onmouseout="document.body.style.cursor = 'default'"></polygon>
 
                     <polygon id="poly2" class="poly" points="28 502, 55 527, 93 467, 62 447"
-                    onclick="lineSegments[2].fill()"></polygon>
+                    onclick="lineSegments[2].fill(); gameWindow.startCursorCheck()"
+                    onmouseover="document.body.style.cursor = 'pointer'"
+                    onmouseout="document.body.style.cursor = 'default'"></polygon>
 
                     <polygon id="poly3" class="poly" points="178 266, 198 298, 228 250, 208 216"
                     onmouseover="lineSegments[3].fill()"></polygon>
@@ -93,7 +98,7 @@
 
         <div id="winScreen" class="modal">
             <div class="modal-content">
-                <p>Thank you for playing, the last thing we would ask off you is to please fill out this short survey <a id="surveyLink" href="">here</a></p>
+                <p>Thank you for playing, the last thing we would ask of you is to please fill out this short survey <a id="surveyLink" href="">here</a></p>
             </div>
         </div>
         <div id="explanation" class="modal">
@@ -151,12 +156,17 @@
     </body>
 
     <script>
-        var participantGroup = 0 /* Math.floor(Math.random() * 2); */
+        var participantGroup = 1 /* Math.floor(Math.random() * 2); */
+        var ready;
         if(participantGroup == 0) {
             document.getElementById("group1Explanation").style.display = "block";
+            document.getElementById("tutorial").style.display = "block";
             document.getElementById("confidence").style.display = "flex";
+            ready = true;
         } else {
             document.getElementById("group2Explanation").style.display = "block";
+            document.getElementById("tutorial").style.display = "block";
+            ready = false;
         }
 
         function setConfidence() {
@@ -172,32 +182,42 @@
 
         function closeExplanation() {
             document.getElementById("explanation").style.display = "none";
-            startGame();
+            if(!ready) {
+                lineSegments.forEach(line => {
+                    line.filled = true;
+                });
+                gameWindow.startCursorCheck();
+                window.setTimeout(function(){
+                    document.body.style.cursor = "default";
+                    window.clearInterval(gameWindow.cursorCheck);
+                    document.getElementById("group2Explanation").style.display = "none";
+                    document.getElementById("explanation").style.display = "block";
+                    document.getElementById("group2Explanation2").style.display = "block";
+                    document.getElementById("confidence").style.display = "flex";
+                    ready = true;
+                }, 5000);
+            } else {
+                startGame();
+            }
+            updateGameArea();
         }
 
         function prepareGame() {
             gameWindow.start();
             initializeLineSegments();
-            var canvas3 = document.getElementById("canvas3");
-            canvas3.getContext("2d").drawImage(document.getElementById('foregroundImage'), 0, 0);
+            var canvas2 = document.getElementById("canvas2");
+            canvas2.getContext("2d").drawImage(document.getElementById('foregroundImage'), 0, 0);
             updateGameArea();
         }
 
         function startGame() {
-            if(participantGroup == 1) {
-                lineSegments.forEach(line => {
-                    line.filled = true;
-                });
-            } else {
-                lineSegments.forEach(line => {
-                    line.filled = false;
-                });
-                var poly = document.getElementsByClassName("poly");
-                for(var i = 0; i < poly.length; i++) {
-                    poly[i].disabled = false;
-                }
+            lineSegments.forEach(line => {
+                line.filled = false;
+            });
+            var poly = document.getElementsByClassName("poly");
+            for(var i = 0; i < poly.length; i++) {
+                poly[i].disabled = false;
             }
-            updateGameArea();
         }
 
         const cursorImage = document.getElementById('cursorImage');
@@ -205,19 +225,19 @@
         var lineSegments = []
         var gameWindow = {
             canvas1 : document.getElementById("canvas1"),
-            canvas2 : document.getElementById("canvas2"),
 
             start : function() {
                 this.context1 = this.canvas1.getContext("2d");
-                this.context2 = this.canvas2.getContext("2d");
-
-                window.requestAnimationFrame(drawCursor);
 
                 window.addEventListener('mousemove', function(e) {
                     var canvasRect = gameWindow.canvas1.getBoundingClientRect();
                     gameWindow.mouseX = e.clientX - canvasRect.left;
                     gameWindow.mouseY = e.clientY - canvasRect.top;
                 });
+            },
+
+            startCursorCheck : function() {
+                this.cursorCheck = window.setInterval(checkCursor, 100);
             },
 
             clear : function() {
@@ -230,10 +250,35 @@
             }
         }
 
-        function drawCursor() {
-            gameWindow.context2.clearRect(0, 0, gameWindow.canvas2.width, gameWindow.canvas2.height);
-            gameWindow.context2.drawImage(cursorImage, gameWindow.mouseX - 10, gameWindow.mouseY - 10, 20, 20);
-            window.requestAnimationFrame(drawCursor);
+        function checkCursor() {
+            for(var j = 0; j < lineSegments.length; j++) {
+                
+                if(lineSegments[j].filled) {
+                    let points = lineSegments[j].points
+                    for(var i = 1; i < points.length; i++) {
+                        if(pointOnLine(points[i - 1], points[i], {x:gameWindow.mouseX, y:gameWindow.mouseY})) {
+                            document.body.style.cursor = "pointer";
+                            return;
+                        }
+                    }
+                }
+            }
+            document.body.style.cursor = "not-allowed";
+        }
+
+        function pointOnLine(linePoint1, linePoint2, point) {
+            let top = (linePoint2.x - linePoint1.x) * (linePoint1.y - point.y) - (linePoint1.x - point.x) * (linePoint2.y - linePoint1.y)
+            let distance = Math.abs(top)/Math.sqrt(Math.pow(linePoint2.x - linePoint1.x, 2) + Math.pow(linePoint2.y - linePoint1.y, 2));
+            if(
+                distance < 17.5 &&
+                Math.min(linePoint1.x, linePoint2.x) - 17.5 < point.x &&
+                Math.max(linePoint1.x, linePoint2.x) + 17.5 > point.x &&
+                Math.min(linePoint1.y, linePoint2.y) - 17.5 < point.y &&
+                Math.max(linePoint1.y, linePoint2.y) + 17.5 > point.y
+            ) {
+                return true;
+            }
+            return false;
         }
 
         function updateGameArea() {
@@ -252,6 +297,7 @@
             this.linesfilled = 0;
             this.lineIncrement = 0;
             this.filled = false;
+            this.color = "#FFFFFF";
             this.next = next;
             this.canBeChosen = false;
             ctx = gameWindow.context1;
@@ -262,7 +308,7 @@
             this.draw = function() {
                 for(var i = 1; i < points.length; i++) {
                     if(this.filled) {
-                        ctx.strokeStyle = "#FFFFFF";
+                        ctx.strokeStyle = this.color;
                         ctx.lineCap = "round";
                         this.drawLine(points[i - 1], points[i]);
                     }
@@ -271,7 +317,6 @@
 
             this.drawLine = function(point1, point2) {
                 ctx.lineWidth = 35;
-                
                 ctx.lineJoin = "round";
                 ctx.beginPath();
                 ctx.moveTo(point1.x, point1.y);
@@ -343,13 +388,25 @@
                 lineSegments[currentLineSegment].linesfilled++;
             }
 
+            if(pointOnLine(points[linesDrawn], {x:x, y:y}, {x:gameWindow.mouseX, y:gameWindow.mouseY})) {
+                document.body.style.cursor = "pointer";
+            }
+
             if (elapsed < animationStop) { // Stop the animation after a random amount between 0-8 seconds
                 window.requestAnimationFrame(animateLine);
             } else {
                 lineSegments[currentLineSegment].filled = true;
-                lineSegments[currentLineSegment].next.forEach(element => {
-                    lineSegments[element].canBeChosen = true;
-                });
+                var audio = new Audio('pling.wav');
+                audio.play();
+                if(lineSegments[currentLineSegment].next.length < 1) {
+                    document.getElementById("winScreen").style.display = "block";
+                    window.clearInterval(gameWindow.cursorCheck);
+                    document.body.style.cursor = "default";
+                } else {
+                    lineSegments[currentLineSegment].next.forEach(element => {
+                        lineSegments[element].canBeChosen = true;
+                    });
+                }
                 updateGameArea();
             }
         }
