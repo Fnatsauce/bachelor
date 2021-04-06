@@ -134,8 +134,9 @@
 
 
         function startTutorial() {
-            drawables.player = new PlayerCharacter;
             window.requestAnimationFrame(gameWindow.draw);
+            var playerCharacter = new PlayerCharacter();
+            playerCharacter.attack();
         }
 
         function startPractice() {
@@ -186,13 +187,45 @@
             this.frameSize = {x:231, y:190}
             this.playerImage = document.getElementById("playerIdleImage");
             this.playerAttackImage = document.getElementById("playerAttackImage");
+            drawables.player = new Animation(this.playerImage, 100, 100, this.frameSize, {x:400, y:400}, Infinity, "player");
 
+            this.attack = function() {
+                animation = getAnimation(this.playerImage, 100, 100, this.frameSize, {x:400, y:400}, Infinity, "player");
+                drawables.player = new Animation(this.playerAttackImage, 100, 100, this.frameSize, {x:400, y:400}, 1, "player", animation);
+            }
+        }
+
+        function getAnimation(image, x, y, frameSize, size, cycles, key, callBack) {
+            return function() {
+                drawables[key] = new Animation(image, x, y, frameSize, size, cycles, key, callBack);
+            };
+        }
+
+        function Animation(image, x, y, frameSize, size, cycles, key, callBack) {
+            this.image = image;
+            this.x = x;
+            this.y = y;
+            this.frameSize = frameSize;
+            this.size = size;
+            this.animationFrame = 0;
+            this.cycles = cycles;
+            this.currentCycle = 0;
+            this.key = key;
+            this.callBack = callBack;
+        
             this.draw = function() {
-                //drawImage(image, dx, dy, x, y, xSize, ySize)
-                gameWindow.context1.drawImage(this.playerAttackImage, this.frameSize.x * Math.floor(this.animationFrame / 6), 0, this.frameSize.x, this.frameSize.y, 100, 100, 400, 400);
+                //drawImage(image, dx, dy, dxWidth, dyHeight, x, y, xWidth, yHeight)
+                gameWindow.context1.drawImage(this.image, this.frameSize.x * Math.floor(this.animationFrame / 6), 0, this.frameSize.x, this.frameSize.y, this.x, this.y, this.size.x, this.size.y);
                 this.animationFrame++;
-                if (this.animationFrame > this.playerAttackImage.width / this.frameSize.x * 6 - 1) {
+                if (this.animationFrame > this.image.width / this.frameSize.x * 6 - 1) {
                     this.animationFrame = 0;
+                    this.currentCycle++;
+                }
+                if (this.currentCycle >= this.cycles) {
+                    delete drawables[key];
+                    if (this.callBack != undefined) {
+                        this.callBack();
+                    }
                 }
             }
         }
