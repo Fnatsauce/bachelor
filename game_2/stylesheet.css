@@ -9,6 +9,7 @@ Canvas {
     -webkit-transform: translate(-50%, 0%);
     -moz-transform: translate(-50%, 0%);
     transform: translate(-50%, 0%);
+    border: 1px solid #1E1E1E;
 }
 
 .poly {
@@ -24,7 +25,7 @@ Canvas {
 }
 
 .modal {
-    display: block; /* Hidden by default */
+    display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
     left: 0;
