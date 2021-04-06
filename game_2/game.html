@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>game</title>
+        <link rel="stylesheet" type="text/css" href="stylesheet.css"></link>
+    </head>
+    <body onload="prepareGame()">
+        <div style="display:none;">
+            
+        </div>
+        <div class="page">
+            <canvas id="canvas1" width="1200" height="600"></canvas>
+            <canvas id="canvas2" width="1200" height="600"></canvas>
+
+        </div>
+
+        <div id="winScreen" class="modal">
+            <div class="modal-content">
+                <p>Thanks for playing! Please take a minute to answer our survey about your experience found <a id="surveyLink" href="">here</a></p>
+            </div>
+        </div>
+        <div id="explanation" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content explanation">
+                <div class="holder hidden" id="tutorial">
+                    <div id="tutorial-text">Thank you for wanting to try out Paths! <br/>
+                        <br/>
+                        How to play: 
+                        <br/> <br/>
+                        There are three initial paths that can start your journey, as seen in the top image. One of them has been set up to sound a gentle buzzer. 
+                        <br/> <br/>
+                        Once a path has been chosen it will slowly crawl towards the next intersection over a timespan of 8 seconds. If it takes the full 8 seconds for the path to reach the intersection, no buzzer will sound which means you lost the game. 
+                        <br/>
+                        If the path suddenly springs forward to the next intersection before 8 seconds has passed, the buzzer will sound, which means you chose right will be able to move on.
+                        <br/> <br/>
+                        In the bottom image, a player has chosen correctly at the first two marked intersections, and is about to choose a new path at the third.
+
+                        Your goal is to choose the path that will engage the buzzer at each intersection, all the way to the end of the maze-like game board.
+                    <br/></div>
+                    <div class="image-holder">
+                        <img class="first-image" src="first.png" alt="This is where the first image would be, if it wasn't missing">
+                        <img class="second-image" src="second.png" alt="This is where the first image would be, if it wasn't missing">
+                    </div>
+                </div>
+                <p class="hidden readable-tutorial" id="group1Explanation">Now that you know how it works - please rate on a scale from 1 (very unsure) to 10 (pretty certain) how confident you are that you will choose the right paths.</p>
+                <p class="hidden readable-tutorial" id="group2Explanation">
+                Before the game begins there will be a practice period where you can get a feeling for moving your cursor around the game board. All paths will be opened and there will be nothing to choose - this is simply movement practice.
+
+                After 15 seconds you will get the option to start the game.
+                </p>
+                <p class="hidden readable-tutorial" id="group2Explanation2">Now that you know how it works - please rate on a scale from 1 (very unsure) to 10 (pretty certain) how confident you are that you will choose the right paths.</p>
+
+                <div class="hidden" id="confidence" onclick="setConfidence()">
+                    <p>not confident</p>
+                    <label class="radio_button first" for="confidence1">
+                        <span class="confidence_number">1</span>
+                        <input type="radio" id="confidence1" name="confidence" value="1">
+                    </label>
+                    <label class="radio_button" for="confidence2">
+                        <span class="confidence_number">2</span>
+                        <input type="radio" id="confidence2" name="confidence" value="2">
+                    </label>
+                    <label class="radio_button" for="confidence3">
+                        <span class="confidence_number">3</span>
+                        <input type="radio" id="confidence3" name="confidence" value="3">
+                    </label>
+                    <label class="radio_button" for="confidence4">
+                        <span class="confidence_number">4</span>
+                        <input type="radio" id="confidence4" name="confidence" value="4">
+                    </label>
+                    <label class="radio_button" for="confidence5">
+                        <span class="confidence_number">5</span>
+                        <input type="radio" id="confidence5" name="confidence" value="5">
+                    </label>
+                    <label class="radio_button" for="confidence6">
+                        <span class="confidence_number">6</span>
+                        <input type="radio" id="confidence6" name="confidence" value="6">
+                    </label>
+                    <label class="radio_button" for="confidence7">
+                        <span class="confidence_number">7</span>
+                        <input type="radio" id="confidence7" name="confidence" value="7">
+                    </label>
+                    <label class="radio_button" for="confidence8">
+                        <span class="confidence_number">8</span>
+                        <input type="radio" id="confidence8" name="confidence" value="8">
+                    </label>
+                    <label class="radio_button" for="confidence9">
+                        <span class="confidence_number">9</span>
+                        <input type="radio" id="confidence9" name="confidence" value="9">
+                    </label>
+                    <label class="radio_button" for="confidence10">
+                        <span class="confidence_number">10</span>
+                        <input type="radio" id="confidence10" name="confidence" value="10">
+                    </label>
+                    <p>very confident</p>
+                </div>
+                <button onclick="closeExplanation()">Click here when you're done</button>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        var participantGroup = Math.floor(Math.random() * 2) + 1;
+        var ready;
+        if(participantGroup == 1) {
+            document.getElementById("group1Explanation").style.display = "block";
+            document.getElementById("tutorial").style.display = "flex";
+            document.getElementById("confidence").style.display = "flex";
+            ready = true;
+        } else {
+            document.getElementById("group2Explanation").style.display = "block";
+            document.getElementById("tutorial").style.display = "flex";
+            ready = false;
+        }
+
+        function setConfidence() {
+            var rates = document.getElementsByName("confidence");
+            var confidenceValue;
+            for(var i = 0; i < rates.length; i++) {
+                if(rates[i].checked) {
+                    confidenceValue = rates[i].value;
+                }
+            }
+            document.getElementById("surveyLink").href = "https://docs.google.com/forms/d/e/1FAIpQLSfa0Nt08lBclw7pM523cVVIdbdM2qIqvwJjWpevGgleaQ_FtQ/viewform?usp=pp_url&entry.755563979=" + participantGroup + "&entry.146232743=" + confidenceValue;
+        }
+
+        function closeExplanation() {
+            document.getElementById("explanation").style.display = "none";
+            if(!ready) {
+                lineSegments.forEach(line => {
+                    line.filled = true;
+                });
+                gameWindow.startCursorCheck();
+                window.setTimeout(function(){
+                    document.body.style.cursor = "default";
+                    window.clearInterval(gameWindow.cursorCheck);
+                    document.getElementById("tutorial").style.display = "none";
+                    document.getElementById("group2Explanation").style.display = "none";
+                    document.getElementById("explanation").style.display = "block";
+                    document.getElementById("group2Explanation2").style.display = "block";
+                    document.getElementById("confidence").style.display = "flex";
+                    ready = true;
+                }, 15000);
+            } else {
+                startGame();
+            }
+            updateGameArea();
+        }
+
+        function prepareGame() {
+            
+        }
+
+        function startGame() {
+            
+        }
+
+        
+        var gameWindow = {
+            canvas1 : document.getElementById("canvas1"),
+
+            start : function() {
+                this.context1 = this.canvas1.getContext("2d");
+
+                window.addEventListener('mousemove', function(e) {
+                    var canvasRect = gameWindow.canvas1.getBoundingClientRect();
+                    gameWindow.mouseX = e.clientX - canvasRect.left;
+                    gameWindow.mouseY = e.clientY - canvasRect.top;
+                });
+            },
+
+            startCursorCheck : function() {
+                this.cursorCheck = window.setInterval(checkCursor, 100);
+            },
+
+            clear : function() {
+                this.context1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
+            },
+
+            draw : function() {
+            }
+        }
+
+        
+
+        function updateGameArea() {
+            
+        }
+
+    </script>
+</html>
