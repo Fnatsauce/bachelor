@@ -4,17 +4,24 @@
         <title>game</title>
         <link rel="stylesheet" type="text/css" href="stylesheet.css"></link>
     </head>
-    <body onload="prepareGame()">
+    <body onload="startTutorial()">
         <div style="display:none;">
+            
             <img id="playerIdleImage"
                  src="PlayerCharacter/Idle.png">
             <img id="playerAttackImage"
                  src="PlayerCharacter/Attack2.png">
-            
+
+            <img id="wizardIdleImage"
+                 src="enemyWizard/Idle.png">
+   
+            <img id="map2Image"
+                 src="map.png">
         </div>
         <div class="page">
             <canvas id="canvas1" width="1200" height="600"></canvas>
-
+            <canvas id="canvas2" width="1200" height="600"></canvas>
+            <canvas id="canvas3" width="1200" height="600"></canvas>
         </div>
 
         <div id="winScreen" class="modal">
@@ -134,9 +141,13 @@
 
 
         function startTutorial() {
+            gameWindow.start();
             window.requestAnimationFrame(gameWindow.draw);
             var playerCharacter = new PlayerCharacter();
-            playerCharacter.attack();
+            var enemy = new Enemy("wizard", {x:231, y:190}, {x:400, y:400});
+            drawTextBox("this is a super long string that might fill more than the screen, especially if i keep adding dumb stuff like this and that, fuck still not long enough gotta keep going until i can't anymore and then keep going anyway. Somehow this wasn't enough so now i gotta add even more text just to try and fill out the stupid ass box");
+            gameWindow.context2.drawImage(document.getElementById("map2Image"), 0, 0);
+            highlightArea(function() {gameWindow.context3.arc(200, 200, 100, 0, 2 * Math.PI)});
         }
 
         function startPractice() {
@@ -155,10 +166,13 @@
         var gameWindow = {
             stopGame : false,
             canvas1 : document.getElementById("canvas1"),
+            context1 : this.canvas1.getContext("2d"),
+            canvas2 : document.getElementById("canvas2"),
+            context2 : this.canvas2.getContext("2d"),
+            canvas3 : document.getElementById("canvas3"),
+            context3 : this.canvas3.getContext("2d"),
 
             start : function() {
-                this.context1 = this.canvas1.getContext("2d");
-
                 window.addEventListener('mousemove', function(e) {
                     var canvasRect = gameWindow.canvas1.getBoundingClientRect();
                     gameWindow.mouseX = e.clientX - canvasRect.left;
@@ -166,15 +180,12 @@
                 });
             },
 
-            clear : function() {
-                this.context1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
-            },
-
             draw : function() {
                 if (gameWindow.stopGame) {
+                    this.stopGame = false;
                     return;
                 }
-                gameWindow.clear();
+                gameWindow.context1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
                 for (var key of Object.keys(drawables)) {
                     drawables[key].draw();
                 }
@@ -185,19 +196,33 @@
         function PlayerCharacter() {
             this.animationFrame = 0;
             this.frameSize = {x:231, y:190}
+            this.size = {x:400, y:400}
+            this.x = 100 - this.size.x / 2
+            this.y = 300 - this.size.y / 2
             this.playerImage = document.getElementById("playerIdleImage");
             this.playerAttackImage = document.getElementById("playerAttackImage");
-            drawables.player = new Animation(this.playerImage, 100, 100, this.frameSize, {x:400, y:400}, Infinity, "player");
+            drawables.player = new Animation(this.playerImage, this.x, this.y, this.frameSize, this.size, Infinity, "player");
 
             this.attack = function() {
-                animation = getAnimation(this.playerImage, 100, 100, this.frameSize, {x:400, y:400}, Infinity, "player");
-                drawables.player = new Animation(this.playerAttackImage, 100, 100, this.frameSize, {x:400, y:400}, 1, "player", animation);
+                animation = getAnimation(new Animation(this.playerImage, this.x, this.y, this.frameSize, this.size, Infinity, "player"));
+                drawables.player = new Animation(this.playerAttackImage, this.x, this.y, this.frameSize, this.size, 1, "player", animation);
             }
         }
 
-        function getAnimation(image, x, y, frameSize, size, cycles, key, callBack) {
+        function Enemy(name, frameSize, size) {
+            this.animationFrame = 0;
+            this.frameSize = frameSize
+            this.size = size
+            this.x = 1100 - this.size.x / 2
+            this.y = 300 - this.size.y / 2
+            this.idleImage = document.getElementById(name + "IdleImage");
+            this.attackImage = document.getElementById(name + "AttackImage");
+            drawables.enemy = new Animation(this.idleImage, this.x, this.y, this.frameSize, this.size, Infinity, "enemy");
+        }
+
+        function getAnimation(animation) {
             return function() {
-                drawables[key] = new Animation(image, x, y, frameSize, size, cycles, key, callBack);
+                drawables[animation.key] = animation;
             };
         }
 
@@ -230,7 +255,51 @@
             }
         }
 
-        gameWindow.start();
-        startTutorial();
+        function highlightArea(area) {
+            var ctx = gameWindow.context3;
+            ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+            ctx.beginPath();
+            area();
+            ctx.rect(1200, 0, -1200, 450);
+            ctx.fill();
+        }
+
+        function drawTextBox(text) {
+            var ctx = gameWindow.context2;
+            ctx.font = "15px Arial";
+            var lines = wrapText(ctx, text, 1100)
+            ctx.fillStyle = "grey";
+            ctx.beginPath();
+            ctx.rect(0, 450, 1200, 150);
+            ctx.fill();
+            ctx.fillStyle = "white";
+            var textY = 480;
+            lines.forEach(line => {
+                ctx.fillText(line, 50, textY);
+                textY += 20;
+            });
+        }
+
+        function wrapText(ctx, text, maxWidth) {
+            var words = text.split(" ");
+            var lines = [];
+            var currentLine = words[0];
+
+            for (var i = 1; i < words.length; i++) {
+                var word = words[i];
+                var width = ctx.measureText(currentLine + " " + word).width;
+                if (width < maxWidth) {
+                    currentLine += " " + word;
+                } else {
+                    lines.push(currentLine);
+                    currentLine = word;
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        
+        
     </script>
 </html>
