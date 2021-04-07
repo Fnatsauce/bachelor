@@ -211,10 +211,10 @@
 
         function Enemy(name, frameSize, size) {
             this.animationFrame = 0;
-            this.frameSize = frameSize
-            this.size = size
-            this.x = 1100 - this.size.x / 2
-            this.y = 300 - this.size.y / 2
+            this.frameSize = frameSize;
+            this.size = size;
+            this.x = 1100 - this.size.x / 2;
+            this.y = 300 - this.size.y / 2;
             this.idleImage = document.getElementById(name + "IdleImage");
             this.attackImage = document.getElementById(name + "AttackImage");
             drawables.enemy = new Animation(this.idleImage, this.x, this.y, this.frameSize, this.size, Infinity, "enemy");
