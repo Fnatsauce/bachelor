@@ -11,6 +11,8 @@
                  src="PlayerCharacter/Idle.png">
             <img id="playerAttackImage"
                  src="PlayerCharacter/Attack2.png">
+            <img id="fireball"
+                 src="GameFXexport/SPRITESHEET_Files/FireBall_64x64.png">
 
             <img id="wizardIdleImage"
                  src="enemyWizard/Idle.png">
@@ -22,6 +24,11 @@
             <canvas id="canvas1" width="1200" height="600"></canvas>
             <canvas id="canvas2" width="1200" height="600"></canvas>
             <canvas id="canvas3" width="1200" height="600"></canvas>
+            
+            <button onclick="gameWindow.pause();">Pause</button>
+            <button onclick="gameWindow.resume();">Resume</button>
+            <button onclick="entities.player.attack();">Attack</button>
+            <button id="nextButton">Next</button>
         </div>
 
         <div id="winScreen" class="modal">
@@ -139,15 +146,13 @@
         }
         */
 
-
         function startTutorial() {
+            entities.player = new PlayerCharacter();
             gameWindow.start();
-            window.requestAnimationFrame(gameWindow.draw);
-            var playerCharacter = new PlayerCharacter();
-            var enemy = new Enemy("wizard", {x:231, y:190}, {x:400, y:400});
-            drawTextBox("this is a super long string that might fill more than the screen, especially if i keep adding dumb stuff like this and that, fuck still not long enough gotta keep going until i can't anymore and then keep going anyway. Somehow this wasn't enough so now i gotta add even more text just to try and fill out the stupid ass box");
+            entities.enemy = new Enemy("wizard", {x:231, y:190}, {x:400, y:400});
+            //drawTextBox("this is a super long string that might fill more than the screen, especially if i keep adding dumb stuff like this and that, fuck still not long enough gotta keep going until i can't anymore and then keep going anyway. Somehow this wasn't enough so now i gotta add even more text just to try and fill out the stupid ass box");
             gameWindow.context2.drawImage(document.getElementById("map2Image"), 0, 0);
-            highlightArea(function() {gameWindow.context3.arc(200, 200, 100, 0, 2 * Math.PI)});
+            tutorialSteps[0].draw();
         }
 
         function startPractice() {
@@ -163,6 +168,8 @@
         }
 
         var drawables = {};
+        var tutorialSteps = [];
+        var entities = {};
         var gameWindow = {
             stopGame : false,
             canvas1 : document.getElementById("canvas1"),
@@ -178,11 +185,20 @@
                     gameWindow.mouseX = e.clientX - canvasRect.left;
                     gameWindow.mouseY = e.clientY - canvasRect.top;
                 });
+                window.requestAnimationFrame(this.draw);
+            },
+
+            pause : function() {
+                this.stopGame = true;
+            },
+
+            resume : function() {
+                window.requestAnimationFrame(this.draw);
             },
 
             draw : function() {
                 if (gameWindow.stopGame) {
-                    this.stopGame = false;
+                    gameWindow.stopGame = false;
                     return;
                 }
                 gameWindow.context1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
@@ -193,31 +209,54 @@
             }
         }
 
-        function PlayerCharacter() {
-            this.animationFrame = 0;
-            this.frameSize = {x:231, y:190}
-            this.size = {x:400, y:400}
-            this.x = 100 - this.size.x / 2
-            this.y = 300 - this.size.y / 2
-            this.playerImage = document.getElementById("playerIdleImage");
-            this.playerAttackImage = document.getElementById("playerAttackImage");
-            drawables.player = new Animation(this.playerImage, this.x, this.y, this.frameSize, this.size, Infinity, "player");
+        class PlayerCharacter {
+            constructor() {
+                this.animationFrame = 0;
+                this.frameSize = {x:231, y:190}
+                this.size = {x:400, y:400}
+                this.x = 100 - this.size.x / 2
+                this.y = 300 - this.size.y / 2
+                this.playerImage = document.getElementById("playerIdleImage");
+                this.playerAttackImage = document.getElementById("playerAttackImage");
+                this.fireball = document.getElementById("fireball");
+                drawables.player = new Animation(this.playerImage, this.x, this.y, this.frameSize, this.size, Infinity, "player");
+            }
 
-            this.attack = function() {
-                animation = getAnimation(new Animation(this.playerImage, this.x, this.y, this.frameSize, this.size, Infinity, "player"));
+            attack() {
+                var idle = getAnimation(new Animation(this.playerImage, this.x, this.y, this.frameSize, this.size, Infinity, "player"));
+                var fireballHit = function() {
+                    if (this.x > this.targetX) {
+                        entities.enemy.hit("fire");
+                    }
+                }
+                var fireball = getAnimation(new MovingAnimation(this.fireball, 100, 160, 1000, 160, {x:64, y:64}, {x:200, y:200}, "fireball", fireballHit));
+                var animation = function() {
+                    if(this.currentCycle == this.cycles) {
+                        idle();
+                    }
+                    if(this.animationFrame == 36) {
+                        fireball();
+                    }
+                }
                 drawables.player = new Animation(this.playerAttackImage, this.x, this.y, this.frameSize, this.size, 1, "player", animation);
             }
         }
 
-        function Enemy(name, frameSize, size) {
-            this.animationFrame = 0;
-            this.frameSize = frameSize
-            this.size = size
-            this.x = 1100 - this.size.x / 2
-            this.y = 300 - this.size.y / 2
-            this.idleImage = document.getElementById(name + "IdleImage");
-            this.attackImage = document.getElementById(name + "AttackImage");
-            drawables.enemy = new Animation(this.idleImage, this.x, this.y, this.frameSize, this.size, Infinity, "enemy");
+        class Enemy {
+            constructor(name, frameSize, size) {
+                this.animationFrame = 0;
+                this.frameSize = frameSize
+                this.size = size
+                this.x = 1100 - this.size.x / 2
+                this.y = 300 - this.size.y / 2
+                this.idleImage = document.getElementById(name + "IdleImage");
+                this.attackImage = document.getElementById(name + "AttackImage");
+                drawables.enemy = new Animation(this.idleImage, this.x, this.y, this.frameSize, this.size, Infinity, "enemy");
+            }
+
+            hit(attackType) {
+                console.log("hit by " + attackType);
+            }
         }
 
         function getAnimation(animation) {
@@ -226,19 +265,21 @@
             };
         }
 
-        function Animation(image, x, y, frameSize, size, cycles, key, callBack) {
-            this.image = image;
-            this.x = x;
-            this.y = y;
-            this.frameSize = frameSize;
-            this.size = size;
-            this.animationFrame = 0;
-            this.cycles = cycles;
-            this.currentCycle = 0;
-            this.key = key;
-            this.callBack = callBack;
+        class Animation {
+            constructor(image, x, y, frameSize, size, cycles, key, callBack) {
+                this.image = image;
+                this.x = x;
+                this.y = y;
+                this.frameSize = frameSize;
+                this.size = size;
+                this.animationFrame = 0;
+                this.cycles = cycles;
+                this.currentCycle = 0;
+                this.key = key;
+                this.callBack = callBack;
+            }
         
-            this.draw = function() {
+            draw() {
                 //drawImage(image, dx, dy, dxWidth, dyHeight, x, y, xWidth, yHeight)
                 gameWindow.context1.drawImage(this.image, this.frameSize.x * Math.floor(this.animationFrame / 6), 0, this.frameSize.x, this.frameSize.y, this.x, this.y, this.size.x, this.size.y);
                 this.animationFrame++;
@@ -247,11 +288,34 @@
                     this.currentCycle++;
                 }
                 if (this.currentCycle >= this.cycles) {
-                    delete drawables[key];
-                    if (this.callBack != undefined) {
-                        this.callBack();
-                    }
+                    this.delete();
                 }
+                if (this.callBack != undefined) {
+                    this.callBack();
+                }
+            }
+
+            delete() {
+                delete drawables[this.key];
+            }
+        }
+
+        class MovingAnimation extends Animation{
+            constructor(image, x, y, targetX, targetY, frameSize, size, key, callBack) {
+                super(image, x, y, frameSize, size, Infinity, key, callBack);
+                this.targetX = targetX;
+                this.targetY = targetY;
+                this.ratioX = (targetX - x) / (60*1);
+                this.ratioY = (targetY - y) / (60*1);
+            }
+
+            draw() {
+                super.draw();
+                if (this.x > this.targetX) {
+                    this.delete();
+                }
+                this.x += this.ratioX;
+                this.y += this.ratioY;
             }
         }
 
@@ -265,7 +329,7 @@
         }
 
         function drawTextBox(text) {
-            var ctx = gameWindow.context2;
+            var ctx = gameWindow.context3;
             ctx.font = "15px Arial";
             var lines = wrapText(ctx, text, 1100)
             ctx.fillStyle = "grey";
@@ -287,6 +351,16 @@
 
             for (var i = 1; i < words.length; i++) {
                 var word = words[i];
+                if (word == "\n") {
+                    lines.push(currentLine);
+                    i++;
+                    while (words[i] == "\n") {
+                        lines.push("");
+                        i++;
+                    }
+                    currentLine = words[i];
+                    continue;
+                }
                 var width = ctx.measureText(currentLine + " " + word).width;
                 if (width < maxWidth) {
                     currentLine += " " + word;
@@ -299,7 +373,31 @@
             return lines;
         }
 
-        
+        class TutorialStep {
+            constructor(area, text, nextFunction, pause) {
+                this.area = area;
+                this.text = text;
+                this.pause = pause;
+                this.nextFunction = nextFunction;
+            }
+            
+            draw() {
+                if (this.pause) {
+                    gameWindow.pause();
+                }
+                gameWindow.context3.clearRect(0, 0, gameWindow.canvas3.width, gameWindow.canvas3.height);
+                if (this.area != undefined) {
+                    highlightArea(this.area);
+                }
+                drawTextBox(this.text);
+                document.getElementById("nextButton").onclick = this.nextFunction
+            }
+        }
+
+        tutorialSteps.push(new TutorialStep(undefined, 'Welcome to One-Shot Wizard! \n My name is: The-Handy-Dandy-Tutorial-Text and I will now guide you through how to play the game - please click "next" to continue.', function() {tutorialSteps[1].draw();}, false));
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(85, 305, 100, 0, 2 * Math.PI)}, 'This is you', function() {tutorialSteps[2].draw();}, false));
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(1115, 305, 100, 0, 2 * Math.PI)}, 'This is your enemy. Each room will have one enemy.', function() {tutorialSteps[3].draw();}, false));
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(300, 300, 100, 0, 2 * Math.PI)}, 'To defeat an enemy you must choose an attack from the ones available - [Certain enemies are weak to certain attacks and it is up to you to figure out what attack will be effective on the enemy you are facing, based on subtle clues provided by the game. \n \n Choose wisely - because you only get ONE SHOT!]', function() {gameWindow.context3.clearRect(0, 0, gameWindow.canvas3.width, gameWindow.canvas3.height);}, false));
         
     </script>
 </html>
