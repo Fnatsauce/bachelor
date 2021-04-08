@@ -7,24 +7,41 @@
     <body onload="startTutorial()">
         <div style="display:none;">
             
+            <!-- Player animations -->
             <img id="playerIdleImage"
-                 src="PlayerCharacter/Idle.png">
+                src="PlayerCharacter/Idle.png">
             <img id="playerAttackImage"
+
                  src="PlayerCharacter/Attack2.png">
             <img id="fireball"
                  src="GameFXexport/SPRITESHEET_Files/FireBall_64x64.png">
 
+            <!-- Enemy animations -->
             <img id="wizardIdleImage"
-                 src="enemyWizard/Idle.png">
+                src="enemyWizard/Idle.png">
             <img id="wizardResistImage"
-                 src="PlayerCharacter/Hit.png">
+                src="PlayerCharacter/Hit.png">
             <img id="wizardDeathImage"
-                 src="PlayerCharacter/Death.png">
-   
+                src="PlayerCharacter/Death.png">
+          
+            <img id="flyingEyeIdleImage"
+                src="flyingEye/Idle.png">
+            <img id="goblinIdleImage"
+                src="goblin/Idle.png">
+            <img id="mushroomIdleImage"
+                src="mushroom/Idle.png">
+            <img id="skeletonIdleImage"
+                src="skeleton/Idle.png">
+            <img id="slimeIdleImage"
+                src="slime/Idle.png" style="image-rendering: pixelated;">
+            
+
+            <!-- Overview map -->
             <img id="map2Image"
-                 src="map.png">
+                src="map.png">
             <img id="resistBar"
                  src="GameFXexport/SPRITESHEET_Files/Explosion_3_133x133.png">
+
         </div>
         <div class="page">
             <canvas id="canvas1" width="1200" height="600"></canvas>
@@ -156,6 +173,11 @@
             entities.player = new PlayerCharacter();
             gameWindow.start();
             entities.enemy = new Enemy("wizard", {x:231, y:190}, {x:400, y:400});
+            //var testEnemyFlyingEye = new Enemy("flyingEye", {x:150, y:150}, {x:400, y:400});
+            //var testEnemyGoblin = new Enemy("goblin", {x:150, y:150}, {x:400, y:400});
+            //var testEnemySkeleton = new Enemy("skeleton", {x:150, y:150}, {x:400, y:400});
+            //var testEnemyMushroom = new Enemy("mushroom", {x:150, y:150}, {x:400, y:400});
+            //var testEnemySlime = new Enemy("slime", {x:32, y:25}, {x:400, y:400});
             //drawTextBox("this is a super long string that might fill more than the screen, especially if i keep adding dumb stuff like this and that, fuck still not long enough gotta keep going until i can't anymore and then keep going anyway. Somehow this wasn't enough so now i gotta add even more text just to try and fill out the stupid ass box");
             gameWindow.context2.drawImage(document.getElementById("map2Image"), 0, 0);
             tutorialSteps[0].draw();
