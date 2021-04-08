@@ -16,9 +16,15 @@
 
             <img id="wizardIdleImage"
                  src="enemyWizard/Idle.png">
+            <img id="wizardResistImage"
+                 src="PlayerCharacter/Hit.png">
+            <img id="wizardDeathImage"
+                 src="PlayerCharacter/Death.png">
    
             <img id="map2Image"
                  src="map.png">
+            <img id="resistBar"
+                 src="GameFXexport/SPRITESHEET_Files/Explosion_3_133x133.png">
         </div>
         <div class="page">
             <canvas id="canvas1" width="1200" height="600"></canvas>
@@ -216,20 +222,21 @@
                 this.size = {x:400, y:400}
                 this.x = 100 - this.size.x / 2
                 this.y = 300 - this.size.y / 2
+                this.fps = 10;
                 this.playerImage = document.getElementById("playerIdleImage");
                 this.playerAttackImage = document.getElementById("playerAttackImage");
                 this.fireball = document.getElementById("fireball");
-                drawables.player = new Animation(this.playerImage, this.x, this.y, this.frameSize, this.size, Infinity, "player");
+                drawables.player = new Animation(this.playerImage, this.x, this.y, this.frameSize, this.size, Infinity, "player", this.fps);
             }
 
             attack() {
-                var idle = getAnimation(new Animation(this.playerImage, this.x, this.y, this.frameSize, this.size, Infinity, "player"));
+                var idle = getAnimation(new Animation(this.playerImage, this.x, this.y, this.frameSize, this.size, Infinity, "player", this.fps));
                 var fireballHit = function() {
                     if (this.x > this.targetX) {
                         entities.enemy.hit("fire");
                     }
                 }
-                var fireball = getAnimation(new MovingAnimation(this.fireball, 100, 160, 1000, 160, {x:64, y:64}, {x:200, y:200}, "fireball", fireballHit));
+                var fireball = getAnimation(new MovingAnimation(this.fireball, 100, 160, 1000, 160, {x:64, y:64}, {x:200, y:200}, "fireball", 50, fireballHit));
                 var animation = function() {
                     if(this.currentCycle == this.cycles) {
                         idle();
@@ -238,7 +245,7 @@
                         fireball();
                     }
                 }
-                drawables.player = new Animation(this.playerAttackImage, this.x, this.y, this.frameSize, this.size, 1, "player", animation);
+                drawables.player = new Animation(this.playerAttackImage, this.x, this.y, this.frameSize, this.size, 1, "player", this.fps, animation);
             }
         }
 
@@ -249,13 +256,18 @@
                 this.size = size
                 this.x = 1100 - this.size.x / 2
                 this.y = 300 - this.size.y / 2
+                this.fps = 10;
                 this.idleImage = document.getElementById(name + "IdleImage");
                 this.attackImage = document.getElementById(name + "AttackImage");
-                drawables.enemy = new Animation(this.idleImage, this.x, this.y, this.frameSize, this.size, Infinity, "enemy");
+                this.resistImage = document.getElementById(name + "ResistImage");
+                this.deathImage = document.getElementById(name + "DeathImage");
+                this.resistBarImage = document.getElementById("resistBar");
+                drawables.enemy = new Animation(this.idleImage, this.x, this.y, this.frameSize, this.size, Infinity, "enemy", this.fps);
             }
 
             hit(attackType) {
-                console.log("hit by " + attackType);
+                drawables.enemy = new Animation(this.resistImage, this.x, this.y, this.frameSize, this.size, Infinity, "enemy", this.fps);
+                drawables.resistBar = new Animation(this.resistBarImage, 500, 200, {x:133, y:133}, {x:200, y:200}, 1, "resistBar", 5);
             }
         }
 
@@ -266,7 +278,7 @@
         }
 
         class Animation {
-            constructor(image, x, y, frameSize, size, cycles, key, callBack) {
+            constructor(image, x, y, frameSize, size, cycles, key, fps, callBack) {
                 this.image = image;
                 this.x = x;
                 this.y = y;
@@ -277,13 +289,14 @@
                 this.currentCycle = 0;
                 this.key = key;
                 this.callBack = callBack;
+                this.wait = 60/fps;
             }
         
             draw() {
                 //drawImage(image, dx, dy, dxWidth, dyHeight, x, y, xWidth, yHeight)
-                gameWindow.context1.drawImage(this.image, this.frameSize.x * Math.floor(this.animationFrame / 6), 0, this.frameSize.x, this.frameSize.y, this.x, this.y, this.size.x, this.size.y);
+                gameWindow.context1.drawImage(this.image, this.frameSize.x * Math.floor(this.animationFrame / this.wait), 0, this.frameSize.x, this.frameSize.y, this.x, this.y, this.size.x, this.size.y);
                 this.animationFrame++;
-                if (this.animationFrame > this.image.width / this.frameSize.x * 6 - 1) {
+                if (this.animationFrame > this.image.width / this.frameSize.x * this.wait - 1) {
                     this.animationFrame = 0;
                     this.currentCycle++;
                 }
@@ -301,12 +314,12 @@
         }
 
         class MovingAnimation extends Animation{
-            constructor(image, x, y, targetX, targetY, frameSize, size, key, callBack) {
-                super(image, x, y, frameSize, size, Infinity, key, callBack);
+            constructor(image, x, y, targetX, targetY, frameSize, size, key, fps, callBack) {
+                super(image, x, y, frameSize, size, Infinity, key, fps, callBack);
                 this.targetX = targetX;
                 this.targetY = targetY;
-                this.ratioX = (targetX - x) / (60*1);
-                this.ratioY = (targetY - y) / (60*1);
+                this.ratioX = (targetX - x) / 30;
+                this.ratioY = (targetY - y) / 30;
             }
 
             draw() {
