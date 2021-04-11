@@ -11,10 +11,9 @@
             <img id="playerIdleImage"
                 src="PlayerCharacter/Idle.png">
             <img id="playerAttackImage"
-
-                 src="PlayerCharacter/Attack2.png">
+                src="PlayerCharacter/Attack2.png">
             <img id="fireball"
-                 src="GameFXexport/SPRITESHEET_Files/FireBall_64x64.png">
+                src="GameFXexport/SPRITESHEET_Files/FireBall_64x64.png">
 
             <!-- Enemy animations -->
             <img id="wizardIdleImage"
@@ -40,7 +39,25 @@
             <img id="map2Image"
                 src="map.png">
             <img id="resistBar"
-                 src="GameFXexport/SPRITESHEET_Files/Explosion_3_133x133.png">
+                src="GameFXexport/SPRITESHEET_Files/Explosion_3_133x133.png">
+            <img id="fireIcon"
+                src="GameFXexport/SPRITESHEET_Files/FireIcon.png">
+
+            <!-- Overview Icons -->
+            <img id="room1Headshot"
+                src="enemyWizard/Headshot.png">
+            <img id="room2Headshot"
+                src="flyingEye/Headshot.png">
+            <img id="room3Headshot"
+                src="mushroom/Headshot.png">
+            <img id="room4Headshot"
+                src="goblin/Headshot.png">
+            <img id="room5Headshot"
+                src="knight/Headshot.png">
+            <img id="room6Headshot"
+                src="archer/Headshot.png">
+            <img id="room7Headshot"
+                src="king/Headshot.png">
 
         </div>
         <div class="page">
@@ -180,6 +197,15 @@
             //var testEnemySlime = new Enemy("slime", {x:32, y:25}, {x:400, y:400});
             //drawTextBox("this is a super long string that might fill more than the screen, especially if i keep adding dumb stuff like this and that, fuck still not long enough gotta keep going until i can't anymore and then keep going anyway. Somehow this wasn't enough so now i gotta add even more text just to try and fill out the stupid ass box");
             gameWindow.context2.drawImage(document.getElementById("map2Image"), 0, 0);
+            gameWindow.context2.drawImage(document.getElementById("room1Headshot"), 155, 40);
+            gameWindow.context2.drawImage(document.getElementById("room2Headshot"), 295, 40);
+            gameWindow.context2.drawImage(document.getElementById("room3Headshot"), 435, 40);
+            gameWindow.context2.drawImage(document.getElementById("room4Headshot"), 570, 40);
+            gameWindow.context2.drawImage(document.getElementById("room5Headshot"), 710, 40);
+            gameWindow.context2.drawImage(document.getElementById("room6Headshot"), 855, 40);
+            gameWindow.context2.drawImage(document.getElementById("room7Headshot"), 990, 40);
+
+            //gameWindow.context2.drawImage(document.getElementById("fireIcon"), 100, 80);
             tutorialSteps[0].draw();
         }
 
