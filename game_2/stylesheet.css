@@ -13,7 +13,7 @@ Canvas {
 }
 
 .poly {
-    fill: rgba(0,0,0,0);
+    fill: rgba(216, 0, 0, 0.3);
 }
 
 #svgholder {

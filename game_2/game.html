@@ -40,8 +40,6 @@
                 src="map.png">
             <img id="resistBar"
                 src="GameFXexport/SPRITESHEET_Files/Explosion_3_133x133.png">
-            <img id="fireIcon"
-                src="GameFXexport/SPRITESHEET_Files/FireIcon.png">
 
             <!-- Overview Icons -->
             <img id="room1Headshot"
@@ -59,12 +57,39 @@
             <img id="room7Headshot"
                 src="king/Headshot.png">
 
+            <!-- Spell Icons -->
+            <img id="fireIcon"
+                src="spellIcons/fire.png">
+            <img id="iceIcon"
+                src="spellIcons/ice.png">
+            <img id="airIcon"
+                src="spellIcons/air.png">
+
         </div>
         <div class="page">
             <canvas id="canvas1" width="1200" height="600"></canvas>
             <canvas id="canvas2" width="1200" height="600"></canvas>
             <canvas id="canvas3" width="1200" height="600"></canvas>
             
+            <div id="svgholder">
+                <svg id="svg" width="1200" height="600" disabled>
+                    <polygon id="poly0" class="poly" points="190, 155, 190 251, 286 251, 286 155"
+                    onclick="lineSegments[0].fill(); gameWindow.startCursorCheck()"
+                    onmouseover="document.body.style.cursor = 'pointer'"
+                    onmouseout="document.body.style.cursor = 'default'"></polygon>
+
+                    <polygon id="poly1" class="poly" points="240 255, 240 351, 336 351, 336 255" 
+                    onclick="lineSegments[1].fill(); gameWindow.startCursorCheck()"
+                    onmouseover="document.body.style.cursor = 'pointer'"
+                    onmouseout="document.body.style.cursor = 'default'"></polygon>
+
+                    <polygon id="poly2" class="poly" points="190 355, 190 451, 286 451, 286 355"
+                    onclick="lineSegments[2].fill(); gameWindow.startCursorCheck()"
+                    onmouseover="document.body.style.cursor = 'pointer'"
+                    onmouseout="document.body.style.cursor = 'default'"></polygon>
+                </svg>
+            </div>
+
             <button onclick="gameWindow.pause();">Pause</button>
             <button onclick="gameWindow.resume();">Resume</button>
             <button onclick="entities.player.attack();">Attack</button>
@@ -196,6 +221,8 @@
             //var testEnemyMushroom = new Enemy("mushroom", {x:150, y:150}, {x:400, y:400});
             //var testEnemySlime = new Enemy("slime", {x:32, y:25}, {x:400, y:400});
             //drawTextBox("this is a super long string that might fill more than the screen, especially if i keep adding dumb stuff like this and that, fuck still not long enough gotta keep going until i can't anymore and then keep going anyway. Somehow this wasn't enough so now i gotta add even more text just to try and fill out the stupid ass box");
+            
+            //Drawing overview map icons - just for testing
             gameWindow.context2.drawImage(document.getElementById("map2Image"), 0, 0);
             gameWindow.context2.drawImage(document.getElementById("room1Headshot"), 155, 40);
             gameWindow.context2.drawImage(document.getElementById("room2Headshot"), 295, 40);
@@ -204,6 +231,11 @@
             gameWindow.context2.drawImage(document.getElementById("room5Headshot"), 710, 40);
             gameWindow.context2.drawImage(document.getElementById("room6Headshot"), 855, 40);
             gameWindow.context2.drawImage(document.getElementById("room7Headshot"), 990, 40);
+
+            //Drawing spell icons - just for testing
+            gameWindow.context2.drawImage(document.getElementById("fireIcon"), 190, 155);
+            gameWindow.context2.drawImage(document.getElementById("iceIcon"), 240, 255);
+            gameWindow.context2.drawImage(document.getElementById("airIcon"), 190, 355);
 
             //gameWindow.context2.drawImage(document.getElementById("fireIcon"), 100, 80);
             tutorialSteps[0].draw();
