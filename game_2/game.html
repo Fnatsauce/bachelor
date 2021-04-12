@@ -401,7 +401,20 @@
             hit(attackType) {
                 // UNINTUITIVE: Play effect-animation in hit
                 drawables["1-enemy"] = new Animation(this.resistImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps);
-                drawables.resistBar = new Animation(this.resistBarImage, 500, 200, {x:133, y:133}, {x:200, y:200}, 1, "resistBar", 5);
+                var deathDone = function() {
+                    if(this.animationFrame > this.image.width / this.frameSize.x * this.wait - 2) {
+                        this.freezeAnimation();
+                        
+                    }
+                }
+                var deathAnimation = getAnimation(new Animation(this.deathImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, deathDone));
+                var death = function() {
+                    if(this.animationFrame == 120) {
+                        this.delete();
+                        deathAnimation();
+                    }
+                }
+                drawables.resistBar = new Animation(this.resistBarImage, 500, 200, {x:133, y:133}, {x:200, y:200}, 1, "resistBar", 5, death);
             }
         }
 
@@ -433,26 +446,33 @@
                 this.key = key;
                 this.callBack = callBack;
                 this.wait = 60/fps;
+                this.freeze = false;
             }
         
             draw() {
                 //drawImage(image, dx, dy, dxWidth, dyHeight, x, y, xWidth, yHeight)
                 gameWindow.context1.drawImage(this.image, this.frameSize.x * Math.floor(this.animationFrame / this.wait), 0, this.frameSize.x, this.frameSize.y, this.x, this.y, this.size.x, this.size.y);
-                this.animationFrame++;
-                if (this.animationFrame > this.image.width / this.frameSize.x * this.wait - 1) {
-                    this.animationFrame = 0;
-                    this.currentCycle++;
-                }
-                if (this.currentCycle >= this.cycles) {
-                    this.delete();
-                }
-                if (this.callBack != undefined) {
-                    this.callBack();
+                if(!this.freeze) {
+                    this.animationFrame++;
+                    if (this.animationFrame > this.image.width / this.frameSize.x * this.wait - 1) {
+                        this.animationFrame = 0;
+                        this.currentCycle++;
+                    }
+                    if (this.currentCycle >= this.cycles) {
+                        this.delete();
+                    }
+                    if (this.callBack != undefined) {
+                        this.callBack();
+                    }
                 }
             }
 
             delete() {
                 delete drawables[this.key];
+            }
+
+            freezeAnimation() {
+                this.freeze = true;
             }
         }
 
