@@ -44,8 +44,7 @@
             <img id="skeletonIdleImage"
                 src="skeleton/Idle.png">
             <img id="slimeIdleImage"
-                src="slime/Idle.png" style="image-rendering: pixelated;">
-            
+                src="slime/Idle.png">
 
             <!-- Overview map -->
             <img id="map2Image"
@@ -68,7 +67,13 @@
                 src="archer/Headshot.png">
             <img id="room7Headshot"
                 src="king/Headshot.png">
-        </div>
+        
+            <!-- Cross animation -->
+            <img id="cross"
+                src="cross.png">
+        
+        
+            </div>
 
 
 
@@ -263,7 +268,7 @@
 
             //Drawing spell icons - just for testing
             
-
+            //drawables["cross"] = new Animation(document.getElementById("cross"), 500, 300, {x:75, y:75}, {x:75, y:75}, Infinity, "cross", 10);
             //gameWindow.context2.drawImage(document.getElementById("fireIcon"), 100, 80);
             tutorialSteps[0].draw();
         }
