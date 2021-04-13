@@ -48,33 +48,17 @@
 
             <!-- Overview map -->
             <img id="map2Image"
-                src="map.png">
+                src="gameMap.png">
             <img id="resistBar"
                 src="GameFXexport/SPRITESHEET_Files/Explosion_3_133x133.png">
-
-            <!-- Overview Icons -->
-            <img id="room1Headshot"
-                src="enemyWizard/Headshot.png">
-            <img id="room2Headshot"
-                src="flyingEye/Headshot.png">
-            <img id="room3Headshot"
-                src="mushroom/Headshot.png">
-            <img id="room4Headshot"
-                src="goblin/Headshot.png">
-            <img id="room5Headshot"
-                src="knight/Headshot.png">
-            <img id="room6Headshot"
-                src="archer/Headshot.png">
-            <img id="room7Headshot"
-                src="king/Headshot.png">
         
             <!-- Cross animation -->
             <img id="cross"
                 src="cross.png">
+        </div>
         
-        
-            </div>
-
+        <img id="backgroundImage" class="background"
+                src="templeBackground.png">
 
 
         <div class="page" oncontextmenu="return false">
@@ -258,6 +242,9 @@
             
             //Drawing overview map icons - just for testing
             gameWindow.context2.drawImage(document.getElementById("map2Image"), 0, 0);
+            
+            //Maybe these can help with coordinates for crosses?
+            /*
             gameWindow.context2.drawImage(document.getElementById("room1Headshot"), 155, 40);
             gameWindow.context2.drawImage(document.getElementById("room2Headshot"), 295, 40);
             gameWindow.context2.drawImage(document.getElementById("room3Headshot"), 435, 40);
@@ -265,6 +252,7 @@
             gameWindow.context2.drawImage(document.getElementById("room5Headshot"), 710, 40);
             gameWindow.context2.drawImage(document.getElementById("room6Headshot"), 855, 40);
             gameWindow.context2.drawImage(document.getElementById("room7Headshot"), 990, 40);
+            */
 
             //Drawing spell icons - just for testing
             
