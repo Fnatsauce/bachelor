@@ -329,7 +329,7 @@
                 this.frameSize = {x:231, y:190}
                 this.size = {x:400, y:400}
                 this.x = 100 - this.size.x / 2
-                this.y = 300 - this.size.y / 2
+                this.y = 340 - this.size.y / 2
                 this.fps = 10;
                 this.playerImage = document.getElementById("playerIdleImage");
                 this.fireball = document.getElementById("fireball");
@@ -351,19 +351,19 @@
                 }
                 switch (attackType) {
                     case "Fire":
-                        var projectileAnimation = getAnimation(new MovingAnimation(this.fireball, 140, 160, 1000, 160, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
+                        var projectileAnimation = getAnimation(new MovingAnimation(this.fireball, 140, 205, 1000, 205, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
                         break;
                     case "Ice":
-                        var projectileAnimation = getAnimation(new MovingAnimation(this.icepick, 150, 160, 980, 160, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
+                        var projectileAnimation = getAnimation(new MovingAnimation(this.icepick, 150, 205, 980, 205, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
                     break;
                     case "Air":
-                        var tornadoLoopAnimation = getAnimation(new MovingAnimation(this.tornadoLoop, 560, 220, 1000, 220, {x:96, y:96}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
+                        var tornadoLoopAnimation = getAnimation(new MovingAnimation(this.tornadoLoop, 560, 270, 1000, 270, {x:96, y:96}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
                         var tornadoCallback = function() {
                             if (this.x > this.targetX) {
                                 tornadoLoopAnimation();
                             }
                         } 
-                        var projectileAnimation = getAnimation(new MovingAnimation(this.tornadoStatic, 100, 220, 550, 220, {x:96, y:96}, {x:200, y:200}, "2-playerAttack", 50, 50, tornadoCallback));
+                        var projectileAnimation = getAnimation(new MovingAnimation(this.tornadoStatic, 100, 270, 550, 270, {x:96, y:96}, {x:200, y:200}, "2-playerAttack", 50, 50, tornadoCallback));
                     break;
                     }
                 var animation = function() {
@@ -385,7 +385,7 @@
                 this.frameSize = frameSize
                 this.size = size
                 this.x = 1100 - this.size.x / 2
-                this.y = 300 - this.size.y / 2
+                this.y = 340 - this.size.y / 2
                 this.fps = 10;
                 this.idleImage = document.getElementById(name + "IdleImage");
                 this.attackImage = document.getElementById(name + "AttackImage");
