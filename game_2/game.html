@@ -44,32 +44,25 @@
             <img id="skeletonIdleImage"
                 src="skeleton/Idle.png">
             <img id="slimeIdleImage"
-                src="slime/Idle.png" style="image-rendering: pixelated;">
-            
+                src="slime/Idle.png">
 
             <!-- Overview map -->
             <img id="map2Image"
-                src="map.png">
+                src="gameMap.png">
             <img id="resistBar"
                 src="GameFXexport/SPRITESHEET_Files/Explosion_3_133x133.png">
 
-            <!-- Overview Icons -->
-            <img id="room1Headshot"
-                src="enemyWizard/Headshot.png">
-            <img id="room2Headshot"
-                src="flyingEye/Headshot.png">
-            <img id="room3Headshot"
-                src="mushroom/Headshot.png">
-            <img id="room4Headshot"
-                src="goblin/Headshot.png">
-            <img id="room5Headshot"
-                src="knight/Headshot.png">
-            <img id="room6Headshot"
-                src="archer/Headshot.png">
-            <img id="room7Headshot"
-                src="king/Headshot.png">
+            <!-- Text background -->
+            <img id="textBackground"
+                src="textBackground.png">
+        
+            <!-- Cross animation -->
+            <img id="cross"
+                src="cross.png">
         </div>
-
+        
+        <img id="backgroundImage" class="background"
+                src="templeBackground.png">
 
 
         <div class="page" oncontextmenu="return false">
@@ -253,6 +246,9 @@
             
             //Drawing overview map icons - just for testing
             gameWindow.context2.drawImage(document.getElementById("map2Image"), 0, 0);
+            
+            //Maybe these can help with coordinates for crosses?
+            /*
             gameWindow.context2.drawImage(document.getElementById("room1Headshot"), 155, 40);
             gameWindow.context2.drawImage(document.getElementById("room2Headshot"), 295, 40);
             gameWindow.context2.drawImage(document.getElementById("room3Headshot"), 435, 40);
@@ -260,10 +256,11 @@
             gameWindow.context2.drawImage(document.getElementById("room5Headshot"), 710, 40);
             gameWindow.context2.drawImage(document.getElementById("room6Headshot"), 855, 40);
             gameWindow.context2.drawImage(document.getElementById("room7Headshot"), 990, 40);
+            */
 
             //Drawing spell icons - just for testing
             
-
+            //drawables["cross"] = new Animation(document.getElementById("cross"), 500, 300, {x:75, y:75}, {x:75, y:75}, Infinity, "cross", 10);
             //gameWindow.context2.drawImage(document.getElementById("fireIcon"), 100, 80);
             tutorialSteps[0].draw();
         }
@@ -332,7 +329,7 @@
                 this.frameSize = {x:231, y:190}
                 this.size = {x:400, y:400}
                 this.x = 100 - this.size.x / 2
-                this.y = 300 - this.size.y / 2
+                this.y = 340 - this.size.y / 2
                 this.fps = 10;
                 this.playerImage = document.getElementById("playerIdleImage");
                 this.fireball = document.getElementById("fireball");
@@ -354,19 +351,19 @@
                 }
                 switch (attackType) {
                     case "Fire":
-                        var projectileAnimation = getAnimation(new MovingAnimation(this.fireball, 140, 160, 1000, 160, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
+                        var projectileAnimation = getAnimation(new MovingAnimation(this.fireball, 140, 205, 1000, 205, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
                         break;
                     case "Ice":
-                        var projectileAnimation = getAnimation(new MovingAnimation(this.icepick, 150, 160, 980, 160, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
+                        var projectileAnimation = getAnimation(new MovingAnimation(this.icepick, 150, 205, 980, 205, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
                     break;
                     case "Air":
-                        var tornadoLoopAnimation = getAnimation(new MovingAnimation(this.tornadoLoop, 560, 220, 1000, 220, {x:96, y:96}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
+                        var tornadoLoopAnimation = getAnimation(new MovingAnimation(this.tornadoLoop, 560, 270, 1000, 270, {x:96, y:96}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
                         var tornadoCallback = function() {
                             if (this.x > this.targetX) {
                                 tornadoLoopAnimation();
                             }
                         } 
-                        var projectileAnimation = getAnimation(new MovingAnimation(this.tornadoStatic, 100, 220, 550, 220, {x:96, y:96}, {x:200, y:200}, "2-playerAttack", 50, 50, tornadoCallback));
+                        var projectileAnimation = getAnimation(new MovingAnimation(this.tornadoStatic, 100, 270, 550, 270, {x:96, y:96}, {x:200, y:200}, "2-playerAttack", 50, 50, tornadoCallback));
                     break;
                     }
                 var animation = function() {
@@ -388,7 +385,7 @@
                 this.frameSize = frameSize
                 this.size = size
                 this.x = 1100 - this.size.x / 2
-                this.y = 300 - this.size.y / 2
+                this.y = 340 - this.size.y / 2
                 this.fps = 10;
                 this.idleImage = document.getElementById(name + "IdleImage");
                 this.attackImage = document.getElementById(name + "AttackImage");
@@ -506,16 +503,14 @@
 
         function drawTextBox(text) {
             var ctx = gameWindow.context3;
+            ctx.drawImage(document.getElementById("textBackground"), 0, 450);
             ctx.font = "15px Arial";
             var lines = wrapText(ctx, text, 1100)
-            ctx.fillStyle = "grey";
             ctx.beginPath();
-            ctx.rect(0, 450, 1200, 150);
-            ctx.fill();
             ctx.fillStyle = "white";
-            var textY = 480;
+            var textY = 490;
             lines.forEach(line => {
-                ctx.fillText(line, 50, textY);
+                ctx.fillText(line, 60, textY);
                 textY += 20;
             });
         }
