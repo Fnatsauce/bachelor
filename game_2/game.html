@@ -51,6 +51,10 @@
                 src="gameMap.png">
             <img id="resistBar"
                 src="GameFXexport/SPRITESHEET_Files/Explosion_3_133x133.png">
+
+            <!-- Text background -->
+            <img id="textBackground"
+                src="textBackground.png">
         
             <!-- Cross animation -->
             <img id="cross"
@@ -499,16 +503,14 @@
 
         function drawTextBox(text) {
             var ctx = gameWindow.context3;
+            ctx.drawImage(document.getElementById("textBackground"), 0, 450);
             ctx.font = "15px Arial";
             var lines = wrapText(ctx, text, 1100)
-            ctx.fillStyle = "grey";
             ctx.beginPath();
-            ctx.rect(0, 450, 1200, 150);
-            ctx.fill();
             ctx.fillStyle = "white";
-            var textY = 480;
+            var textY = 490;
             lines.forEach(line => {
-                ctx.fillText(line, 50, textY);
+                ctx.fillText(line, 60, textY);
                 textY += 20;
             });
         }
