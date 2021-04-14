@@ -27,6 +27,17 @@
             <img id="tornadoLoop"
                 src="GameFXexport/SPRITESHEET_Files/TornadoLoop_96x96.png">
 
+            <!-- Attack-hit-effect animations -->
+            <img id="Fire-hit"
+                src="GameFXexport/SPRITESHEET_Files/Explosion_96x96.png">
+            <img id="Ice-hit"
+                src="GameFXexport/SPRITESHEET_Files/IceShatter_96x96.png">
+            
+            <img id="Air-hit"
+                src="GameFXexport/SPRITESHEET_Files/PoisonCast_96x96.png">
+            <img id="TornadoLoop"
+                src="GameFXexport/SPRITESHEET_Files/TornadoLoop_96x96.png">
+
             <!-- Enemy animations -->
             <img id="wizardIdleImage"
                 src="enemyWizard/Idle.png">
@@ -61,6 +72,7 @@
                 src="cross.png">
         </div>
         
+        <!-- Background image -->
         <img id="backgroundImage" class="background"
                 src="templeBackground.png">
 
@@ -351,11 +363,11 @@
                 }
                 switch (attackType) {
                     case "Fire":
-                        var projectileAnimation = getAnimation(new MovingAnimation(this.fireball, 140, 205, 1000, 205, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
+                        var projectileAnimation = getAnimation(new MovingAnimation(this.fireball, 140, 205, 970, 205, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
                         break;
                     case "Ice":
-                        var projectileAnimation = getAnimation(new MovingAnimation(this.icepick, 150, 205, 980, 205, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
-                    break;
+                        var projectileAnimation = getAnimation(new MovingAnimation(this.icepick, 150, 205, 960, 205, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
+                        break;
                     case "Air":
                         var tornadoLoopAnimation = getAnimation(new MovingAnimation(this.tornadoLoop, 560, 270, 1000, 270, {x:96, y:96}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
                         var tornadoCallback = function() {
@@ -364,8 +376,8 @@
                             }
                         } 
                         var projectileAnimation = getAnimation(new MovingAnimation(this.tornadoStatic, 100, 270, 550, 270, {x:96, y:96}, {x:200, y:200}, "2-playerAttack", 50, 50, tornadoCallback));
-                    break;
-                    }
+                        break;
+                }
                 var animation = function() {
                     if(this.currentCycle == this.cycles) {
                         idle();
@@ -397,6 +409,7 @@
 
             hit(attackType) {
                 // UNINTUITIVE: Play effect-animation in hit
+                playHitEffectAnimation(attackType);
                 drawables["1-enemy"] = new Animation(this.resistImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps);
                 var deathDone = function() {
                     if(this.animationFrame > this.image.width / this.frameSize.x * this.wait - 2) {
@@ -412,6 +425,21 @@
                     }
                 }
                 drawables.resistBar = new Animation(this.resistBarImage, 500, 200, {x:133, y:133}, {x:200, y:200}, 1, "resistBar", 5, death);
+            }
+        }
+
+        function playHitEffectAnimation(attackType) {
+            switch (attackType) {
+                case "Fire":
+                    drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 135, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 40);
+                    break;
+                case "Ice":
+                    drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 175, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 40);
+                    break;
+                case "Air":
+                    drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 185, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 70);
+                    drawables["2-TornadoLoop"] = new Animation(document.getElementById("TornadoLoop"), 990, 235, {x:96, y:96}, {x:250, y:250}, 2, "2-TornadoLoop", 50);
+                    break;
             }
         }
 
@@ -566,9 +594,21 @@
         }
 
         tutorialSteps.push(new TutorialStep(undefined, 'Welcome to One-Shot Wizard! \n My name is: The-Handy-Dandy-Tutorial-Text and I will now guide you through how to play the game - please click "next" to continue.', function() {tutorialSteps[1].draw();}, false));
-        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(85, 305, 100, 0, 2 * Math.PI)}, 'This is you', function() {tutorialSteps[2].draw();}, false));
-        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(1115, 305, 100, 0, 2 * Math.PI)}, 'This is your enemy. Each room will have one enemy.', function() {tutorialSteps[3].draw();}, false));
-        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(300, 300, 100, 0, 2 * Math.PI)}, 'To defeat an enemy you must choose an attack from the ones available - [Certain enemies are weak to certain attacks and it is up to you to figure out what attack will be effective on the enemy you are facing, based on subtle clues provided by the game. \n \n Choose wisely - because you only get ONE SHOT!]', function() {gameWindow.context3.clearRect(0, 0, gameWindow.canvas3.width, gameWindow.canvas3.height);}, false));
-        
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(85, 345, 100, 0, 2 * Math.PI)}, 'This is you.', function() {tutorialSteps[2].draw();}, false));
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 'This is your enemy. Each room in the game has one.', function() {tutorialSteps[3].draw();}, false));
+        // This was here before (Saved it just in case): function() {gameWindow.context3.clearRect(0, 0, gameWindow.canvas3.width, gameWindow.canvas3.height);},
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(300, 300, 100, 0, 2 * Math.PI)}, 'To defeat an enemy you must choose an attack from the ones available. \n Certain enemies are weak to certain attacks and it is up to you to figure out what attack will be effective against the enemy you are currently facing. \n The game provides subtly clues as to what attack is best - it is up to you to intuit these clues. \n \n Oh - and choose wisely! Because you only get ONE SHOT! ;3', function() {tutorialSteps[4].draw();}, false));
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 'You are currently fighting this other wizard. \n Wizards are, as we all know, very weak and frail, so don\'t worry about figuring out what spell is best - Anything would do the trick! \n \n Click next and pick an attack.', function() {tutorialSteps[5].draw();}, false));
+        // Ikke sikker på hvordan vi "unpauser" her så spilleren kan angribe - Det må vi lige snakke om.
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(985, 315, 100, 0, 2 * Math.PI)}, 'When hit, an enemy will try to resist the attack. If the resistance bar reaches the top, the monster will recover from the spell and attack you back! Let\'s see how well the wizard can resist your attack...', function() {tutorialSteps[6].draw();}, false));
+        // Ikke sikker på hvordan vi "unpauser" her så spilleren kan angribe - Det må vi lige snakke om.
+        tutorialSteps.push(new TutorialStep(undefined, 'Great job! You defeated the frail wizard! \n \n Very impressive... \n \n When an enemy is defeated you will automatically move to the next room - so let\'s go there now!', function() {tutorialSteps[7].draw();}, false));
+        // Transition to the next room!
+        tutorialSteps.push(new TutorialStep(undefined, 'Welcome to room 2!', function() {tutorialSteps[8].draw();}, false));
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 'BE CAREFUL!!! \n A NEW ENEMY APPROACHES! \n \n What a terrifying creature indeed...', function() {tutorialSteps[9].draw();}, false));
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 'Unlike wizards, who can be killed a gentle breeze, Slimes have specific weaknesses. \n You must therefore choose the right attack in order to beat it. \n \n But look...', function() {tutorialSteps[10].draw();}, false));
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(300, 300, 100, 0, 2 * Math.PI)}, 'You don\'t always have the same attacks available. \n In this room you cannot use Ice Spear.', function() {tutorialSteps[11].draw();}, false));
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(600, 75, 150, 0, 2 * Math.PI)}, 'You can track your progress through temple in the map overview up here. \n The portraits portray the enemy you will face in a given room and the small icons show what spells you will have available against that enemy. \n This allows you to think ahead and plan the attack you wish to use agains\'t a given enemy. \n \n Or don\'t think ahead - I don\'t care.', function() {tutorialSteps[12].draw();}, false));
+        tutorialSteps.push(new TutorialStep(undefined, 'And that is all I can teach you young Padawan. \n \n Now I wish you good luck against the Slime! Whether you win or lose, the actual game will start after this Slime-battle. \n \n Have fun!', function() {tutorialSteps[13].draw();}, false));
     </script>
 </html>
