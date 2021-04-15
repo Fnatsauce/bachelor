@@ -52,7 +52,7 @@
                 src="flyingEye/Hit.png">
             <img id="flyingEyeDeathImage"
                 src="flyingEye/Death.png">
-                
+
             <img id="mushroomIdleImage"
                 src="mushroom/Idle.png">
             <img id="mushroomResistImage"
@@ -272,9 +272,9 @@
         function startTutorial() {
             entities.player = new PlayerCharacter();
             gameWindow.start();
-            entities.campaign = campaigns[0];
+            entities.campaign = campaigns[1];
             entities.campaign.start();
-            Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";});
+            //Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";});
             
             //Drawing overview map icons - just for testing
             gameWindow.context2.drawImage(document.getElementById("map2Image"), 0, 0);
@@ -457,16 +457,18 @@
                 var attackAnimation = getAnimation(new Animation(this.attackImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, deathDone))
                 var resist = function() {
                     if(this.currentCycle >= this.cycles) {
+                        delete drawables["2-TornadoLoop"];
                         attackAnimation();
                         var ctx = gameWindow.context3;
                         ctx.font = "50px Arial";
                         ctx.fillStyle = "orange";
                         ctx.fillText("RESISTED", 1000, 275);
                     }
-                    if(this.animationFrame == 120) {
+                    if(this.animationFrame == 300) {
                         var attackingEnemies = ["slime", "goblin"];
                         if(!attackingEnemies.includes(entities.enemy.name)) {
                             this.delete();
+                            delete drawables["2-TornadoLoop"];
                             deathAnimation();
                         }
                     }
@@ -485,7 +487,7 @@
                     break;
                 case "Air":
                     drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 185, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 70);
-                    drawables["2-TornadoLoop"] = new Animation(document.getElementById("TornadoLoop"), 990, 235, {x:96, y:96}, {x:250, y:250}, 2, "2-TornadoLoop", 50);
+                    drawables["2-TornadoLoop"] = new Animation(document.getElementById("TornadoLoop"), 990, 235, {x:96, y:96}, {x:250, y:250}, Infinity, "2-TornadoLoop", 50);
                     break;
             }
         }
@@ -636,7 +638,6 @@
                     fadeCallback = function() {
                         if (this.animationFrame == 60) {
                             entities.campaign.rooms[entities.campaign.currentRoom].prepareEnemy();
-                            gameWindow.context2.drawImage(document.getElementById("room7Headshot"), 155 * entities.campaign.currentRoom, 40);
                         }
                         if (this.currentCycle >= this.cycles) {
                             gameWindow.clearText();
@@ -663,7 +664,6 @@
             }
 
             prepareEnemy() {
-                console.log(this.enemy);
                 entities.enemy = this.enemy;
                 this.enemy.initialize();
             }
