@@ -37,21 +37,40 @@
           
             <img id="flyingEyeIdleImage"
                 src="flyingEye/Idle.png">
-            <img id="goblinIdleImage"
-                src="goblin/Idle.png">
+            <img id="flyingEyeResistImage"
+                src="flyingEye/Hit.png">
+            <img id="flyingEyeDeathImage"
+                src="flyingEye/Death.png">
             <img id="mushroomIdleImage"
                 src="mushroom/Idle.png">
+            <img id="mushroomResistImage"
+                src="mushroom/Hit.png">
+            <img id="mushroomDeathImage"
+                src="mushroom/Death.png">
+            <img id="goblinIdleImage"
+                src="goblin/Idle.png">
+            <img id="goblinResistImage"
+                src="goblin/Hit.png">
+            <img id="goblinDeathImage"
+                src="goblin/Death.png">
+            
             <img id="skeletonIdleImage"
                 src="skeleton/Idle.png">
             <img id="slimeIdleImage"
-                src="slime/Idle.png" style="image-rendering: pixelated;">
+                src="slime/Idle.png">
+            <img id="slimeResistImage"
+                src="slime/Hit.png">
+            <img id="slimeAttackImage"
+                src="slime/Attack.png">
             
 
             <!-- Overview map -->
             <img id="map2Image"
                 src="map.png">
             <img id="resistBar"
-                src="GameFXexport/SPRITESHEET_Files/Explosion_3_133x133.png">
+                src="resistBar.png">
+            <img id="fade"
+                src="fade.png">
 
             <!-- Overview Icons -->
             <img id="room1Headshot"
@@ -243,13 +262,9 @@
         function startTutorial() {
             entities.player = new PlayerCharacter();
             gameWindow.start();
-            entities.enemy = new Enemy("wizard", {x:231, y:190}, {x:400, y:400});
-            //var testEnemyFlyingEye = new Enemy("flyingEye", {x:150, y:150}, {x:400, y:400});
-            //var testEnemyGoblin = new Enemy("goblin", {x:150, y:150}, {x:400, y:400});
-            //var testEnemySkeleton = new Enemy("skeleton", {x:150, y:150}, {x:400, y:400});
-            //var testEnemyMushroom = new Enemy("mushroom", {x:150, y:150}, {x:400, y:400});
-            //var testEnemySlime = new Enemy("slime", {x:32, y:25}, {x:400, y:400});
-            //drawTextBox("this is a super long string that might fill more than the screen, especially if i keep adding dumb stuff like this and that, fuck still not long enough gotta keep going until i can't anymore and then keep going anyway. Somehow this wasn't enough so now i gotta add even more text just to try and fill out the stupid ass box");
+            entities.campaign = campaigns[0];
+            entities.campaign.start();
+            Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";});
             
             //Drawing overview map icons - just for testing
             gameWindow.context2.drawImage(document.getElementById("map2Image"), 0, 0);
@@ -260,8 +275,6 @@
             gameWindow.context2.drawImage(document.getElementById("room5Headshot"), 710, 40);
             gameWindow.context2.drawImage(document.getElementById("room6Headshot"), 855, 40);
             gameWindow.context2.drawImage(document.getElementById("room7Headshot"), 990, 40);
-
-            //Drawing spell icons - just for testing
             
 
             //gameWindow.context2.drawImage(document.getElementById("fireIcon"), 100, 80);
@@ -320,9 +333,21 @@
                 }
                 gameWindow.context1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
                 for (var key of Object.keys(drawables)) {
-                    drawables[key].draw();
+                    var context;
+                    if(key == "99-fade") {
+                        context = gameWindow.context3;
+                        gameWindow.clearText();
+                    } else {
+                        context = gameWindow.context1
+                    }
+                    drawables[key].draw(context);
                 }
                 window.requestAnimationFrame(gameWindow.draw);
+            },
+
+            clearText : function() {
+                this.context3.clearRect(0, 0, gameWindow.canvas3.width, gameWindow.canvas3.height);
+                drawTextBox("");
             }
         }
 
@@ -384,6 +409,7 @@
 
         class Enemy {
             constructor(name, frameSize, size) {
+                this.name = name;
                 this.animationFrame = 0;
                 this.frameSize = frameSize
                 this.size = size
@@ -395,7 +421,11 @@
                 this.resistImage = document.getElementById(name + "ResistImage");
                 this.deathImage = document.getElementById(name + "DeathImage");
                 this.resistBarImage = document.getElementById("resistBar");
+            }
+
+            initialize() {
                 drawables["1-enemy"] = new Animation(this.idleImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps);
+                sortDrawables();
             }
 
             hit(attackType) {
@@ -404,17 +434,28 @@
                 var deathDone = function() {
                     if(this.animationFrame > this.image.width / this.frameSize.x * this.wait - 2) {
                         this.freezeAnimation();
-                        
+                        entities.campaign.nextRoom();
                     }
                 }
                 var deathAnimation = getAnimation(new Animation(this.deathImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, deathDone));
-                var death = function() {
+                var attackAnimation = getAnimation(new Animation(this.attackImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, deathDone))
+                var resist = function() {
+                    if(this.currentCycle >= this.cycles) {
+                        attackAnimation();
+                        var ctx = gameWindow.context3;
+                        ctx.font = "50px Arial";
+                        ctx.fillStyle = "orange";
+                        ctx.fillText("RESISTED", 1000, 275);
+                    }
                     if(this.animationFrame == 120) {
-                        this.delete();
-                        deathAnimation();
+                        var attackingEnemies = ["slime", "goblin"];
+                        if(!attackingEnemies.includes(entities.enemy.name)) {
+                            this.delete();
+                            deathAnimation();
+                        }
                     }
                 }
-                drawables.resistBar = new Animation(this.resistBarImage, 500, 200, {x:133, y:133}, {x:200, y:200}, 1, "resistBar", 5, death);
+                drawables.resistBar = new Animation(this.resistBarImage, 1170, 240, {x:15, y:85}, {x:15, y:85}, 1, "resistBar", 5, resist);
             }
         }
 
@@ -449,9 +490,9 @@
                 this.freeze = false;
             }
         
-            draw() {
+            draw(context) {
                 //drawImage(image, dx, dy, dxWidth, dyHeight, x, y, xWidth, yHeight)
-                gameWindow.context1.drawImage(this.image, this.frameSize.x * Math.floor(this.animationFrame / this.wait), 0, this.frameSize.x, this.frameSize.y, this.x, this.y, this.size.x, this.size.y);
+                context.drawImage(this.image, this.frameSize.x * Math.floor(this.animationFrame / this.wait), 0, this.frameSize.x, this.frameSize.y, this.x, this.y, this.size.x, this.size.y);
                 if(!this.freeze) {
                     this.animationFrame++;
                     if (this.animationFrame > this.image.width / this.frameSize.x * this.wait - 1) {
@@ -474,6 +515,10 @@
             freezeAnimation() {
                 this.freeze = true;
             }
+
+            unfreezeAnimation() {
+                this.freeze = false;
+            }
         }
 
         class MovingAnimation extends Animation{
@@ -485,11 +530,11 @@
                 this.ratioY = (targetY - y) / lifetime;
             }
 
-            draw() {
+            draw(context) {
                 if (this.x > this.targetX) {
                     this.delete();
                 }
-                super.draw();
+                super.draw(context);
                 this.x += this.ratioX;
                 this.y += this.ratioY;
             }
@@ -549,6 +594,59 @@
             return lines;
         }
 
+        class Campaign {
+            constructor(rooms) {
+                this.rooms = rooms;
+                this.currentRoom = 0;
+            }
+
+            nextRoom() {
+                this.currentRoom++;
+                var fadeCallback
+                if(this.rooms.length > this.currentRoom) {
+                    fadeCallback = function() {
+                        if (this.animationFrame == 60) {
+                            entities.campaign.rooms[entities.campaign.currentRoom].prepareEnemy();
+                            gameWindow.context2.drawImage(document.getElementById("room7Headshot"), 155 * entities.campaign.currentRoom, 40);
+                        }
+                        if (this.currentCycle >= this.cycles) {
+                            gameWindow.clearText();
+                            drawTextBox("the next room is now");
+                            entities.campaign.rooms[entities.campaign.currentRoom].prepareSpells();
+                        }
+                    }
+                } else {
+
+                }
+                drawables["99-fade"] = new Animation(document.getElementById("fade"), 0, 150, {x:1, y:1}, {x:1200, y:450}, 1, "99-fade", 10, fadeCallback);
+            }
+
+            start() {
+                this.rooms[this.currentRoom].prepareEnemy();
+                this.rooms[this.currentRoom].prepareSpells();
+            }
+        }
+
+        class Room {
+            constructor(enemy, unavailableSpell) {
+                this.enemy = enemy;
+                this.unavailableSpell = unavailableSpell;
+            }
+
+            prepareEnemy() {
+                console.log(this.enemy);
+                entities.enemy = this.enemy;
+                this.enemy.initialize();
+            }
+
+            prepareSpells() {
+                Array.prototype.forEach.call(document.getElementsByClassName("spell"), function(icon) {icon.style.display = "block";});
+                if(this.unavailableSpell != undefined) {
+                    document.getElementById(this.unavailableSpell + "Icon").style.display = "none";
+                }
+            }
+        }
+
         class TutorialStep {
             constructor(area, text, nextFunction, pause) {
                 this.area = area;
@@ -573,7 +671,31 @@
         tutorialSteps.push(new TutorialStep(undefined, 'Welcome to One-Shot Wizard! \n My name is: The-Handy-Dandy-Tutorial-Text and I will now guide you through how to play the game - please click "next" to continue.', function() {tutorialSteps[1].draw();}, false));
         tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(85, 305, 100, 0, 2 * Math.PI)}, 'This is you', function() {tutorialSteps[2].draw();}, false));
         tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(1115, 305, 100, 0, 2 * Math.PI)}, 'This is your enemy. Each room will have one enemy.', function() {tutorialSteps[3].draw();}, false));
-        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(300, 300, 100, 0, 2 * Math.PI)}, 'To defeat an enemy you must choose an attack from the ones available - [Certain enemies are weak to certain attacks and it is up to you to figure out what attack will be effective on the enemy you are facing, based on subtle clues provided by the game. \n \n Choose wisely - because you only get ONE SHOT!]', function() {gameWindow.context3.clearRect(0, 0, gameWindow.canvas3.width, gameWindow.canvas3.height);}, false));
-        
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.ellipse(240, 300, 120, 170, 0, 0, 2 * Math.PI)}, 'To defeat an enemy you must choose an attack from the ones available - [Certain enemies are weak to certain attacks and it is up to you to figure out what attack will be effective on the enemy you are facing, based on subtle clues provided by the game. \n \n Choose wisely - because you only get ONE SHOT!]', function() {tutorialSteps[4].draw();}, false));
+        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(1115, 305, 100, 0, 2 * Math.PI)}, "You are currently fighting this other wizard. Wizards are, as we all know, very weak an frail so don't worry about figuring out what spell is best - Anything would do the trick!", function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto";}); tutorialSteps[5].draw();}, false));
+        tutorialSteps.push(new TutorialStep(undefined, "Now choose a spell", function() {return;}, false));
+
+        var campaigns = [
+            new Campaign([
+                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
+                new Room(new Enemy("slime", {x:32, y:25}, {x:200, y:200}), "fire")
+            ]),
+            new Campaign([
+                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
+                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), "fire"),
+                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
+                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), "air"),
+                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
+                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), "ice"),
+                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
+            ]),
+            new Campaign([
+                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
+                new Room(new Enemy("flyingEye", {x:150, y:150}, {x:400, y:400}), "fire"),
+                new Room(new Enemy("mushroom", {x:150, y:150}, {x:400, y:400}), undefined),
+                new Room(new Enemy("goblin", {x:150, y:150}, {x:400, y:400}), "ice")
+            ])
+        ];
+
     </script>
 </html>
