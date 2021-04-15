@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<meta charset="UTF-8">
 <html>
     <head>
         <title>game</title>
@@ -69,6 +70,12 @@
 
             <img id="skeletonIdleImage"
                 src="skeleton/Idle.png">
+            <img id="skeletonResistImage"
+                src="skeleton/Hit.png">
+            <img id="skeletonDeathImage"
+                src="skeleton/Death.png">
+            <img id="skeletonAttackImage"
+                src="skeleton/Attack.png">
 
             <img id="slimeIdleImage"
                 src="slime/Idle.png">
@@ -82,6 +89,8 @@
             <!-- Overview map -->
             <img id="map2Image"
                 src="gameMap.png">
+            <img id="tutorialMap"
+                src="tutorialMap.png">
             <img id="resistBar"
                 src="resistBar.png">
             <img id="fade"
@@ -105,7 +114,6 @@
             <canvas id="canvas1" width="1200" height="600"></canvas>
             <canvas id="canvas2" width="1200" height="600"></canvas>
             <canvas id="canvas3" width="1200" height="600"></canvas>
-            
             <div class="overlay">
                 <img id="fireIcon" class="spell"
                     src="spellIcons/fire.png"
@@ -125,6 +133,8 @@
                     onmouseout="document.body.style.cursor = 'default'"
                     onclick="entities.player.attack('Air')"
                     ondragstart="return false;">
+                <img id="fadedSpells1" src="fadedSpells1.png">
+                <img id="fadedSpells2" src="fadedSpells2.png">
             </div>
 
             <!--
@@ -272,12 +282,13 @@
         function startTutorial() {
             entities.player = new PlayerCharacter();
             gameWindow.start();
-            entities.campaign = campaigns[1];
+            gameWindow.tutorial = true;
+            entities.campaign = campaigns[0];
             entities.campaign.start();
-            //Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";});
+            Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";});
             
             //Drawing overview map icons - just for testing
-            gameWindow.context2.drawImage(document.getElementById("map2Image"), 0, 0);
+            gameWindow.context2.drawImage(document.getElementById("tutorialMap"), 0, 0);
             
             //Maybe these can help with coordinates for crosses?
             /*
@@ -312,7 +323,9 @@
         var tutorialSteps = [];
         var entities = {};
         var gameWindow = {
+            tutorial : false,
             stopGame : false,
+            gameRunning : true,
             canvas1 : document.getElementById("canvas1"),
             context1 : this.canvas1.getContext("2d"),
             canvas2 : document.getElementById("canvas2"),
@@ -322,23 +335,21 @@
 
             start : function() {
                 this.context1.webkitImageSmoothingEnabled = false;
-                this.context1.mozImageSmoothingEnabled = false;
                 this.context1.imageSmoothingEnabled = false;
                 this.context1.msImageSmoothingEnabled = false;
-                window.addEventListener('mousemove', function(e) {
-                    var canvasRect = gameWindow.canvas1.getBoundingClientRect();
-                    gameWindow.mouseX = e.clientX - canvasRect.left;
-                    gameWindow.mouseY = e.clientY - canvasRect.top;
-                });
                 window.requestAnimationFrame(this.draw);
             },
 
             pause : function() {
                 this.stopGame = true;
+                this.gameRunning = false;
             },
 
             resume : function() {
-                window.requestAnimationFrame(this.draw);
+                if(!this.gameRunning) {
+                    this.gameRunning = true;
+                    window.requestAnimationFrame(this.draw);
+                }
             },
 
             draw : function() {
@@ -450,12 +461,29 @@
                 var deathDone = function() {
                     if(this.animationFrame > this.image.width / this.frameSize.x * this.wait - 2) {
                         this.freezeAnimation();
+                        if (gameWindow.tutorial) {
+                            gameWindow.pause();
+                        }
                         entities.campaign.nextRoom();
                     }
                 }
                 var deathAnimation = getAnimation(new Animation(this.deathImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, deathDone));
-                var attackAnimation = getAnimation(new Animation(this.attackImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, deathDone))
+                var attackDone = function() {
+                    if(this.animationFrame > this.image.width / this.frameSize.x * this.wait - 2) {
+                        if (gameWindow.tutorial) {
+                            delete drawables[enemy]
+                        } else {
+
+                        }
+                        
+                    }
+                }
+                var attackAnimation = getAnimation(new Animation(this.attackImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, attackDone));
                 var resist = function() {
+                    if (this.animationFrame == 30 && gameWindow.tutorial && entities.enemy.name != "slime") {
+                        gameWindow.pause();
+                        tutorialSteps[6].draw();
+                    }
                     if(this.currentCycle >= this.cycles) {
                         delete drawables["2-TornadoLoop"];
                         attackAnimation();
@@ -464,8 +492,8 @@
                         ctx.fillStyle = "orange";
                         ctx.fillText("RESISTED", 1000, 275);
                     }
-                    if(this.animationFrame == 300) {
-                        var attackingEnemies = ["slime", "goblin"];
+                    if(this.animationFrame == 60) {
+                        var attackingEnemies = ["slime", "skeleton"];
                         if(!attackingEnemies.includes(entities.enemy.name)) {
                             this.delete();
                             delete drawables["2-TornadoLoop"];
@@ -641,7 +669,11 @@
                         }
                         if (this.currentCycle >= this.cycles) {
                             gameWindow.clearText();
-                            drawTextBox("the next room is now");
+                            if (gameWindow.tutorial) {
+                                tutorialSteps[9].draw();
+                            } else {
+                                drawTextBox("the next room is now");
+                            }
                             entities.campaign.rooms[entities.campaign.currentRoom].prepareSpells();
                         }
                     }
@@ -701,7 +733,7 @@
         var campaigns = [
             new Campaign([
                 new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
-                new Room(new Enemy("slime", {x:32, y:25}, {x:200, y:200}), "fire")
+                new Room(new Enemy("slime", {x:32, y:25}, {x:200, y:200}), "ice")
             ]),
             new Campaign([
                 new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
@@ -713,30 +745,84 @@
                 new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
             ]),
             new Campaign([
-                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
-                new Room(new Enemy("flyingEye", {x:150, y:150}, {x:400, y:400}), "fire"),
                 new Room(new Enemy("mushroom", {x:150, y:150}, {x:400, y:400}), undefined),
-                new Room(new Enemy("goblin", {x:150, y:150}, {x:400, y:400}), "ice")
+                new Room(new Enemy("flyingEye", {x:150, y:150}, {x:400, y:400}), "air"),
+                new Room(new Enemy("goblin", {x:150, y:150}, {x:400, y:400}), undefined),
+                new Room(new Enemy("skeleton", {x:150, y:150}, {x:400, y:400}), "ice")
             ])
         ];
 
-        tutorialSteps.push(new TutorialStep(undefined, 'Welcome to One-Shot Wizard! \n My name is: The-Handy-Dandy-Tutorial-Text and I will now guide you through how to play the game - please click "next" to continue.', function() {tutorialSteps[1].draw();}, false));
-        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(85, 345, 100, 0, 2 * Math.PI)}, 'This is you.', function() {tutorialSteps[2].draw();}, false));
-        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 'This is your enemy. Each room in the game has one.', function() {tutorialSteps[3].draw();}, false));
-        // This was here before (Saved it just in case): function() {gameWindow.context3.clearRect(0, 0, gameWindow.canvas3.width, gameWindow.canvas3.height);},
-        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.ellipse(240, 300, 120, 170, 0, 0, 2 * Math.PI)}, 'To defeat an enemy you must choose an attack from the ones available. \n Certain enemies are weak to certain attacks and it is up to you to figure out what attack will be effective against the enemy you are currently facing. \n The game provides subtly clues as to what attack is best - it is up to you to intuit these clues. \n \n Oh - and choose wisely! Because you only get ONE SHOT! ;3', function() {tutorialSteps[4].draw();}, false));
-        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 'You are currently fighting this other wizard. \n Wizards are, as we all know, very weak and frail, so don\'t worry about figuring out what spell is best - Anything would do the trick!', function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto";}); tutorialSteps[5].draw();}, false));
-        tutorialSteps.push(new TutorialStep(undefined, "Now choose a spell", function() {tutorialSteps[6].draw();}, false));
-        // Ikke sikker på hvordan vi "unpauser" her så spilleren kan angribe - Det må vi lige snakke om.
-        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(985, 315, 100, 0, 2 * Math.PI)}, 'When hit, an enemy will try to resist the attack. If the resistance bar reaches the top, the monster will recover from the spell and attack you back! Let\'s see how well the wizard can resist your attack...', function() {tutorialSteps[7].draw();}, false));
-        // Ikke sikker på hvordan vi "unpauser" her så spilleren kan angribe - Det må vi lige snakke om.
-        tutorialSteps.push(new TutorialStep(undefined, 'Great job! You defeated the frail wizard! \n \n Very impressive... \n \n When an enemy is defeated you will automatically move to the next room - so let\'s go there now!', function() {tutorialSteps[8].draw();}, false));
+        tutorialSteps.push( new TutorialStep(
+            undefined, 
+            'Welcome to One-Shot Wizard! \n My name is: The-Handy-Dandy-Tutorial-Text and I will now guide you through how to play the game - please click "next" to continue.', 
+            function() {document.getElementById("fadedSpells1").style.display = "block"; tutorialSteps[1].draw();}, false)
+        );
+        tutorialSteps.push(new TutorialStep(
+            function() {gameWindow.context3.arc(85, 345, 100, 0, 2 * Math.PI)}, 
+            'This is you.', 
+            function() {tutorialSteps[2].draw();}, false
+        ));
+        tutorialSteps.push(new TutorialStep(
+            function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 
+            'This is your enemy. Each room in the game has one.', 
+            function() {document.getElementById("fadedSpells1").style.display = "none"; tutorialSteps[3].draw();}, false
+        ));
+        tutorialSteps.push(new TutorialStep(
+            function() {gameWindow.context3.ellipse(240, 300, 120, 170, 0, 0, 2 * Math.PI)}, 
+            'To defeat an enemy you must choose an attack from the ones available. \n Certain enemies are weak to certain attacks and it is up to you to figure out what attack will be effective against the enemy you are currently facing. \n \n But choose wisely! Because you only get ONE SHOT! ;3', 
+            function() {document.getElementById("fadedSpells1").style.display = "block"; tutorialSteps[4].draw();}, false
+        ));
+        tutorialSteps.push(new TutorialStep(
+            function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 
+            'You are currently fighting this other wizard. \n Wizards are, as we all know, very weak and frail, so don\'t worry about figuring out what spell is best - Anything would do the trick!', 
+            function() {
+                document.getElementById("fadedSpells1").style.display = "none"; 
+                Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto";}); 
+                tutorialSteps[5].draw();
+            }, false
+        ));
+        tutorialSteps.push(new TutorialStep(undefined, "Now choose a spell", function() {return}, false));
+        tutorialSteps.push(new TutorialStep(
+            function() {gameWindow.context3.ellipse(1178, 280, 20, 60, 0, 0, 2 * Math.PI)}, 
+            'When hit, an enemy will try to resist the attack. If the resistance bar reaches the top, the monster will recover from the spell and attack you back! \n Let\'s see how well the wizard can resist your attack...', 
+            function() {gameWindow.resume(); tutorialSteps[7].draw();}, false
+        ));
+        tutorialSteps.push(new TutorialStep(undefined, "...", function() {tutorialSteps[8].draw();}, false));
+        tutorialSteps.push(new TutorialStep(
+            undefined, 
+            'Great job! You defeated the frail wizard! \n \n Very impressive... \n \n When an enemy is defeated you will automatically move to the next room - so let\'s go there now!', 
+            function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";}); gameWindow.resume(); document.getElementById("nextButton").onclick = function() {return}}, false
+        ));
         // Transition to the next room!
-        tutorialSteps.push(new TutorialStep(undefined, 'Welcome to room 2!', function() {tutorialSteps[9].draw();}, false));
-        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 'BE CAREFUL!!! \n A NEW ENEMY APPROACHES! \n \n What a terrifying creature indeed...', function() {tutorialSteps[10].draw();}, false));
-        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 'Unlike wizards, who can be killed a gentle breeze, Slimes have specific weaknesses. \n You must therefore choose the right attack in order to beat it. \n \n But look...', function() {tutorialSteps[11].draw();}, false));
-        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(300, 300, 100, 0, 2 * Math.PI)}, 'You don\'t always have the same attacks available. \n In this room you cannot use Ice Spear.', function() {tutorialSteps[12].draw();}, false));
-        tutorialSteps.push(new TutorialStep(function() {gameWindow.context3.arc(600, 75, 150, 0, 2 * Math.PI)}, 'You can track your progress through temple in the map overview up here. \n The portraits portray the enemy you will face in a given room and the small icons show what spells you will have available against that enemy. \n This allows you to think ahead and plan the attack you wish to use agains\'t a given enemy. \n \n Or don\'t think ahead - I don\'t care.', function() {tutorialSteps[13].draw();}, false));
-        tutorialSteps.push(new TutorialStep(undefined, 'And that is all I can teach you young Padawan. \n \n Now I wish you good luck against the Slime! Whether you win or lose, the actual game will start after this Slime-battle. \n \n Have fun!', function() {tutorialSteps[14].draw();}, false));
+        tutorialSteps.push(new TutorialStep(
+            undefined, 
+            'Welcome to room 2!', 
+            function() {document.getElementById("fadedSpells2").style.display = "block"; tutorialSteps[10].draw();}, false
+        ));
+        tutorialSteps.push(new TutorialStep(
+            function() {gameWindow.context3.arc(1100, 385, 100, 0, 2 * Math.PI)}, 
+            'BE CAREFUL!!! \n A NEW ENEMY APPROACHES! \n \n What a terrifying creature indeed...', 
+            function() { tutorialSteps[11].draw();}, false
+        ));
+        tutorialSteps.push(new TutorialStep(
+            function() {gameWindow.context3.arc(1100, 385, 100, 0, 2 * Math.PI)}, 
+            'Unlike wizards, who can be killed a gentle breeze, Slimes have specific weaknesses. \n You must therefore choose the right attack in order to beat it. \n \n But look...', 
+            function() {document.getElementById("fadedSpells2").style.display = "none"; tutorialSteps[12].draw();}, false
+        ));
+        tutorialSteps.push(new TutorialStep(
+            function() {gameWindow.context3.ellipse(240, 300, 120, 170, 0, 0, 2 * Math.PI)}, 
+            'You don\'t always have the same attacks available. \n In this room you cannot use Ice Spear.', 
+            function() {document.getElementById("fadedSpells2").style.display = "block"; tutorialSteps[13].draw();}, false
+        ));
+        tutorialSteps.push(new TutorialStep(
+            function() {gameWindow.context3.ellipse(600, 75, 200, 75, 0, 0, 2 * Math.PI)}, 
+            'You can track your progress through temple in the map overview up here. \n The portraits portray the enemy you will face in a given room and the small icons show what spells you will have available against that enemy. \n This allows you to think ahead and plan the attack you wish to use agains\'t a given enemy. \n \n Or don\'t think ahead - I don\'t care.', 
+            function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto";}); document.getElementById("fadedSpells2").style.display = "none"; tutorialSteps[14].draw();}, false
+        ));
+        tutorialSteps.push(new TutorialStep(
+            undefined, 
+            'And that is all I can teach you young Padawan. \n \n Now I wish you good luck against the Slime! Whether you win or lose, the actual game will start after this Slime-battle. \n \n Have fun!', 
+            function() {gameWindow.clearText();}, false
+        ));
     </script>
 </html>

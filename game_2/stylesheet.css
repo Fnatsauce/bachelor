@@ -65,6 +65,13 @@ Canvas {
     top: 353px;
 }
 
+#fadedSpells1, #fadedSpells2 {
+    display: none;
+    position: absolute;
+    left: 190px;
+    top: 153px;
+}
+
 #svgholder {
     position: absolute;
     left: 50%;
