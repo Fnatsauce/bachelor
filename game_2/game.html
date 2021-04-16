@@ -136,6 +136,7 @@
                     ondragstart="return false;">
                 <img id="fadedSpells1" src="fadedSpells1.png">
                 <img id="fadedSpells2" src="fadedSpells2.png">
+                <input id="nextButton" type="image" src="nextButtonUnpressed.png" name="nextButton" ondragstart="return false;" onmousedown="document.getElementById('nextButton').src = 'nextButtonPressed.png'" onmouseup="document.getElementById('nextButton').src = 'nextButtonUnpressed.png'"/>
             </div>
 
             <!--
@@ -162,7 +163,6 @@
             <button onclick="gameWindow.pause();">Pause</button>
             <button onclick="gameWindow.resume();">Resume</button>
             <button onclick="Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.display = 'block';});">Enable attacks</button>
-            <button id="nextButton">Next</button>
         </div>
 
         <div id="explanation" class="modal">
@@ -474,6 +474,7 @@
                     if(this.animationFrame > this.image.width / this.frameSize.x * this.wait - 2) {
                         this.freezeAnimation();
                         if (gameWindow.tutorial) {
+                            document.getElementById("nextButton").style.display = "block";
                             gameWindow.pause();
                             document.getElementById("nextButton").disabled = false;
                         }
@@ -499,6 +500,7 @@
                 var resist = function() {
                     if (this.animationFrame == 30 && gameWindow.tutorial && entities.enemy.name != "slime") {
                         gameWindow.pause();
+                        document.getElementById("nextButton").style.display = "block";
                         tutorialSteps[6].draw();
                     }
                     if(this.currentCycle >= this.cycles) {
@@ -700,6 +702,7 @@
                             gameWindow.clearText();
                             if (gameWindow.tutorial) {
                                 tutorialSteps[9].draw();
+                                document.getElementById("nextButton").style.display = "block";
                             } else {
                                 drawTextBox("the next room is now");
                             }
@@ -821,7 +824,7 @@
             'You are currently fighting this other wizard. \n Wizards are, as we all know, very weak and frail, so don\'t worry about figuring out what spell is best - Anything would do the trick!', 
             function() {
                 document.getElementById("fadedSpells1").style.display = "none"; 
-                Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto";}); 
+                Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto"; document.getElementById("nextButton").style.display = "none";}); 
                 tutorialSteps[5].draw();
             }, false
         ));
@@ -829,13 +832,13 @@
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.ellipse(1178, 350, 20, 60, 0, 0, 2 * Math.PI)}, 
             'When hit, enemies will try to resist the attack. If the resistance bar reaches the top, the monster will recover from the spell and attack you back! \n Let\'s see how well the frail wizard can resist your attack...', 
-            function() {gameWindow.resume(); tutorialSteps[7].draw();}, false
+            function() {gameWindow.resume(); tutorialSteps[7].draw(); document.getElementById("nextButton").style.display = "none";}, false
         ));
         tutorialSteps.push(new TutorialStep(undefined, "...", function() {document.getElementById("nextButton").disabled = true; tutorialSteps[8].draw();}, false));
         tutorialSteps.push(new TutorialStep(
             undefined, 
             'Great job! You defeated the frail wizard! \n \n Very impressive... \n \n When an enemy is defeated you will automatically move to the next room - so let\'s go there now!', 
-            function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";}); gameWindow.clearText(); gameWindow.resume(); document.getElementById("nextButton").onclick = function() {return}}, false
+            function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";}); gameWindow.clearText(); gameWindow.resume(); document.getElementById("nextButton").onclick = function() {return}; document.getElementById("nextButton").style.display = "none";}, false
         ));
         // Transition to the next room!
         tutorialSteps.push(new TutorialStep(
