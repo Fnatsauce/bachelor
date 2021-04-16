@@ -16,6 +16,8 @@
                 src="PlayerCharacter/Attack2-ice.png">
             <img id="playerAttackAirImage"
                 src="PlayerCharacter/Attack1-air.png">
+            <img id="playerDeathImage"
+                src="PlayerCharacter/Death.png">
 
             <!-- Player spell-attack animations -->
             <img id="fireball"
@@ -85,10 +87,10 @@
 
 
             <!-- Overview map -->
-            <img id="indicationMap"
-                src="gameMap.png">
             <img id="tutorialMap"
                 src="tutorialMap.png">
+            <img id="familiarityMap"
+                src="highFamMap.png">
             <img id="resistBar"
                 src="resistBar.png">
             <img id="fade"
@@ -163,18 +165,23 @@
             <button id="nextButton">Next</button>
         </div>
 
-        <div id="winScreen" class="modal">
-            <div class="modal-content">
-                <p>Thanks for playing! Please take a minute to answer our survey about your experience found <a id="surveyLink" href="">here</a></p>
-            </div>
-        </div>
         <div id="explanation" class="modal">
             <!-- Modal content -->
-            <div class="modal-content explanation">               
-                <p class="hidden readable-tutorial" id="projectExplanation">This is here to explain the project</p>
-                <p class="hidden readable-tutorial" id="practiceExplanation">This pops up right before the practise session</p>
-                <p class="hidden readable-tutorial" id="gameExplanation">This pops up right before the game starts with the confidence rating</p>
-                <p class="hidden readable-tutorial" id="endOfGame">This pops up when the participant is done with the game</p>
+            <div class="modal-content explanation">
+                <div class="hidden readable-tutorial" id="projectExplanation">
+                    <p>Thank you for wanting to help out in our project. Please select a language</p>
+                    <button onclick="setLanguage('dk')">Dansk</button>
+                    <button onclick="setLanguage('en')">English</button>
+                </div>
+                <p class="hidden readable-tutorial" id="practiceExplanation">Before the game begins you will be fighting 7 wizards to get a feel for the game. The wizards are as you learned in the tutorial weak to all attacks, so don't worry about what spell is the right one, they all are.</p>
+                <div class="hidden readable-tutorial" id="gameExplanation">
+                    <img id="noIndicationMap"
+                        src="noIndicationMap.png">
+                    <img id="indicationMap"
+                        src="gameMap.png">
+                    <p>Here is a map of the enemies you will be fighting in the game as well as the abilities you will have available. Please rate on a scale from 1 (very unsure) to 10 (pretty certain) how certain you are that you will be able to defeat all the enemies</p>
+                </div>
+                <p class="hidden readable-tutorial" id="endOfGame">Thanks for playing! Please take a minute to answer our survey about your experience found <a id="surveyLink" href="">here</a></p>
 
                 <div class="hidden" id="confidence" onclick="setConfidence()">
                     <p>not confident</p>
@@ -226,45 +233,13 @@
     </body>
 
     <script>
-        /*
         var participantGroup = Math.floor(Math.random() * 2) + 1;
-        var ready;
-        if(participantGroup == 1) {
-            document.getElementById("group1Explanation").style.display = "block";
-            document.getElementById("tutorial").style.display = "flex";
-            document.getElementById("confidence").style.display = "flex";
-            ready = true;
-        } else {
-            document.getElementById("group2Explanation").style.display = "block";
-            document.getElementById("tutorial").style.display = "flex";
-            ready = false;
-        }
-
-        function closeExplanation() {
-            document.getElementById("explanation").style.display = "none";
-            if(!ready) {
-                lineSegments.forEach(line => {
-                    line.filled = true;
-                });
-                gameWindow.startCursorCheck();
-                window.setTimeout(function(){
-                    document.body.style.cursor = "default";
-                    window.clearInterval(gameWindow.cursorCheck);
-                    document.getElementById("tutorial").style.display = "none";
-                    document.getElementById("group2Explanation").style.display = "none";
-                    document.getElementById("explanation").style.display = "block";
-                    document.getElementById("group2Explanation2").style.display = "block";
-                    document.getElementById("confidence").style.display = "flex";
-                    ready = true;
-                }, 15000);
-            } else {
-                startGame();
-            }
-            updateGameArea();
-        }
-        */
 
         var participantGroup = 2;
+
+        function setLanguage(language) {
+            //document.getElementById("practiceExplanation").innerHTML = 
+        }
 
         function startTutorial() {
             document.getElementById("projectExplanation").style.display = "block";
@@ -279,28 +254,29 @@
         }
 
         function startPractice() {
-            console.log("practice");
             document.getElementById("projectExplanation").style.display = "none";
             document.getElementById("practiceExplanation").style.display = "block";
             document.getElementById("explanation").style.display = "block";
             entities.campaign = campaigns[1];
             entities.campaign.start();
-            gameWindow.context2.drawImage(document.getElementById("indicationMap"), 0, 0);
+            gameWindow.context2.drawImage(document.getElementById("familiarityMap"), 0, 0);
         }
 
         function startGame() {
-            console.log("game");
             document.getElementById("practiceExplanation").style.display = "none";
             document.getElementById("gameExplanation").style.display = "block";
             
-            document.getElementById("confidence").style.display = "block";
+            document.getElementById("confidence").style.display = "flex";
             document.getElementById("explanation").style.display = "block";
             
             if(participantGroup < 3) {
                 entities.campaign = campaigns[2];
+                gameWindow.context2.drawImage(document.getElementById("noIndicationMap"), 0, 0);
+                document.getElementById("indicationMap").style.display = "none";
             } else {
                 entities.campaign = campaigns[3];
                 gameWindow.context2.drawImage(document.getElementById("indicationMap"), 0, 0);
+                document.getElementById("noIndicationMap").style.display = "none";
             }
             entities.campaign.start();
         }
@@ -463,6 +439,11 @@
                 }
                 drawables["3-player"] = new Animation(document.getElementById("playerAttack" + attackType + "Image") , this.x, this.y, this.frameSize, this.size, 1, "3-player", this.fps, animation);
             }
+
+            getDeathAnimation(callBack) {
+                var deathAnimation = getAnimation(new Animation(document.getElementById("playerDeathImage"), this.x, this.y, this.frameSize, this.size, 1, "3-player", this.fps, callBack));
+                return deathAnimation;
+            }
         }
 
         class Enemy {
@@ -500,11 +481,18 @@
                     }
                 }
                 var deathAnimation = getAnimation(new Animation(this.deathImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, deathDone));
-                var attackDone = function() {
+
+                var playerDeathDone = function() {
                     if(this.animationFrame > this.image.width / this.frameSize.x * this.wait - 2) {
                         this.freezeAnimation();
-                        drawables["3-player"].freezeAnimation();
                         entities.campaign.nextRoom();
+                    }
+                }
+                var playerDeathAnimation = entities.player.getDeathAnimation(playerDeathDone);
+                var attackDone = function() {
+                    if(this.animationFrame > this.image.width / this.frameSize.x * this.wait - 2) {
+                        playerDeathAnimation();
+                        entities.enemy.initialize();
                     }
                 }
                 var attackAnimation = getAnimation(new Animation(this.attackImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, attackDone));
@@ -523,7 +511,7 @@
                     }
                     if(this.animationFrame == 60) {
                         var attackingEnemies = ["slime", "skeleton"];
-                        if(!attackingEnemies.includes(entities.enemy.name)) {
+                        if(!attackingEnemies.includes(entities.enemy.name) && !entities.campaign.currentRoom == entities.campaign.rooms.length - 1) {
                             this.delete();
                             delete drawables["2-TornadoLoop"];
                             deathAnimation();
@@ -858,12 +846,12 @@
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.arc(1100, 385, 100, 0, 2 * Math.PI)}, 
             'BE CAREFUL!!! \n A NEW ENEMY APPROACHES! \n \n What a terrifying creature indeed... It must be slain!', 
-            function() { tutorialSteps[11].draw();}, false
+            function() {document.getElementById("fadedSpells2").style.display = "none"; tutorialSteps[11].draw();}, false
         ));
         tutorialSteps.push(new TutorialStep(
             undefined, 
             'But before you decide on what to attack with, take a look at your spells.', 
-            function() {document.getElementById("fadedSpells2").style.display = "none"; tutorialSteps[12].draw();}, false
+            function() {tutorialSteps[12].draw();}, false
         ));
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.ellipse(240, 300, 120, 170, 0, 0, 2 * Math.PI)}, 
