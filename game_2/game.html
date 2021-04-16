@@ -816,7 +816,7 @@
         ));
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.ellipse(600, 75, 200, 75, 0, 0, 2 * Math.PI)}, 
-            'You can track your progress through temple in the map overview up here. \n The portraits portray the enemy you will face in a given room and the small icons show what spells you will have available against that enemy. \n This allows you to think ahead and plan the attack you wish to use agains\'t a given enemy. \n \n Or don\'t think ahead - I don\'t care.', 
+            'You can track your progress through the temple in the map overview here. \n The portraits portray the enemy you will face in a given room and the small icons show what spells you will have available against that enemy. \n This allows you to think ahead and plan the attack you wish to use agains\'t a given enemy. \n \n Or don\'t think ahead - I don\'t care.', 
             function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto";}); document.getElementById("fadedSpells2").style.display = "none"; tutorialSteps[14].draw();}, false
         ));
         tutorialSteps.push(new TutorialStep(
