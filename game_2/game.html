@@ -834,11 +834,11 @@
             'When hit, enemies will try to resist the attack. If the resistance bar reaches the top, the monster will recover from the spell and attack you back! \n Let\'s see how well the frail wizard can resist your attack...', 
             function() {gameWindow.resume(); tutorialSteps[7].draw(); document.getElementById("nextButton").style.display = "none";}, false
         ));
-        tutorialSteps.push(new TutorialStep(undefined, "...", function() {document.getElementById("nextButton").disabled = true; tutorialSteps[8].draw();}, false));
+        tutorialSteps.push(new TutorialStep(undefined, "...", function() {tutorialSteps[8].draw();}, false));
         tutorialSteps.push(new TutorialStep(
             undefined, 
             'Great job! You defeated the frail wizard! \n \n Very impressive... \n \n When an enemy is defeated you will automatically move to the next room - so let\'s go there now!', 
-            function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";}); gameWindow.clearText(); gameWindow.resume(); document.getElementById("nextButton").onclick = function() {return}; document.getElementById("nextButton").style.display = "none";}, false
+            function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";}); gameWindow.clearText(); gameWindow.resume(); document.getElementById("nextButton").style.display = "none";}, false
         ));
         // Transition to the next room!
         tutorialSteps.push(new TutorialStep(
@@ -864,12 +864,12 @@
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.ellipse(600, 75, 200, 75, 0, 0, 2 * Math.PI)}, 
             'To see what spells you will have available for each enemy, look at the top of the screen.\n The portraits portray the enemies you will face and the icons below it indicate what spells you will have available then. \n This allows you to think ahead and plan the attack you wish to use agains\'t a given enemy. \n \n Or don\'t think ahead - I don\'t care.', 
-            function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto";}); document.getElementById("fadedSpells2").style.display = "none"; tutorialSteps[14].draw();}, false
+            function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto";}); document.getElementById("fadedSpells2").style.display = "none"; document.getElementById("nextButton").style.display = "none"; tutorialSteps[14].draw();}, false
         ));
         tutorialSteps.push(new TutorialStep(
             undefined, 
             'And that is all I can teach you young Padawan. \n \n Now I wish you good luck against the Slime! Whether you win or lose, the actual game will start after this Slime-battle. \n \n Have fun!', 
-            function() {gameWindow.clearText();}, false
+            function() {}, false
         ));
     </script>
 </html>

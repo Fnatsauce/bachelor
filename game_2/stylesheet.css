@@ -53,6 +53,11 @@ input {
     top: 159px;
     width: 1200px;
     height: 300px;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .overlay {
@@ -97,6 +102,11 @@ input {
 }
 
 #fadedSpells1, #fadedSpells2 {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
     display: none;
     position: absolute;
     left: 190px;
