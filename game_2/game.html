@@ -87,7 +87,7 @@
 
 
             <!-- Overview map -->
-            <img id="map2Image"
+            <img id="indicationMap"
                 src="gameMap.png">
             <img id="tutorialMap"
                 src="tutorialMap.png">
@@ -111,9 +111,9 @@
 
 
         <div class="page" oncontextmenu="return false">
-            <canvas id="canvas1" width="1200" height="600"></canvas>
             <canvas id="canvas2" width="1200" height="600"></canvas>
             <canvas id="canvas3" width="1200" height="600"></canvas>
+            <canvas id="canvas1" width="1200" height="600"></canvas>
             <div class="overlay">
                 <img id="fireIcon" class="spell"
                     src="spellIcons/fire.png"
@@ -282,13 +282,14 @@
         function startTutorial() {
             entities.player = new PlayerCharacter();
             gameWindow.start();
-            gameWindow.tutorial = true;
-            entities.campaign = campaigns[0];
+            gameWindow.tutorial = false;
+            entities.campaign = campaigns[2];
             entities.campaign.start();
-            Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";});
+            //Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";});
             
             //Drawing overview map icons - just for testing
-            gameWindow.context2.drawImage(document.getElementById("tutorialMap"), 0, 0);
+            gameWindow.context2.drawImage(document.getElementById("indicationMap"), 0, 0);
+            tutorialSteps[0].draw();
             
             //Maybe these can help with coordinates for crosses?
             /*
@@ -304,7 +305,7 @@
             
             //drawables["cross"] = new Animation(document.getElementById("cross"), 500, 300, {x:75, y:75}, {x:75, y:75}, Infinity, "cross", 10);
             //gameWindow.context2.drawImage(document.getElementById("fireIcon"), 100, 80);
-            tutorialSteps[0].draw();
+            
         }
 
         function startPractice() {
@@ -359,14 +360,7 @@
                 }
                 gameWindow.context1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
                 for (var key of Object.keys(drawables)) {
-                    var context;
-                    if(key == "99-fade") {
-                        context = gameWindow.context3;
-                        gameWindow.clearText();
-                    } else {
-                        context = gameWindow.context1
-                    }
-                    drawables[key].draw(context);
+                    drawables[key].draw(gameWindow.context1);
                 }
                 window.requestAnimationFrame(gameWindow.draw);
             },
@@ -380,10 +374,10 @@
         class PlayerCharacter {
             constructor() {
                 this.animationFrame = 0;
-                this.frameSize = {x:231, y:190}
-                this.size = {x:400, y:400}
-                this.x = 100 - this.size.x / 2
-                this.y = 340 - this.size.y / 2
+                this.frameSize = {x:231, y:190};
+                this.size = {x:400, y:400};
+                this.x = 100 - this.size.x / 2;
+                this.y = 340 - this.size.y / 2;
                 this.fps = 10;
                 this.playerImage = document.getElementById("playerIdleImage");
                 this.fireball = document.getElementById("fireball");
@@ -434,13 +428,13 @@
         }
 
         class Enemy {
-            constructor(name, frameSize, size) {
+            constructor(x, y, name, frameSize, size) {
                 this.name = name;
                 this.animationFrame = 0;
                 this.frameSize = frameSize
-                this.size = size
-                this.x = 1100 - this.size.x / 2
-                this.y = 340 - this.size.y / 2
+                this.size = size;
+                this.x = x;
+                this.y = y;
                 this.fps = 10;
                 this.idleImage = document.getElementById(name + "IdleImage");
                 this.attackImage = document.getElementById(name + "AttackImage");
@@ -455,8 +449,7 @@
             }
 
             hit(attackType) {
-                // UNINTUITIVE: Play effect-animation in hit
-                playHitEffectAnimation(attackType);
+                this.playHitEffectAnimation(attackType);
                 drawables["1-enemy"] = new Animation(this.resistImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps);
                 var deathDone = function() {
                     if(this.animationFrame > this.image.width / this.frameSize.x * this.wait - 2) {
@@ -470,12 +463,8 @@
                 var deathAnimation = getAnimation(new Animation(this.deathImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, deathDone));
                 var attackDone = function() {
                     if(this.animationFrame > this.image.width / this.frameSize.x * this.wait - 2) {
-                        if (gameWindow.tutorial) {
-                            delete drawables[enemy]
-                        } else {
-
-                        }
-                        
+                        this.freezeAnimation();
+                        drawables["3-player"].freezeAnimation();
                     }
                 }
                 var attackAnimation = getAnimation(new Animation(this.attackImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, attackDone));
@@ -501,24 +490,26 @@
                         }
                     }
                 }
-                drawables.resistBar = new Animation(this.resistBarImage, 1170, 240, {x:15, y:85}, {x:15, y:85}, 1, "resistBar", 5, resist);
+                drawables.resistBar = new Animation(this.resistBarImage, 1170, 310, {x:15, y:85}, {x:15, y:85}, 1, "resistBar", 5, resist);
+            }
+
+            playHitEffectAnimation(attackType) {
+                switch (attackType) {
+                    case "Fire":
+                        drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 135, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 40);
+                        break;
+                    case "Ice":
+                        drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 175, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 40);
+                        break;
+                    case "Air":
+                        drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 185, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 70);
+                        drawables["2-TornadoLoop"] = new Animation(document.getElementById("TornadoLoop"), 990, 235, {x:96, y:96}, {x:250, y:250}, Infinity, "2-TornadoLoop", 50);
+                        break;
+                }
             }
         }
 
-        function playHitEffectAnimation(attackType) {
-            switch (attackType) {
-                case "Fire":
-                    drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 135, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 40);
-                    break;
-                case "Ice":
-                    drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 175, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 40);
-                    break;
-                case "Air":
-                    drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 185, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 70);
-                    drawables["2-TornadoLoop"] = new Animation(document.getElementById("TornadoLoop"), 990, 235, {x:96, y:96}, {x:250, y:250}, Infinity, "2-TornadoLoop", 50);
-                    break;
-            }
-        }
+        
 
         function getAnimation(animation) {
             return function() {
@@ -654,17 +645,26 @@
         }
 
         class Campaign {
-            constructor(rooms) {
+            constructor(rooms, mapPortraitPosition) {
                 this.rooms = rooms;
                 this.currentRoom = 0;
+                this.mapPortraitPosition = mapPortraitPosition
             }
 
             nextRoom() {
                 this.currentRoom++;
-                var fadeCallback
                 if(this.rooms.length > this.currentRoom) {
-                    fadeCallback = function() {
+                    var crossCallback = function() {
+                        if (this.currentCycle >= this.cycles) {
+                            gameWindow.context2.drawImage(document.getElementById("cross"), 825, 0, 75, 75, entities.campaign.mapPortraitPosition + 140 * (entities.campaign.currentRoom - 1), 30, 75, 75);
+                            drawables["8-fade"].unfreezeAnimation();
+                        }
+                    }
+                    var cross = getAnimation(new Animation(document.getElementById("cross"), this.mapPortraitPosition + 140 * (this.currentRoom - 1), 30, {x:75, y:75}, {x:75, y:75}, 1, "9-cross", 15, crossCallback));
+                    var fadeCallback = function() {
                         if (this.animationFrame == 60) {
+                            cross();
+                            drawables["8-fade"].freeze = true;
                             entities.campaign.rooms[entities.campaign.currentRoom].prepareEnemy();
                         }
                         if (this.currentCycle >= this.cycles) {
@@ -678,9 +678,9 @@
                         }
                     }
                 } else {
-
+                    console.log("lost")
                 }
-                drawables["99-fade"] = new Animation(document.getElementById("fade"), 0, 150, {x:1, y:1}, {x:1200, y:450}, 1, "99-fade", 10, fadeCallback);
+                drawables["8-fade"] = new Animation(document.getElementById("fade"), 0, 150, {x:1, y:1}, {x:1200, y:450}, 1, "8-fade", 10, fadeCallback);
             }
 
             start() {
@@ -732,24 +732,24 @@
 
         var campaigns = [
             new Campaign([
-                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
-                new Room(new Enemy("slime", {x:32, y:25}, {x:200, y:200}), "ice")
-            ]),
+                new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), undefined),
+                new Room(new Enemy(980, 240, "slime", {x:32, y:25}, {x:200, y:200}), "ice")
+            ], 493),
             new Campaign([
-                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
-                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), "fire"),
-                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
-                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), "air"),
-                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
-                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), "ice"),
-                new Room(new Enemy("wizard", {x:231, y:190}, {x:400, y:400}), undefined),
-            ]),
+                new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), undefined),
+                new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), "fire"),
+                new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), undefined),
+                new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), "air"),
+                new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), undefined),
+                new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), "ice"),
+                new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), undefined),
+            ], 144),
             new Campaign([
-                new Room(new Enemy("mushroom", {x:150, y:150}, {x:400, y:400}), undefined),
-                new Room(new Enemy("flyingEye", {x:150, y:150}, {x:400, y:400}), "air"),
-                new Room(new Enemy("goblin", {x:150, y:150}, {x:400, y:400}), undefined),
-                new Room(new Enemy("skeleton", {x:150, y:150}, {x:400, y:400}), "ice")
-            ])
+                new Room(new Enemy(870, 100, "mushroom", {x:150, y:150}, {x:500, y:500}), undefined),
+                new Room(new Enemy(910, 160, "flyingEye", {x:150, y:150}, {x:400, y:400}), "air"),
+                new Room(new Enemy(910, 160, "goblin", {x:150, y:150}, {x:400, y:400}), undefined),
+                new Room(new Enemy(910, 160, "skeleton", {x:150, y:150}, {x:400, y:400}), "ice")
+            ], 144)
         ];
 
         tutorialSteps.push( new TutorialStep(
