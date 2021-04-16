@@ -283,12 +283,12 @@
             entities.player = new PlayerCharacter();
             gameWindow.start();
             gameWindow.tutorial = false;
-            entities.campaign = campaigns[2];
+            entities.campaign = campaigns[0];
             entities.campaign.start();
             //Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";});
             
             //Drawing overview map icons - just for testing
-            gameWindow.context2.drawImage(document.getElementById("indicationMap"), 0, 0);
+            gameWindow.context2.drawImage(document.getElementById("tutorialMap"), 0, 0);
             tutorialSteps[0].draw();
             
             //Maybe these can help with coordinates for crosses?
@@ -313,7 +313,8 @@
         }
 
         function prepareGame() {
-            
+            var drawables = {};
+            var entities = {};
         }
 
         function startGame() {
@@ -465,6 +466,7 @@
                     if(this.animationFrame > this.image.width / this.frameSize.x * this.wait - 2) {
                         this.freezeAnimation();
                         drawables["3-player"].freezeAnimation();
+                        entities.campaign.nextRoom();
                     }
                 }
                 var attackAnimation = getAnimation(new Animation(this.attackImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, attackDone));
@@ -653,6 +655,7 @@
 
             nextRoom() {
                 this.currentRoom++;
+                var fadeCallback;
                 if(this.rooms.length > this.currentRoom) {
                     var crossCallback = function() {
                         if (this.currentCycle >= this.cycles) {
@@ -661,7 +664,7 @@
                         }
                     }
                     var cross = getAnimation(new Animation(document.getElementById("cross"), this.mapPortraitPosition + 140 * (this.currentRoom - 1), 30, {x:75, y:75}, {x:75, y:75}, 1, "9-cross", 15, crossCallback));
-                    var fadeCallback = function() {
+                    fadeCallback = function() {
                         if (this.animationFrame == 60) {
                             cross();
                             drawables["8-fade"].freeze = true;
@@ -678,7 +681,12 @@
                         }
                     }
                 } else {
-                    console.log("lost")
+                    fadeCallback = function() {
+                        if (this.animationFrame == 60) {
+                            drawables["8-fade"].freeze = true;
+                            campaignFinished();
+                        }
+                    }
                 }
                 drawables["8-fade"] = new Animation(document.getElementById("fade"), 0, 150, {x:1, y:1}, {x:1200, y:450}, 1, "8-fade", 10, fadeCallback);
             }
