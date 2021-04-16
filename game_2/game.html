@@ -7,7 +7,6 @@
     </head>
     <body onload="startTutorial()">
         <div style="display:none;">
-            
             <!-- Player animations -->
             <img id="playerIdleImage"
                 src="PlayerCharacter/Idle.png">
@@ -83,7 +82,6 @@
                 src="slime/Hit.png">
             <img id="slimeAttackImage"
                 src="slime/Attack.png">
-            
 
 
             <!-- Overview map -->
@@ -437,11 +435,11 @@
                 switch (attackType) {
                     case "Fire":
                         spellsUsed += "1";
-                        var projectileAnimation = getAnimation(new MovingAnimation(this.fireball, 140, 205, 970, 205, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
+                        var projectileAnimation = getAnimation(new MovingAnimation(this.fireball, 140, 205, 970, 225, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
                         break;
                     case "Ice":
                         spellsUsed += "2";
-                        var projectileAnimation = getAnimation(new MovingAnimation(this.icepick, 150, 205, 960, 205, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
+                        var projectileAnimation = getAnimation(new MovingAnimation(this.icepick, 150, 205, 960, 225, {x:64, y:64}, {x:200, y:200}, "2-playerAttack", 50, 50, attackHit));
                         break;
                     case "Air":
                         spellsUsed += "3";
@@ -521,7 +519,7 @@
                         var ctx = gameWindow.context3;
                         ctx.font = "50px Arial";
                         ctx.fillStyle = "orange";
-                        ctx.fillText("RESISTED", 1000, 275);
+                        ctx.fillText("RESISTED", 920, 275);
                     }
                     if(this.animationFrame == 60) {
                         var attackingEnemies = ["slime", "skeleton"];
@@ -538,10 +536,10 @@
             playHitEffectAnimation(attackType) {
                 switch (attackType) {
                     case "Fire":
-                        drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 135, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 40);
+                        drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 155, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 40);
                         break;
                     case "Ice":
-                        drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 175, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 40);
+                        drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 195, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 40);
                         break;
                     case "Air":
                         drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 185, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 70);
@@ -841,8 +839,8 @@
         ));
         tutorialSteps.push(new TutorialStep(undefined, "Now choose a spell", function() {return}, false));
         tutorialSteps.push(new TutorialStep(
-            function() {gameWindow.context3.ellipse(1178, 280, 20, 60, 0, 0, 2 * Math.PI)}, 
-            'When hit, an enemy will try to resist the attack. If the resistance bar reaches the top, the monster will recover from the spell and attack you back! \n Let\'s see how well the wizard can resist your attack...', 
+            function() {gameWindow.context3.ellipse(1178, 350, 20, 60, 0, 0, 2 * Math.PI)}, 
+            'When hit, enemies will try to resist the attack. If the resistance bar reaches the top, the monster will recover from the spell and attack you back! \n Let\'s see how well the frail wizard can resist your attack...', 
             function() {gameWindow.resume(); tutorialSteps[7].draw();}, false
         ));
         tutorialSteps.push(new TutorialStep(undefined, "...", function() {document.getElementById("nextButton").disabled = true; tutorialSteps[8].draw();}, false));
@@ -859,22 +857,22 @@
         ));
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.arc(1100, 385, 100, 0, 2 * Math.PI)}, 
-            'BE CAREFUL!!! \n A NEW ENEMY APPROACHES! \n \n What a terrifying creature indeed...', 
+            'BE CAREFUL!!! \n A NEW ENEMY APPROACHES! \n \n What a terrifying creature indeed... It must be slain!', 
             function() { tutorialSteps[11].draw();}, false
         ));
         tutorialSteps.push(new TutorialStep(
-            function() {gameWindow.context3.arc(1100, 385, 100, 0, 2 * Math.PI)}, 
-            'Unlike wizards, who can be killed a gentle breeze, Slimes have specific weaknesses. \n You must therefore choose the right attack in order to beat it. \n \n But look...', 
+            undefined, 
+            'But before you decide on what to attack with, take a look at your spells.', 
             function() {document.getElementById("fadedSpells2").style.display = "none"; tutorialSteps[12].draw();}, false
         ));
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.ellipse(240, 300, 120, 170, 0, 0, 2 * Math.PI)}, 
-            'You don\'t always have the same attacks available. \n In this room you cannot use Ice Spear.', 
+            'Notice Ice Spear is missing. \n You don\'t always have the same attacks available.', 
             function() {document.getElementById("fadedSpells2").style.display = "block"; tutorialSteps[13].draw();}, false
         ));
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.ellipse(600, 75, 200, 75, 0, 0, 2 * Math.PI)}, 
-            'You can track your progress through the temple in the map overview here. \n The portraits portray the enemy you will face in a given room and the small icons show what spells you will have available against that enemy. \n This allows you to think ahead and plan the attack you wish to use agains\'t a given enemy. \n \n Or don\'t think ahead - I don\'t care.', 
+            'To see what spells you will have available for each enemy, look at the top of the screen.\n The portraits portray the enemies you will face and the icons below it indicate what spells you will have available then. \n This allows you to think ahead and plan the attack you wish to use agains\'t a given enemy. \n \n Or don\'t think ahead - I don\'t care.', 
             function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto";}); document.getElementById("fadedSpells2").style.display = "none"; tutorialSteps[14].draw();}, false
         ));
         tutorialSteps.push(new TutorialStep(
