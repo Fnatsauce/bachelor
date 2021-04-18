@@ -12,6 +12,16 @@ Canvas {
     border: 1px solid #1E1E1E;
 }
 
+.credits {
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    top: 600px;
+    -webkit-transform: translate(-50%, 0%);
+    -moz-transform: translate(-50%, 0%);
+    transform: translate(-50%, 0%);
+}
+
 input[type="image"]:focus {
     outline: none;
 }
