@@ -108,7 +108,7 @@
         <!-- Background image -->
         <img id="backgroundImage" class="background"
             src="templeBackground.png"
-            ondragstart="return false;">>
+            ondragstart="return false;">
 
 
         <div class="page" oncontextmenu="return false">
@@ -140,27 +140,6 @@
                 <input id="nextButton" type="image" src="nextButtonUnpressed.png" name="nextButton" ondragstart="return false;" onmousedown="document.getElementById('nextButton').src = 'nextButtonPressed.png'" onmouseup="document.getElementById('nextButton').src = 'nextButtonUnpressed.png'"/>
             </div>
 
-            <!--
-            <div id="svgholder">
-                <svg id="svg" width="1200" height="600" disabled>
-                    <polygon id="fire" class="poly" points="190, 155, 190 251, 286 251, 286 155"
-                    onclick="lineSegments[0].fill(); gameWindow.startCursorCheck()"
-                    onmouseover="document.body.style.cursor = 'pointer'"
-                    onmouseout="document.body.style.cursor = 'default'"></polygon>
-
-                    <polygon id="ice" class="poly" points="240 255, 240 351, 336 351, 336 255" 
-                    onclick="lineSegments[1].fill(); gameWindow.startCursorCheck()"
-                    onmouseover="document.body.style.cursor = 'pointer'"
-                    onmouseout="document.body.style.cursor = 'default'"></polygon>
-
-                    <polygon id="air" class="poly" points="190 355, 190 451, 286 451, 286 355"
-                    onclick="lineSegments[2].fill(); gameWindow.startCursorCheck()"
-                    onmouseover="document.body.style.cursor = 'pointer'"
-                    onmouseout="document.body.style.cursor = 'default'"></polygon>
-                </svg>
-            </div>
-            -->
-
             <button onclick="gameWindow.pause();">Pause</button>
             <button onclick="gameWindow.resume();">Resume</button>
             <button onclick="Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.display = 'block';});">Enable attacks</button>
@@ -170,11 +149,12 @@
             <!-- Modal content -->
             <div class="modal-content explanation">
                 <div class="hidden readable-tutorial" id="projectExplanation">
-                    <p>Thank you for wanting to help out in our project. Please select a language</p>
+                    <p>Tak fordi du vil hjælpe os med vores projekt. Vælg venligst et sprog herunder.</p>
+                    <p>Thank you for wanting to help us with our project. Please select a language below.</p>
                     <button onclick="setLanguage('dk')">Dansk</button>
                     <button onclick="setLanguage('en')">English</button>
                 </div>
-                <p class="hidden readable-tutorial" id="practiceExplanation">Before the game begins you will be fighting 7 wizards to get a feel for the game. The wizards are as you learned in the tutorial weak to all attacks, so don't worry about what spell is the right one, they all are.</p>
+                <p class="hidden readable-tutorial" id="practiceExplanation">Good job completing the tutorial! Now before the game actually begins you will have a chance to familiarize yourself with all the spells and how it feels to progress in the game outside of a tutorial. So now you will be fighting seven wizards. The wizards are, as you learned in the tutorial, weak to all attacks, so don't worry about what spell might be best - try them all out!</p>
                 <div class="hidden readable-tutorial" id="gameExplanation">
                     <img id="noIndicationMap"
                         src="noIndicationMap.png">
@@ -234,6 +214,17 @@
     </body>
 
     <script>
+        /*--------------------------------------------------------------
+        >>> TABLE OF CONTENTS:
+        ----------------------------------------------------------------
+        1.0 
+        2.0 
+        3.0 
+        4.0 
+        5.0 
+        6.0 
+        --------------------------------------------------------------*/
+
         var participantGroup = Math.floor(Math.random() * 2) + 1;
 
         var participantGroup = 2;
@@ -727,7 +718,23 @@
             start() {
                 this.rooms[this.currentRoom].prepareEnemy();
                 this.rooms[this.currentRoom].prepareSpells();
-                drawTextBox("ze first room is now");
+                switch (entities.enemy.name) {
+                    case "wizard":
+                        drawTextBox("An enemy Wizard approaches.");
+                        break;
+                    case "skeleton":
+                        drawTextBox("An enemy Skeleton approaches.");
+                        break;
+                    case "mushroom":
+                        drawTextBox("An enemy Fungrowth approaches.");
+                        break;
+                    case "flyingEye":
+                        drawTextBox("An enemy Eyesore approaches.");
+                        break;
+                    case "goblin":
+                        drawTextBox("An enemy Goblin approaches.");
+                        break;
+                }
             }
         }
 
@@ -749,28 +756,6 @@
                 }
             }
         }
-
-        class TutorialStep {
-            constructor(area, text, nextFunction, pause) {
-                this.area = area;
-                this.text = text;
-                this.pause = pause;
-                this.nextFunction = nextFunction;
-            }
-            
-            draw() {
-                if (this.pause) {
-                    gameWindow.pause();
-                }
-                gameWindow.context3.clearRect(0, 0, gameWindow.canvas3.width, gameWindow.canvas3.height);
-                if (this.area != undefined) {
-                    highlightArea(this.area);
-                }
-                drawTextBox(this.text);
-                document.getElementById("nextButton").onclick = this.nextFunction
-            }
-        }
-
 
         var campaigns = [
             new Campaign([
@@ -800,6 +785,31 @@
             ], 144)
         ];
 
+        /*--------------------------------------------------------------
+        ?.0 Tutorial steps
+        --------------------------------------------------------------*/
+
+        class TutorialStep {
+            constructor(area, text, nextFunction, pause) {
+                this.area = area;
+                this.text = text;
+                this.pause = pause;
+                this.nextFunction = nextFunction;
+            }
+            
+            draw() {
+                if (this.pause) {
+                    gameWindow.pause();
+                }
+                gameWindow.context3.clearRect(0, 0, gameWindow.canvas3.width, gameWindow.canvas3.height);
+                if (this.area != undefined) {
+                    highlightArea(this.area);
+                }
+                drawTextBox(this.text);
+                document.getElementById("nextButton").onclick = this.nextFunction
+            }
+        }
+
         tutorialSteps.push( new TutorialStep(
             undefined, 
             'Welcome to One-Shot Wizard! \n My name is: The-Handy-Dandy-Tutorial-Text and I will now guide you through how to play the game - please click "next" to continue.', 
@@ -807,7 +817,7 @@
         );
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.arc(85, 345, 100, 0, 2 * Math.PI)}, 
-            'This is you.', 
+            'This is you. You are a Wizard.', 
             function() {tutorialSteps[2].draw();}, false
         ));
         tutorialSteps.push(new TutorialStep(
@@ -817,7 +827,7 @@
         ));
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.ellipse(240, 300, 120, 170, 0, 0, 2 * Math.PI)}, 
-            'To defeat an enemy you must choose an attack from the ones available. \n Certain enemies are weak to certain attacks and it is up to you to figure out what attack will be effective against the enemy you are currently facing. \n \n But choose wisely! Because you only get ONE SHOT! ;3', 
+            'To defeat an enemy you must choose an attack from the ones available. \n Certain enemies are weak to certain attacks and it is up to you to figure out what attack will be effective against the enemy you are currently facing. \n \n But choose wisely! Because you only get ONE SHOT!', 
             function() {document.getElementById("fadedSpells1").style.display = "block"; tutorialSteps[4].draw();}, false
         ));
         tutorialSteps.push(new TutorialStep(
@@ -829,10 +839,10 @@
                 tutorialSteps[5].draw();
             }, false
         ));
-        tutorialSteps.push(new TutorialStep(undefined, "Now choose a spell", function() {return}, false));
+        tutorialSteps.push(new TutorialStep(undefined, "Now choose a spell.", function() {return}, false));
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.ellipse(1178, 350, 20, 60, 0, 0, 2 * Math.PI)}, 
-            'When hit, enemies will try to resist the attack. If the resistance bar reaches the top, the monster will recover from the spell and attack you back! \n Let\'s see how well the frail wizard can resist your attack...', 
+            'When hit, enemies will try to resist the attack. If the resistance bar reaches the top, the enemy will recover from the spell and attack you back! \n Let\'s see how well the frail wizard can resist your attack...', 
             function() {gameWindow.resume(); tutorialSteps[7].draw(); document.getElementById("nextButton").style.display = "none";}, false
         ));
         tutorialSteps.push(new TutorialStep(undefined, "...", function() {tutorialSteps[8].draw();}, false));
@@ -864,12 +874,12 @@
         ));
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.ellipse(600, 75, 200, 75, 0, 0, 2 * Math.PI)}, 
-            'To see what spells you will have available for each enemy, look at the top of the screen.\n The portraits portray the enemies you will face and the icons below it indicate what spells you will have available then. \n This allows you to think ahead and plan the attack you wish to use agains\'t a given enemy. \n \n Or don\'t think ahead - I don\'t care.', 
+            'To see what spells you will have available for each enemy, look at the top of the screen. \n The portraits portray the enemies you will face and the icons below it indicate what spells you will have available then. \n This allows you to think ahead and plan the attack you wish to use against a given enemy. \n \n Or don\'t think ahead - I don\'t care.', 
             function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto";}); document.getElementById("fadedSpells2").style.display = "none"; document.getElementById("nextButton").style.display = "none"; tutorialSteps[14].draw();}, false
         ));
         tutorialSteps.push(new TutorialStep(
             undefined, 
-            'And that is all I can teach you young Padawan. \n \n Now I wish you good luck against the Slime! Whether you win or lose, the actual game will start after this Slime-battle. \n \n Have fun!', 
+            'Now I wish you good luck against the Slime! \n Because this is just the tutorial, whether you win or lose you will still move on to the next part after this Slime-battle. \n \n Have fun!', 
             function() {}, false
         ));
     </script>
