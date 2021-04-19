@@ -22,6 +22,17 @@ Canvas {
     transform: translate(-50%, 0%);
 }
 
+.volume-controls {
+    display: grid;
+    position: absolute;
+    z-index: -1;
+    left: 10%;
+    top: 600px;
+    -webkit-transform: translate(-50%, 0%);
+    -moz-transform: translate(-50%, 0%);
+    transform: translate(-50%, 0%);
+}
+
 input[type="image"]:focus {
     outline: none;
 }

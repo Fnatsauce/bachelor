@@ -103,6 +103,11 @@
             <!-- Cross animation -->
             <img id="cross"
                 src="cross.png">
+
+            <!-- Background music -->
+            <audio id="backgroundMusic" controls="none"> 
+                <source src="backgroundMusic.wav">
+            </audio>
         </div>
         
         <!-- Background image -->
@@ -137,6 +142,11 @@
                 <img id="fadedSpells1" src="fadedSpells1.png">
                 <img id="fadedSpells2" src="fadedSpells2.png">
                 <input id="nextButton" type="image" src="nextButtonUnpressed.png" name="nextButton" ondragstart="return false;" onmousedown="document.getElementById('nextButton').src = 'nextButtonPressed.png'" onmouseup="document.getElementById('nextButton').src = 'nextButtonUnpressed.png'"/>
+            </div>
+            <div class="volume-controls">
+                <button class="volume-button" onclick="volumeUp()">Music volume up ↑</button>
+                <button class="volume-button" onclick="volumeDown()">Music volume down ↓</button>
+                <button class="volume-button" onclick="toggleMuteAudio()">Toggle music on/off</button>
             </div>
             <div class="credits">
                 <p>Pixal art by the following artists: </p>
@@ -236,6 +246,8 @@
             this.sound.setAttribute("preload", "auto");
             this.sound.setAttribute("controls", "none");
             this.sound.style.display = "none";
+            this.sound.loop = true;
+            this.sound.volume = 0.2;
             document.body.appendChild(this.sound);
             this.play = function(){
                 this.sound.play();
@@ -244,6 +256,28 @@
                 this.sound.pause();
             }
         }
+
+        function volumeUp(){
+            var volume = backgroundMusic.prop("volume")+0.2;
+            if(volume >1){
+                volume = 1;
+            }
+            backgroundMusic.prop("volume",volume);
+        }
+ 
+        function volumeDown(){
+            var volume = backgroundMusic.prop("volume")-0.2;
+            if(volume <0){
+                volume = 0;
+            }
+            backgroundMusic.prop("volume",volume);
+        }
+ 
+        function toggleMuteAudio(){
+            backgroundMusic.prop("muted",!backgroundMusic.prop("muted"));
+        }
+
+        var backgroundMusic;
 
         var participantGroup = Math.floor(Math.random() * 2) + 1;
 
@@ -303,6 +337,7 @@
 
         function closeExplanation() {
             document.getElementById("explanation").style.display = "none";
+            //document.getElementById("backgroundMusic").play();
         }
 
         function setConfidence() {
