@@ -143,16 +143,21 @@
                 <img id="fadedSpells2" src="fadedSpells2.png">
                 <input id="nextButton" type="image" src="nextButtonUnpressed.png" name="nextButton" ondragstart="return false;" onmousedown="document.getElementById('nextButton').src = 'nextButtonPressed.png'" onmouseup="document.getElementById('nextButton').src = 'nextButtonUnpressed.png'"/>
             </div>
-            <div class="volume-controls">
-                <button class="volume-button" onclick="volumeUp()">Music volume up ↑</button>
-                <button class="volume-button" onclick="volumeDown()">Music volume down ↓</button>
-                <button class="volume-button" onclick="toggleMuteAudio()">Toggle music on/off</button>
-            </div>
-            <div class="credits">
-                <p>Pixal art by the following artists: </p>
-                <p>LuizMelo: <a href="https://luizmelo.itch.io/">luizmelo.itch.io</a>, Oco: <a href="https://oco.itch.io/">oco.itch.io</a>, Szadi art.: <a href="https://szadiart.itch.io/">szadiart.itch.io</a>, rvros: <a href="https://rvros.itch.io/">rvros.itch.io</a>, Quintinos Pixels: <a href="https://quintino-pixels.itch.io/">quintino-pixels.itch.io</a>, ppeldo: <a href="https://ppeldo.itch.io/">ppeldo.itch.io</a></p>
-                <p>Music by: Marllon Silva (xDeviruchi) - <a href="https://soundcloud.com/xdeviruchi">soundcloud.com/xdeviruchi</a></p>
-                <p>Sound effects by: harvey656 - <a href="https://harvey656.itch.io/">harvey656.itch.io</a></p>
+            <div class="bottom-overlay">
+                <div class="volume-controls">
+                    <button class="volume-button" onclick="volumeUp()">Music volume up ↑</button>
+                    <button class="volume-button" onclick="volumeDown()">Music volume down ↓</button>
+                    <div>
+                        <input type="checkbox" class="volume-button" onclick="toggleMuteAudio()">Toggle music on/off</button>
+                    </div>
+                </div>
+
+                <div class="credits">
+                    <p>Pixal art by the following artists: </p>
+                    <p>LuizMelo: <a href="https://luizmelo.itch.io/">luizmelo.itch.io</a>, Oco: <a href="https://oco.itch.io/">oco.itch.io</a>, Szadi art.: <a href="https://szadiart.itch.io/">szadiart.itch.io</a>, rvros: <a href="https://rvros.itch.io/">rvros.itch.io</a>, Quintinos Pixels: <a href="https://quintino-pixels.itch.io/">quintino-pixels.itch.io</a>, ppeldo: <a href="https://ppeldo.itch.io/">ppeldo.itch.io</a></p>
+                    <p>Music by: Marllon Silva (xDeviruchi) - <a href="https://soundcloud.com/xdeviruchi">soundcloud.com/xdeviruchi</a></p>
+                    <p>Sound effects by: harvey656 - <a href="https://harvey656.itch.io/">harvey656.itch.io</a></p>
+                </div>
             </div>
 
             <button onclick="gameWindow.pause();">Pause</button>
@@ -244,44 +249,41 @@
         6.0 
         --------------------------------------------------------------*/
 
-        function sound(src) {
-            this.sound = document.createElement("audio");
-            this.sound.src = src;
-            this.sound.setAttribute("preload", "auto");
-            this.sound.setAttribute("controls", "none");
-            this.sound.style.display = "none";
-            this.sound.loop = true;
-            this.sound.volume = 0.2;
-            document.body.appendChild(this.sound);
-            this.play = function(){
-                this.sound.play();
-            }
-            this.stop = function(){
-                this.sound.pause();
-            }
+        function sound() {
+            var sound = backgroundMusic;
+            sound.setAttribute("preload", "auto");
+            sound.setAttribute("controls", "none");
+            sound.style.display = "none";
+            sound.loop = true;
+            sound.volume = 0.2;
+            sound.play();
         }
 
         function volumeUp(){
-            var volume = backgroundMusic.prop("volume")+0.2;
+            var volume = (backgroundMusic.volume + 0.1);
             if(volume >1){
                 volume = 1;
             }
-            backgroundMusic.prop("volume",volume);
+            backgroundMusic.volume = volume;
         }
  
         function volumeDown(){
-            var volume = backgroundMusic.prop("volume")-0.2;
+            var volume = (backgroundMusic.volume - 0.1);
             if(volume <0){
                 volume = 0;
             }
-            backgroundMusic.prop("volume",volume);
+            backgroundMusic.volume = volume;
         }
  
         function toggleMuteAudio(){
-            backgroundMusic.prop("muted",!backgroundMusic.prop("muted"));
+            if (backgroundMusic.muted == true) {
+                backgroundMusic.muted = false
+            } else {
+                backgroundMusic.muted = true
+            }
         }
 
-        var backgroundMusic;
+        var backgroundMusic = document.getElementById("backgroundMusic");
 
         var participantGroup = Math.floor(Math.random() * 2) + 1;
 
@@ -341,7 +343,7 @@
 
         function closeExplanation() {
             document.getElementById("explanation").style.display = "none";
-            //document.getElementById("backgroundMusic").play();
+            sound();
         }
 
         function setConfidence() {
