@@ -26,11 +26,9 @@ Canvas {
     display: grid;
     position: absolute;
     z-index: -1;
-    left: 10%;
-    top: 600px;
-    -webkit-transform: translate(-50%, 0%);
-    -moz-transform: translate(-50%, 0%);
-    transform: translate(-50%, 0%);
+    left: 100px;
+    top: 620px;
+
 }
 
 input[type="image"]:focus {
@@ -90,6 +88,17 @@ input {
     transform: translate(-50%, 0%);
     width: 1200px;
     height: 600px;
+}
+
+.bottom-overlay {
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    -webkit-transform: translate(-50%, 0%);
+    -moz-transform: translate(-50%, 0%);
+    transform: translate(-50%, 0%);
+    width: 1200px;
+    height: 300px;
 }
 
 .poly {
