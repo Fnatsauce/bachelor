@@ -168,11 +168,15 @@
         <div id="explanation" class="modal">
             <!-- Modal content -->
             <div class="modal-content explanation">
-                <div class="hidden readable-tutorial" id="projectExplanation">
-                    <p>Tak fordi du vil hjælpe os med vores projekt. Vælg venligst et sprog herunder.</p>
-                    <p>Thank you for wanting to help us with our project. Please select a language below.</p>
+                <div class="hidden readable-tutorial">
+                    <p>Please select a language below.</p>
                     <button onclick="setLanguage('dk')">Dansk</button>
                     <button onclick="setLanguage('en')">English</button>
+                </div>
+                <div class="hidden readable-tutorial" id="projectExplanation">
+                    <p>Tak fordi du vil hjælpe os med vores projekt.</p>
+                    <p>Thank you for wanting to help us with our project. </p>
+                    
                 </div>
                 <p class="hidden readable-tutorial" id="practiceExplanation">Good job completing the tutorial! Now before the game actually begins you will have a chance to familiarize yourself with all the spells and how it feels to progress in the game outside of a tutorial. So now you will be fighting seven Wizards. The Wizards are, as you learned in the tutorial, weak to all attacks, so don't worry about what spell might be best - try them all out!</p>
                 <div class="hidden readable-tutorial" id="gameExplanation">
@@ -286,7 +290,7 @@
         var participantGroup = 2;
 
         function setLanguage(language) {
-            //document.getElementById("practiceExplanation").innerHTML = 
+            document.getElementById("practiceExplanation").innerHTML = enExplanationtexts.projectExplanation;
         }
 
         function startTutorial() {
