@@ -12,24 +12,7 @@ Canvas {
     border: 1px solid #1E1E1E;
 }
 
-.credits {
-    position: absolute;
-    z-index: -1;
-    left: 50%;
-    top: 600px;
-    -webkit-transform: translate(-50%, 0%);
-    -moz-transform: translate(-50%, 0%);
-    transform: translate(-50%, 0%);
-}
 
-.volume-controls {
-    display: grid;
-    position: absolute;
-    z-index: -1;
-    left: 100px;
-    top: 620px;
-
-}
 
 input[type="image"]:focus {
     outline: none;
@@ -91,14 +74,23 @@ input {
 }
 
 .bottom-overlay {
+    display: flex;
     position: absolute;
     z-index: -1;
     left: 50%;
+    top: 600px;
     -webkit-transform: translate(-50%, 0%);
     -moz-transform: translate(-50%, 0%);
     transform: translate(-50%, 0%);
     width: 1200px;
-    height: 300px;
+    height: 150px;
+}
+
+
+.volume-controls {
+    display: grid;
+    max-height: 125px;
+    padding: 25px;
 }
 
 .poly {

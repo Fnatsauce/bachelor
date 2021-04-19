@@ -256,15 +256,15 @@
         }
 
         function volumeUp(){
-            var volume = (backgroundMusic.volume + 0.1);
-            if(volume >1){
-                volume = 1;
+            var volume = (backgroundMusic.volume + 0.05);
+            if(volume >0.6){
+                volume = 0.6;
             }
             backgroundMusic.volume = volume;
         }
  
         function volumeDown(){
-            var volume = (backgroundMusic.volume - 0.1);
+            var volume = (backgroundMusic.volume - 0.05);
             if(volume <0){
                 volume = 0;
             }
@@ -869,7 +869,7 @@
 
         tutorialSteps.push( new TutorialStep(
             undefined, 
-            'Welcome to One-Shot Wizard! \n My name is: The-Handy-Dandy-Tutorial-Text and I will now guide you through how to play the game - please click "next" to continue.', 
+            'Welcome to One-Shot Wizard! \n My name is: The-Handy-Dandy-Tutorial-Text and I will now guide you through how to play the game - please click the arrow to my right to continue.', 
             function() {document.getElementById("fadedSpells1").style.display = "block"; tutorialSteps[1].draw();}, false)
         );
         tutorialSteps.push(new TutorialStep(
@@ -896,7 +896,7 @@
                 tutorialSteps[5].draw();
             }, false
         ));
-        tutorialSteps.push(new TutorialStep(undefined, "Now choose a spell.", function() {return}, false));
+        tutorialSteps.push(new TutorialStep(undefined, "Now choose one of the three spells.", function() {return}, false));
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.ellipse(1178, 350, 20, 60, 0, 0, 2 * Math.PI)}, 
             'When hit, enemies will try to resist the attack. If the resistance bar reaches the top, the enemy will recover from the spell and attack you back! \n Let\'s see how well the frail Wizard can resist your attack...', 
