@@ -260,15 +260,15 @@
         }
 
         function volumeUp(){
-            var volume = (backgroundMusic.volume + 0.1);
-            if(volume >1){
-                volume = 1;
+            var volume = (backgroundMusic.volume + 0.05);
+            if(volume >0.6){
+                volume = 0.6;
             }
             backgroundMusic.volume = volume;
         }
  
         function volumeDown(){
-            var volume = (backgroundMusic.volume - 0.1);
+            var volume = (backgroundMusic.volume - 0.05);
             if(volume <0){
                 volume = 0;
             }
@@ -885,6 +885,7 @@
                 document.getElementById("nextButton").onclick = this.nextFunction
             }
         }
+
 
         function createTutorialsteps() {
             console.log(language);
