@@ -6,7 +6,7 @@
         <link rel="stylesheet" type="text/css" href="stylesheet.css"></link>
         <script src="lang.js"></script>
     </head>
-    <body onload="startLanguageScreen()">
+    <body onload="setLanguage('en')">
         <div style="display:none;">
             <!-- Player animations -->
             <img id="playerIdleImage"
@@ -146,16 +146,23 @@
             </div>
             <div class="bottom-overlay">
                 <div class="volume-controls">
-                    <button class="volume-button" onclick="volumeUp()">Music volume up ↑</button>
-                    <button class="volume-button" onclick="volumeDown()">Music volume down ↓</button>
-                    <div>
-                        <input type="checkbox" class="volume-button" onclick="toggleMuteAudio()">Toggle music on/off</button>
+                    <div class="mute-container">
+                        <input type="checkbox" class="mute-button" onclick="toggleMuteAudio()"><label></label></button>
                     </div>
+                    <div class="volume-slider-container">
+                        <input type="range" oninput="changeVolume(this.value)" onchange="changeVolume(this.value)" min="0" max="0.4" step="0.02" value="0.1">
+                    </div>
+                    
                 </div>
 
                 <div class="credits">
-                    <p>Pixal art by the following artists: </p>
-                    <p>LuizMelo: <a href="https://luizmelo.itch.io/">luizmelo.itch.io</a>, Oco: <a href="https://oco.itch.io/">oco.itch.io</a>, Szadi art.: <a href="https://szadiart.itch.io/">szadiart.itch.io</a>, rvros: <a href="https://rvros.itch.io/">rvros.itch.io</a>, Quintinos Pixels: <a href="https://quintino-pixels.itch.io/">quintino-pixels.itch.io</a>, ppeldo: <a href="https://ppeldo.itch.io/">ppeldo.itch.io</a></p>
+                    <p>Pixal art by the following artists: <br>
+                        LuizMelo: <a href="https://luizmelo.itch.io/">luizmelo.itch.io</a>, <br>
+                        Oco: <a href="https://oco.itch.io/">oco.itch.io</a>, <br>
+                        Szadi art: <a href="https://szadiart.itch.io/">szadiart.itch.io</a>, <br>
+                        rvros: <a href="https://rvros.itch.io/">rvros.itch.io</a>, <br>
+                        Quintinos Pixels: <a href="https://quintino-pixels.itch.io/">quintino-pixels.itch.io</a>, <br>
+                        ppeldo: <a href="https://ppeldo.itch.io/">ppeldo.itch.io</a></p>
                     <p>Music by: Marllon Silva (xDeviruchi) - <a href="https://soundcloud.com/xdeviruchi">soundcloud.com/xdeviruchi</a></p>
                     <p>Sound effects by: harvey656 - <a href="https://harvey656.itch.io/">harvey656.itch.io</a></p>
                 </div>
@@ -166,7 +173,7 @@
             <button onclick="Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.display = 'block';});">Enable attacks</button>
         </div>
 
-        <div id="explanation" class="modal">
+        <div id="explanation" class="modal hidden">
             <!-- Modal content -->
             <div class="modal-content explanation">
                 <div class="hidden readable-tutorial" id="languageSelection">
@@ -253,26 +260,13 @@
             var sound = backgroundMusic;
             sound.setAttribute("preload", "auto");
             sound.setAttribute("controls", "none");
-            sound.style.display = "none";
             sound.loop = true;
-            sound.volume = 0.2;
+            sound.volume = 0.1;
             sound.play();
         }
 
-        function volumeUp(){
-            var volume = (backgroundMusic.volume + 0.05);
-            if(volume >0.6){
-                volume = 0.6;
-            }
-            backgroundMusic.volume = volume;
-        }
- 
-        function volumeDown(){
-            var volume = (backgroundMusic.volume - 0.05);
-            if(volume <0){
-                volume = 0;
-            }
-            backgroundMusic.volume = volume;
+        function changeVolume(value) {
+            backgroundMusic.volume = value;
         }
  
         function toggleMuteAudio(){
@@ -302,6 +296,8 @@
             document.getElementById("gameExplanationText").innerHTML = explanationTexts[language].gameExplanation;
             document.getElementById("confidenceText1").innerHTML = explanationTexts[language].confidenceText1;
             document.getElementById("confidenceText2").innerHTML = explanationTexts[language].confidenceText2;
+            document.getElementById("explanationButton").innerHTML = explanationTexts[language].explanationButton;
+            
             document.getElementById("endOfGame").insertBefore(document.createTextNode(explanationTexts[language].endOfGame), document.getElementById("surveyLink"));
             startTutorial();
         }
@@ -369,7 +365,7 @@
                     confidenceValue = rates[i].value;
                 }
             }
-            document.getElementById("surveyLink").href = "https://docs.google.com/forms/d/e/1FAIpQLSfa0Nt08lBclw7pM523cVVIdbdM2qIqvwJjWpevGgleaQ_FtQ/viewform?usp=pp_url&entry.755563979=" + participantGroup + "&entry.146232743=" + confidenceValue;
+            document.getElementById("surveyLink").href = "https://docs.google.com/forms/d/e/1FAIpQLScW7pIow1ME2T44PTCsdZLLxpKw7-IhxnPB4VgLXyh_rlDrfg/viewform?usp=pp_url&entry.755563979=" + participantGroup + "&entry.146232743=" + confidenceValue + "&entry.1854619726=" + spellsUsed;
         }
 
         function campaignFinished(campaign) {
@@ -888,7 +884,6 @@
 
 
         function createTutorialsteps() {
-            console.log(language);
             tutorialSteps.push( new TutorialStep(
                 undefined, 
                 tutorialTexts[language][0], 

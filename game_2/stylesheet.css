@@ -1,3 +1,7 @@
+:root {
+    --mute-button-size: 50px;
+}
+
 .asdf {
     color: #1E1E1E;
 }
@@ -11,8 +15,6 @@ Canvas {
     transform: translate(-50%, 0%);
     border: 1px solid #1E1E1E;
 }
-
-
 
 input[type="image"]:focus {
     outline: none;
@@ -78,7 +80,7 @@ input {
     position: absolute;
     z-index: -1;
     left: 50%;
-    top: 600px;
+    top: 620px;
     -webkit-transform: translate(-50%, 0%);
     -moz-transform: translate(-50%, 0%);
     transform: translate(-50%, 0%);
@@ -88,9 +90,123 @@ input {
 
 
 .volume-controls {
-    display: grid;
-    max-height: 125px;
-    padding: 25px;
+    display: flex;
+    height: var(--mute-button-size);
+    flex-direction: row;
+    align-items: center;
+}
+
+.mute-container {
+    position: relative;
+    height: var(--mute-button-size);
+    width: var(--mute-button-size);
+}
+
+.mute-button {
+    opacity: 0;
+    height: var(--mute-button-size);
+    width: var(--mute-button-size);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.mute-button + label {
+    background-image: url(unmuted.png);
+    height: var(--mute-button-size);
+    width: var(--mute-button-size);
+    background-size: var(--mute-button-size) var(--mute-button-size);
+    display:inline-block;
+    padding: 0 0 0 0px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.mute-button:checked + label {
+    background-image: url(muted.png);
+    height: var(--mute-button-size);
+    width: var(--mute-button-size);
+    background-size: var(--mute-button-size) var(--mute-button-size);
+    display:inline-block;
+    padding: 0 0 0 0px;
+}
+
+
+
+.volume-slider-container {
+    padding:10px;
+}
+
+input[type="range"] { 
+    margin: auto;
+    -webkit-appearance: none;
+    position: relative;
+    overflow: hidden;
+    height: 20px;
+    width: 100px;
+    cursor: pointer;
+    border-radius: 0; /* iOS */
+}
+
+::-webkit-slider-runnable-track {
+    background: #ddd;
+}
+
+/*
+ * 1. Set to 0 width and remove border for a slider without a thumb
+ */
+::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 0px; /* 1 */
+    height: 20px;
+    box-shadow: -100vw 0 0 100vw black;
+    border: 2px solid black; /* 1 */
+}
+
+::-moz-range-track {
+    height: 20px;
+    background: #ddd;
+}
+
+::-moz-range-thumb {
+    height: 20px;
+    width: 0px;
+    border-radius: 0 !important;
+    box-shadow: -100vw 0 0 100vw black;
+    border: 2px solid black;
+    box-sizing: border-box;
+}
+
+::-ms-fill-lower { 
+    background: black;
+}
+
+::-ms-thumb { 
+    height: 20px;
+    width: 0px;
+    box-sizing: border-box;
+}
+
+::-ms-ticks-after { 
+    display: none; 
+}
+
+::-ms-ticks-before { 
+    display: none; 
+}
+
+::-ms-track { 
+    background: #ddd;
+    color: transparent;
+    height: 20px;
+    border: none;
+}
+
+::-ms-tooltip { 
+    display: none;
 }
 
 .poly {
