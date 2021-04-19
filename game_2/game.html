@@ -4,8 +4,9 @@
     <head>
         <title>game</title>
         <link rel="stylesheet" type="text/css" href="stylesheet.css"></link>
+        <script src="lang.js"></script>
     </head>
-    <body onload="startTutorial()">
+    <body onload="setLanguage('en')">
         <div style="display:none;">
             <!-- Player animations -->
             <img id="playerIdleImage"
@@ -199,16 +200,23 @@
             </div>
             <div class="bottom-overlay">
                 <div class="volume-controls">
-                    <button class="volume-button" onclick="volumeUp()">Music volume up ↑</button>
-                    <button class="volume-button" onclick="volumeDown()">Music volume down ↓</button>
-                    <div>
-                        <input type="checkbox" class="volume-button" onclick="toggleMuteAudio()">Toggle music on/off</button>
+                    <div class="mute-container">
+                        <input type="checkbox" class="mute-button" onclick="toggleMuteAudio()"><label></label></button>
                     </div>
+                    <div class="volume-slider-container">
+                        <input type="range" oninput="changeVolume(this.value)" onchange="changeVolume(this.value)" min="0" max="0.4" step="0.02" value="0.1">
+                    </div>
+                    
                 </div>
 
                 <div class="credits">
-                    <p>Pixal art by the following artists: </p>
-                    <p>LuizMelo: <a href="https://luizmelo.itch.io/">luizmelo.itch.io</a>, Oco: <a href="https://oco.itch.io/">oco.itch.io</a>, Szadi art.: <a href="https://szadiart.itch.io/">szadiart.itch.io</a>, rvros: <a href="https://rvros.itch.io/">rvros.itch.io</a>, Quintinos Pixels: <a href="https://quintino-pixels.itch.io/">quintino-pixels.itch.io</a>, ppeldo: <a href="https://ppeldo.itch.io/">ppeldo.itch.io</a></p>
+                    <p>Pixal art by the following artists: <br>
+                        LuizMelo: <a href="https://luizmelo.itch.io/">luizmelo.itch.io</a>, <br>
+                        Oco: <a href="https://oco.itch.io/">oco.itch.io</a>, <br>
+                        Szadi art: <a href="https://szadiart.itch.io/">szadiart.itch.io</a>, <br>
+                        rvros: <a href="https://rvros.itch.io/">rvros.itch.io</a>, <br>
+                        Quintinos Pixels: <a href="https://quintino-pixels.itch.io/">quintino-pixels.itch.io</a>, <br>
+                        ppeldo: <a href="https://ppeldo.itch.io/">ppeldo.itch.io</a></p>
                     <p>Music by: Marllon Silva (xDeviruchi) - <a href="https://soundcloud.com/xdeviruchi">soundcloud.com/xdeviruchi</a></p>
                     <p>Sound effects by: harvey656 - <a href="https://harvey656.itch.io/">harvey656.itch.io</a></p>
                 </div>
@@ -219,10 +227,10 @@
             <button onclick="Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.display = 'block';});">Enable attacks</button>
         </div>
 
-        <div id="explanation" class="modal">
+        <div id="explanation" class="modal hidden">
             <!-- Modal content -->
             <div class="modal-content explanation">
-                <div class="hidden readable-tutorial">
+                <div class="hidden readable-tutorial" id="languageSelection">
                     <p>Please select a language below.</p>
                     <button onclick="setLanguage('dk')">Dansk</button>
                     <button onclick="setLanguage('en')">English</button>
@@ -230,20 +238,19 @@
                 <div class="hidden readable-tutorial" id="projectExplanation">
                     <p>Tak fordi du vil hjælpe os med vores projekt.</p>
                     <p>Thank you for wanting to help us with our project. </p>
-                    
                 </div>
-                <p class="hidden readable-tutorial" id="practiceExplanation">Good job completing the tutorial! Now before the game actually begins you will have a chance to familiarize yourself with all the spells and how it feels to progress in the game outside of a tutorial. So now you will be fighting seven Wizards. The Wizards are, as you learned in the tutorial, weak to all attacks, so don't worry about what spell might be best - try them all out!</p>
+                <p class="hidden readable-tutorial" id="practiceExplanation"></p>
                 <div class="hidden readable-tutorial" id="gameExplanation">
                     <img id="noIndicationMap"
                         src="noIndicationMap.png">
                     <img id="indicationMap"
                         src="gameMap.png">
-                    <p>Here is a map of the enemies you will be fighting in the game as well as the abilities you will have available. Please rate on a scale from 1 (very unsure) to 10 (pretty certain) how certain you are that you will be able to defeat all the enemies</p>
+                    <p id="gameExplanationText"></p>
                 </div>
-                <p class="hidden readable-tutorial" id="endOfGame">Thanks for playing! Please take a minute to answer our survey about your experience found <a id="surveyLink" href="">here</a></p>
+                <p class="hidden readable-tutorial" id="endOfGame"><a id="surveyLink" href=""> here</a></p>
 
                 <div class="hidden" id="confidence" onclick="setConfidence()">
-                    <p>not confident</p>
+                    <p id="confidenceText1">not confident</p>
                     <label class="radio_button first" for="confidence1">
                         <span class="confidence_number">1</span>
                         <input type="radio" id="confidence1" name="confidence" value="1">
@@ -284,9 +291,9 @@
                         <span class="confidence_number">10</span>
                         <input type="radio" id="confidence10" name="confidence" value="10">
                     </label>
-                    <p>very confident</p>
+                    <p id="confidenceText2">very confident</p>
                 </div>
-                <button onclick="closeExplanation()">Click here when you're done</button>
+                <button class="hidden" id="explanationButton" onclick="closeExplanation()">Click here when you're done</button>
             </div>
         </div>
     </body>
@@ -314,26 +321,13 @@
             var sound = backgroundMusic;
             sound.setAttribute("preload", "auto");
             sound.setAttribute("controls", "none");
-            sound.style.display = "none";
-            sound.volume = 0.1;
             sound.loop = true;
+            sound.volume = 0.1;
             sound.play();
         }
 
-        function volumeUp(){
-            var volume = (backgroundMusic.volume + 0.05);
-            if(volume >0.6){
-                volume = 0.6;
-            }
-            backgroundMusic.volume = volume;
-        }
- 
-        function volumeDown(){
-            var volume = (backgroundMusic.volume - 0.05);
-            if(volume <0){
-                volume = 0;
-            }
-            backgroundMusic.volume = volume;
+        function changeVolume(value) {
+            backgroundMusic.volume = value;
         }
  
         function toggleMuteAudio(){
@@ -365,14 +359,31 @@
         var participantGroup = Math.floor(Math.random() * 2) + 1;
 
         var participantGroup = 2;
+        var language;
 
-        function setLanguage(language) {
-            document.getElementById("practiceExplanation").innerHTML = enExplanationtexts.projectExplanation;
+        function startLanguageScreen() {
+            document.getElementById("languageSelection").style.display = "block";
+            document.getElementById("explanation").style.display = "block";
+        }
+
+        function setLanguage(lang) {
+            language = lang;
+            document.getElementById("projectExplanation").innerHTML = explanationTexts[language].projectExplanation;
+            document.getElementById("practiceExplanation").innerHTML = explanationTexts[language].practiceExplanation;
+            document.getElementById("gameExplanationText").innerHTML = explanationTexts[language].gameExplanation;
+            document.getElementById("confidenceText1").innerHTML = explanationTexts[language].confidenceText1;
+            document.getElementById("confidenceText2").innerHTML = explanationTexts[language].confidenceText2;
+            document.getElementById("explanationButton").innerHTML = explanationTexts[language].explanationButton;
+            
+            document.getElementById("endOfGame").insertBefore(document.createTextNode(explanationTexts[language].endOfGame), document.getElementById("surveyLink"));
+            startTutorial();
         }
 
         function startTutorial() {
+            document.getElementById("languageSelection").style.display = "none";
             document.getElementById("projectExplanation").style.display = "block";
-            document.getElementById("explanation").style.display = "block";
+            document.getElementById("explanationButton").style.display = "block";
+            createTutorialsteps();
             gameWindow.start();
             gameWindow.tutorial = true;
             entities.campaign = campaigns[0];
@@ -412,9 +423,9 @@
 
         function endGame() {
             console.log("end");
-            document.getElementById("explanation").style.display = "none";
+            document.getElementById("gameExplanation").style.display = "none";
             document.getElementById("confidence").style.display = "none";
-            document.getElementById("gameExplanation").style.display = "block";
+            document.getElementById("explanation").style.display = "block";
             document.getElementById("endOfGame").style.display = "block";
         }
 
@@ -433,7 +444,7 @@
                     confidenceValue = rates[i].value;
                 }
             }
-            document.getElementById("surveyLink").href = "https://docs.google.com/forms/d/e/1FAIpQLSfa0Nt08lBclw7pM523cVVIdbdM2qIqvwJjWpevGgleaQ_FtQ/viewform?usp=pp_url&entry.755563979=" + participantGroup + "&entry.146232743=" + confidenceValue;
+            document.getElementById("surveyLink").href = "https://docs.google.com/forms/d/e/1FAIpQLScW7pIow1ME2T44PTCsdZLLxpKw7-IhxnPB4VgLXyh_rlDrfg/viewform?usp=pp_url&entry.755563979=" + participantGroup + "&entry.146232743=" + confidenceValue + "&entry.1854619726=" + spellsUsed;
         }
 
         function campaignFinished(campaign) {
@@ -969,77 +980,79 @@
             }
         }
 
-        tutorialSteps.push( new TutorialStep(
-            undefined, 
-            'Welcome to One-Shot Wizard! \n My name is: The-Handy-Dandy-Tutorial-Text and I will now guide you through how to play the game - please click the arrow to my right to continue.', 
-            function() {document.getElementById("fadedSpells1").style.display = "block"; tutorialSteps[1].draw();}, false)
-        );
-        tutorialSteps.push(new TutorialStep(
-            function() {gameWindow.context3.arc(85, 345, 100, 0, 2 * Math.PI)}, 
-            'This is you. You are a Wizard.', 
-            function() {tutorialSteps[2].draw();}, false
-        ));
-        tutorialSteps.push(new TutorialStep(
-            function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 
-            'This is your enemy. Each room in the game has one.', 
-            function() {document.getElementById("fadedSpells1").style.display = "none"; tutorialSteps[3].draw();}, false
-        ));
-        tutorialSteps.push(new TutorialStep(
-            function() {gameWindow.context3.ellipse(240, 300, 120, 170, 0, 0, 2 * Math.PI)}, 
-            'To defeat an enemy you must choose an attack from the ones available. \n Certain enemies are weak to certain attacks and it is up to you to figure out what attack will be effective against the enemy you are currently facing. \n \n But choose wisely! Because you only get ONE SHOT!', 
-            function() {document.getElementById("fadedSpells1").style.display = "block"; tutorialSteps[4].draw();}, false
-        ));
-        tutorialSteps.push(new TutorialStep(
-            function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 
-            'You are currently fighting this other Wizard. \n Wizards are, as we all know, very weak and frail, so don\'t worry about figuring out what spell is best - Anything would do the trick!', 
-            function() {
-                document.getElementById("fadedSpells1").style.display = "none"; 
-                Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto"; document.getElementById("nextButton").style.display = "none";}); 
-                tutorialSteps[5].draw();
-            }, false
-        ));
-        tutorialSteps.push(new TutorialStep(undefined, "Now choose one of the three spells.", function() {return}, false));
-        tutorialSteps.push(new TutorialStep(
-            function() {gameWindow.context3.ellipse(1178, 350, 20, 60, 0, 0, 2 * Math.PI)}, 
-            'When hit, enemies will try to resist the attack. If the resistance bar reaches the top, the enemy will recover from the spell and attack you back! \n Let\'s see how well the frail Wizard can resist your attack...', 
-            function() {gameWindow.resume(); document.getElementById("resisting").play(); tutorialSteps[7].draw(); document.getElementById("nextButton").style.display = "none";}, false
-        ));
-        tutorialSteps.push(new TutorialStep(undefined, "...", function() {tutorialSteps[8].draw();}, false));
-        tutorialSteps.push(new TutorialStep(
-            undefined, 
-            'Great job! You defeated the frail Wizard! \n \n Very impressive... \n \n When an enemy is defeated you will automatically move to the next room - so let\'s go there now!', 
-            function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";}); gameWindow.clearText(); gameWindow.resume(); document.getElementById("nextButton").style.display = "none";}, false
-        ));
-        // Transition to the next room!
-        tutorialSteps.push(new TutorialStep(
-            undefined, 
-            'Welcome to room 2!', 
-            function() {document.getElementById("fadedSpells2").style.display = "block"; tutorialSteps[10].draw();}, false
-        ));
-        tutorialSteps.push(new TutorialStep(
-            function() {gameWindow.context3.arc(1100, 385, 100, 0, 2 * Math.PI)}, 
-            'BE CAREFUL!!! \n A NEW ENEMY APPROACHES! \n \n What a terrifying creature indeed... It must be slain!', 
-            function() {document.getElementById("fadedSpells2").style.display = "none"; tutorialSteps[11].draw();}, false
-        ));
-        tutorialSteps.push(new TutorialStep(
-            undefined, 
-            'But before you decide on what to attack with, take a look at your spells.', 
-            function() {tutorialSteps[12].draw();}, false
-        ));
-        tutorialSteps.push(new TutorialStep(
-            function() {gameWindow.context3.ellipse(240, 300, 120, 170, 0, 0, 2 * Math.PI)}, 
-            'Notice Ice Spear is missing. \n You don\'t always have the same attacks available.', 
-            function() {document.getElementById("fadedSpells2").style.display = "block"; tutorialSteps[13].draw();}, false
-        ));
-        tutorialSteps.push(new TutorialStep(
-            function() {gameWindow.context3.ellipse(600, 75, 200, 75, 0, 0, 2 * Math.PI)}, 
-            'To see what spells you will have available for each enemy, look at the top of the screen. \n The portraits portray the enemies you will face and the icons below it indicate what spells you will have available then. \n This allows you to think ahead and plan the attack you wish to use against a given enemy. \n \n Or don\'t think ahead - I don\'t care.', 
-            function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto";}); document.getElementById("fadedSpells2").style.display = "none"; document.getElementById("nextButton").style.display = "none"; tutorialSteps[14].draw();}, false
-        ));
-        tutorialSteps.push(new TutorialStep(
-            undefined, 
-            'Now I wish you good luck against the Slime! \n Because this is just the tutorial, whether you win or lose you will still move on to the next part after this Slime-battle. \n \n Have fun!', 
-            function() {}, false
-        ));
+        function createTutorialsteps() {
+            tutorialSteps.push( new TutorialStep(
+                undefined, 
+                tutorialTexts[language][0], 
+                function() {document.getElementById("fadedSpells1").style.display = "block"; tutorialSteps[1].draw();}, false)
+            );
+            tutorialSteps.push(new TutorialStep(
+                function() {gameWindow.context3.arc(85, 345, 100, 0, 2 * Math.PI)}, 
+                tutorialTexts[language][1], 
+                function() {tutorialSteps[2].draw();}, false
+            ));
+            tutorialSteps.push(new TutorialStep(
+                function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 
+                tutorialTexts[language][2], 
+                function() {document.getElementById("fadedSpells1").style.display = "none"; tutorialSteps[3].draw();}, false
+            ));
+            tutorialSteps.push(new TutorialStep(
+                function() {gameWindow.context3.ellipse(240, 300, 120, 170, 0, 0, 2 * Math.PI)}, 
+                tutorialTexts[language][3], 
+                function() {document.getElementById("fadedSpells1").style.display = "block"; tutorialSteps[4].draw();}, false
+            ));
+            tutorialSteps.push(new TutorialStep(
+                function() {gameWindow.context3.arc(1115, 345, 100, 0, 2 * Math.PI)}, 
+                tutorialTexts[language][4], 
+                function() {
+                    document.getElementById("fadedSpells1").style.display = "none"; 
+                    Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto"; document.getElementById("nextButton").style.display = "none";}); 
+                    tutorialSteps[5].draw();
+                }, false
+            ));
+            tutorialSteps.push(new TutorialStep(undefined, tutorialTexts[language][5], function() {return}, false));
+            tutorialSteps.push(new TutorialStep(
+                function() {gameWindow.context3.ellipse(1178, 350, 20, 60, 0, 0, 2 * Math.PI)}, 
+                tutorialTexts[language][6], 
+                function() {gameWindow.resume(); tutorialSteps[7].draw(); document.getElementById("nextButton").style.display = "none";}, false
+            ));
+            tutorialSteps.push(new TutorialStep(undefined, "...", function() {tutorialSteps[8].draw();}, false));
+            tutorialSteps.push(new TutorialStep(
+                undefined, 
+                tutorialTexts[language][7], 
+                function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "none";}); gameWindow.clearText(); gameWindow.resume(); document.getElementById("nextButton").style.display = "none";}, false
+            ));
+            // Transition to the next room!
+            tutorialSteps.push(new TutorialStep(
+                undefined, 
+                tutorialTexts[language][8], 
+                function() {document.getElementById("fadedSpells2").style.display = "block"; tutorialSteps[10].draw();}, false
+            ));
+            tutorialSteps.push(new TutorialStep(
+                function() {gameWindow.context3.arc(1100, 385, 100, 0, 2 * Math.PI)}, 
+                tutorialTexts[language][9], 
+                function() {document.getElementById("fadedSpells2").style.display = "none"; tutorialSteps[11].draw();}, false
+            ));
+            tutorialSteps.push(new TutorialStep(
+                undefined, 
+                tutorialTexts[language][10], 
+                function() {tutorialSteps[12].draw();}, false
+            ));
+            tutorialSteps.push(new TutorialStep(
+                function() {gameWindow.context3.ellipse(240, 300, 120, 170, 0, 0, 2 * Math.PI)}, 
+                tutorialTexts[language][11], 
+                function() {document.getElementById("fadedSpells2").style.display = "block"; tutorialSteps[13].draw();}, false
+            ));
+            tutorialSteps.push(new TutorialStep(
+                function() {gameWindow.context3.ellipse(600, 75, 200, 75, 0, 0, 2 * Math.PI)}, 
+                tutorialTexts[language][12], 
+                function() {Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.pointerEvents = "auto";}); document.getElementById("fadedSpells2").style.display = "none"; document.getElementById("nextButton").style.display = "none"; tutorialSteps[14].draw();}, false
+            ));
+            tutorialSteps.push(new TutorialStep(
+                undefined, 
+                tutorialTexts[language][13], 
+                function() {}, false
+            ));
+        }
     </script>
 </html>
