@@ -22,16 +22,43 @@
             <!-- Player spell-attack animations -->
             <img id="fireball"
                 src="GameFXexport/SPRITESHEET_Files/FireBall_64x64.png">
+            <audio id="FireCast" controls="none"> 
+                <source src="spells/FireCast.wav">
+            </audio>
+            <audio id="FireHit1" controls="none"> 
+                <source src="spells/FireHit1.wav">
+            </audio>
+            <audio id="FireHit2" controls="none"> 
+                <source src="spells/FireHit2.wav">
+            </audio>
+
             <img id="icepick"
                 src="GameFXexport/SPRITESHEET_Files/IcePick_64x64.png">
+            <audio id="IceCast" controls="none"> 
+                <source src="spells/IceCast.wav">
+            </audio>
+            <audio id="IceHit1" controls="none"> 
+                <source src="spells/IceHit1.wav">
+            </audio>
+            <audio id="IceHit2" controls="none"> 
+                <source src="spells/IceHit2.wav">
+            </audio>
+
             <img id="tornadoStatic"
                 src="GameFXexport/SPRITESHEET_Files/TornadoStatic_96x96.png">
             <img id="tornadoLoop"
                 src="GameFXexport/SPRITESHEET_Files/TornadoLoop_96x96.png">
+            <audio id="AirCast" controls="none"> 
+                <source src="spells/AirCast.wav">
+            </audio>
+            <audio id="AirHit1" controls="none"> 
+                <source src="spells/AirHit1.wav">
+            </audio>
 
             <!-- Attack-hit-effect animations -->
             <img id="Fire-hit"
                 src="GameFXexport/SPRITESHEET_Files/Explosion_96x96.png">
+
             <img id="Ice-hit"
                 src="GameFXexport/SPRITESHEET_Files/IceShatter_96x96.png">
             
@@ -40,13 +67,20 @@
             <img id="TornadoLoop"
                 src="GameFXexport/SPRITESHEET_Files/TornadoLoop_96x96.png">
 
-            <!-- Enemy animations -->
+            <!-- Enemies -->
+            <audio id="resisting" controls="none">
+                <source src="resisting.wav">
+            </audio>
+            
             <img id="wizardIdleImage"
                 src="enemyWizard/Idle.png">
             <img id="wizardResistImage"
                 src="enemyWizard/Hit.png">
             <img id="wizardDeathImage"
                 src="enemyWizard/Death.png">
+            <audio id="wizardDeath" controls="none">
+                <source src="enemyWizard/wizardDeath.wav">
+            </audio>
           
             <img id="flyingEyeIdleImage"
                 src="flyingEye/Idle.png">
@@ -54,6 +88,9 @@
                 src="flyingEye/Hit.png">
             <img id="flyingEyeDeathImage"
                 src="flyingEye/Death.png">
+            <audio id="flyingEyeDeath" controls="none"> 
+                <source src="flyingEye/flyingEyeDeath.wav">
+            </audio>
 
             <img id="mushroomIdleImage"
                 src="mushroom/Idle.png">
@@ -61,6 +98,9 @@
                 src="mushroom/Hit.png">
             <img id="mushroomDeathImage"
                 src="mushroom/Death.png">
+            <audio id="mushroomDeath" controls="none"> 
+                <source src="mushroom/mushroomDeath.wav">
+            </audio>
 
             <img id="goblinIdleImage"
                 src="goblin/Idle.png">
@@ -68,6 +108,9 @@
                 src="goblin/Hit.png">
             <img id="goblinDeathImage"
                 src="goblin/Death.png">
+            <audio id="goblinDeath" controls="none"> 
+                <source src="goblin/goblinDeath.wav">
+            </audio>
 
             <img id="skeletonIdleImage"
                 src="skeleton/Idle.png">
@@ -77,6 +120,12 @@
                 src="skeleton/Death.png">
             <img id="skeletonAttackImage"
                 src="skeleton/Attack.png">
+            <audio id="skeletonAttackStart" controls="none"> 
+                <source src="skeleton/skeletonAttackStart.wav">
+            </audio>
+            <audio id="skeletonDeath" controls="none"> 
+                <source src="skeleton/skeletonDeath.wav">
+            </audio>
 
             <img id="slimeIdleImage"
                 src="slime/Idle.png">
@@ -84,7 +133,12 @@
                 src="slime/Hit.png">
             <img id="slimeAttackImage"
                 src="slime/Attack.png">
-
+            <audio id="slimeAttackStart" controls="none"> 
+                <source src="slime/slimeAttackStart.wav">
+            </audio>
+            <audio id="slimeAttackStart" controls="none"> 
+                <source src="slime/slimeAttackStart.wav">
+            </audio>
 
             <!-- Overview map -->
             <img id="tutorialMap"
@@ -122,19 +176,19 @@
             <canvas id="canvas3" width="1200" height="600"></canvas>
             <div class="overlay">
                 <img id="fireIcon" class="spell"
-                    src="spellIcons/fire.png"
+                    src="spells/fire.png"
                     onmouseover="document.body.style.cursor = 'pointer'"
                     onmouseout="document.body.style.cursor = 'default'"
                     onclick="entities.player.attack('Fire')"
                     ondragstart="return false;">
                 <img id="iceIcon" class="spell"
-                    src="spellIcons/ice.png"
+                    src="spells/ice.png"
                     onmouseover="document.body.style.cursor = 'pointer'"
                     onmouseout="document.body.style.cursor = 'default'"
                     onclick="entities.player.attack('Ice')"
                     ondragstart="return false;">
                 <img id="airIcon" class="spell"
-                    src="spellIcons/air.png"
+                    src="spells/air.png"
                     onmouseover="document.body.style.cursor = 'pointer'"
                     onmouseout="document.body.style.cursor = 'default'"
                     onclick="entities.player.attack('Air')"
@@ -238,10 +292,11 @@
     </body>
 
     <script>
+
         /*--------------------------------------------------------------
         >>> TABLE OF CONTENTS:
         ----------------------------------------------------------------
-        1.0 
+        1.0 Sound
         2.0 
         3.0 
         4.0 
@@ -249,13 +304,19 @@
         6.0 
         --------------------------------------------------------------*/
 
+        /*--------------------------------------------------------------
+        1.0 Sound
+        --------------------------------------------------------------*/
+
+        var backgroundMusic = document.getElementById("backgroundMusic");
+
         function sound() {
             var sound = backgroundMusic;
             sound.setAttribute("preload", "auto");
             sound.setAttribute("controls", "none");
             sound.style.display = "none";
+            sound.volume = 0.1;
             sound.loop = true;
-            sound.volume = 0.2;
             sound.play();
         }
 
@@ -283,7 +344,23 @@
             }
         }
 
-        var backgroundMusic = document.getElementById("backgroundMusic");
+        function playSoundEffect(soundId) {
+            var sound = document.getElementById(soundId);
+            sound.volume = backgroundMusic.volume;
+            sound.play();
+        }
+
+        function playLoopedSoundEffect(soundId) {
+            var sound = document.getElementById(soundId);
+            sound.volume = backgroundMusic.volume;
+            sound.playbackRate = 1.5;
+            sound.loop = true;
+            sound.play();
+        }
+
+        /*--------------------------------------------------------------
+        2.0 Game...
+        --------------------------------------------------------------*/
 
         var participantGroup = Math.floor(Math.random() * 2) + 1;
 
@@ -343,7 +420,9 @@
 
         function closeExplanation() {
             document.getElementById("explanation").style.display = "none";
-            sound();
+            if(backgroundMusic.volume == 1) {
+                sound();
+            }
         }
 
         function setConfidence() {
@@ -461,6 +540,7 @@
                         entities.enemy.hit(attackType);
                     }
                 }
+                var sound = attackType + "Cast";
                 switch (attackType) {
                     case "Fire":
                         spellsUsed += "1";
@@ -487,6 +567,7 @@
                     }
                     if(this.animationFrame == 36) {
                         projectileAnimation();
+                        playSoundEffect(sound);
                         sortDrawables();
                     }
                 }
@@ -523,12 +604,14 @@
             hit(attackType) {
                 this.playHitEffectAnimation(attackType);
                 drawables["1-enemy"] = new Animation(this.resistImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps);
+                playLoopedSoundEffect("resisting");
                 var deathDone = function() {
                     if(this.animationFrame > this.image.width / this.frameSize.x * this.wait - 2) {
                         this.freezeAnimation();
                         if (gameWindow.tutorial) {
                             document.getElementById("nextButton").style.display = "block";
                             gameWindow.pause();
+                            document.getElementById("resisting").pause();
                             document.getElementById("nextButton").disabled = false;
                         }
                         entities.campaign.nextRoom();
@@ -546,6 +629,7 @@
                 var attackDone = function() {
                     if(this.animationFrame > this.image.width / this.frameSize.x * this.wait - 2) {
                         playerDeathAnimation();
+                        playSoundEffect("wizardDeath");
                         entities.enemy.initialize();
                     }
                 }
@@ -553,12 +637,19 @@
                 var resist = function() {
                     if (this.animationFrame == 30 && gameWindow.tutorial && entities.enemy.name != "slime") {
                         gameWindow.pause();
+                        document.getElementById("resisting").pause();
                         document.getElementById("nextButton").style.display = "block";
                         tutorialSteps[6].draw();
                     }
                     if(this.currentCycle >= this.cycles) {
                         delete drawables["2-TornadoLoop"];
+                        document.getElementById("resisting").pause();
                         attackAnimation();
+                        if (entities.enemy.name == "slime") {
+                            playSoundEffect("slimeAttackStart")
+                        } else {
+                            playSoundEffect("skeletonAttackStart")
+                        }
                         var ctx = gameWindow.context3;
                         ctx.font = "50px Arial";
                         ctx.fillStyle = "orange";
@@ -569,7 +660,9 @@
                         if(!attackingEnemies.includes(entities.enemy.name) && !entities.campaign.currentRoom == entities.campaign.rooms.length - 1) {
                             this.delete();
                             delete drawables["2-TornadoLoop"];
+                            document.getElementById("resisting").pause();
                             deathAnimation();
+                            playSoundEffect(entities.enemy.name + "Death");
                         }
                     }
                 }
@@ -580,13 +673,18 @@
                 switch (attackType) {
                     case "Fire":
                         drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 155, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 40);
+                        playSoundEffect("FireHit1");
+                        playSoundEffect("FireHit2");
                         break;
                     case "Ice":
                         drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 195, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 40);
+                        playSoundEffect("IceHit1");
+                        playSoundEffect("IceHit2");
                         break;
                     case "Air":
                         drawables["2-hitEffect"] = new Animation(document.getElementById(attackType + "-hit"), 990, 185, {x:96, y:96}, {x:250, y:250}, 1, "2-hitEffect", 70);
                         drawables["2-TornadoLoop"] = new Animation(document.getElementById("TornadoLoop"), 990, 235, {x:96, y:96}, {x:250, y:250}, Infinity, "2-TornadoLoop", 50);
+                        playSoundEffect("AirHit1");
                         break;
                 }
             }
@@ -904,7 +1002,7 @@
         tutorialSteps.push(new TutorialStep(
             function() {gameWindow.context3.ellipse(1178, 350, 20, 60, 0, 0, 2 * Math.PI)}, 
             'When hit, enemies will try to resist the attack. If the resistance bar reaches the top, the enemy will recover from the spell and attack you back! \n Let\'s see how well the frail Wizard can resist your attack...', 
-            function() {gameWindow.resume(); tutorialSteps[7].draw(); document.getElementById("nextButton").style.display = "none";}, false
+            function() {gameWindow.resume(); document.getElementById("resisting").play(); tutorialSteps[7].draw(); document.getElementById("nextButton").style.display = "none";}, false
         ));
         tutorialSteps.push(new TutorialStep(undefined, "...", function() {tutorialSteps[8].draw();}, false));
         tutorialSteps.push(new TutorialStep(
