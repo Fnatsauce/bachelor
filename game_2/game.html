@@ -6,7 +6,7 @@
         <link rel="stylesheet" type="text/css" href="stylesheet.css"></link>
         <script src="lang.js"></script>
     </head>
-    <body onload="setLanguage('en')">
+    <body onload="startTest()">
         <div style="display:none;">
             <!-- Player animations -->
             <img id="playerIdleImage"
@@ -204,7 +204,7 @@
                         <input type="checkbox" class="mute-button" onclick="toggleMuteAudio()"><label></label></button>
                     </div>
                     <div class="volume-slider-container">
-                        <input type="range" oninput="changeVolume(this.value)" onchange="changeVolume(this.value)" min="0" max="0.4" step="0.02" value="0.1">
+                        <input id="volumeSlider" type="range" oninput="changeVolume(this.value)" onchange="changeVolume(this.value)" min="0" max="0.4" step="0.02" value="0.1">
                     </div>
                     
                 </div>
@@ -227,7 +227,7 @@
             <button onclick="Array.prototype.forEach.call(document.getElementsByClassName('spell'), function(icon) {icon.style.display = 'block';});">Enable attacks</button>
         </div>
 
-        <div id="explanation" class="modal hidden">
+        <div id="explanation" class="modal">
             <!-- Modal content -->
             <div class="modal-content explanation">
                 <div class="hidden readable-tutorial" id="languageSelection">
@@ -322,7 +322,7 @@
             sound.setAttribute("preload", "auto");
             sound.setAttribute("controls", "none");
             sound.loop = true;
-            sound.volume = 0.1;
+            sound.volume = document.getElementById("volumeSlider").value;
             sound.play();
         }
 
@@ -340,13 +340,13 @@
 
         function playSoundEffect(soundId) {
             var sound = document.getElementById(soundId);
-            sound.volume = backgroundMusic.volume;
+            sound.volume = backgroundMusic.volume + 0.1;
             sound.play();
         }
 
         function playLoopedSoundEffect(soundId) {
             var sound = document.getElementById(soundId);
-            sound.volume = backgroundMusic.volume;
+            sound.volume = backgroundMusic.volume + 0.1;
             sound.playbackRate = 1.5;
             sound.loop = true;
             sound.play();
@@ -358,8 +358,15 @@
 
         var participantGroup = Math.floor(Math.random() * 2) + 1;
 
-        var participantGroup = 2;
+        var participantGroup = 1;
         var language;
+
+        function startTest() {
+            gameWindow.start();
+            entities.campaign = campaigns[4];
+            entities.campaign.start();
+            document.getElementById("explanationButton").style.display = "block";
+        }
 
         function startLanguageScreen() {
             document.getElementById("languageSelection").style.display = "block";
@@ -405,9 +412,9 @@
         function startGame() {
             document.getElementById("practiceExplanation").style.display = "none";
             document.getElementById("gameExplanation").style.display = "block";
-            
             document.getElementById("confidence").style.display = "flex";
             document.getElementById("explanation").style.display = "block";
+            document.getElementById("explanationButton").disabled = true;
             
             if(participantGroup < 3) {
                 entities.campaign = campaigns[2];
@@ -422,9 +429,9 @@
         }
 
         function endGame() {
-            console.log("end");
             document.getElementById("gameExplanation").style.display = "none";
             document.getElementById("confidence").style.display = "none";
+            document.getElementById("explanationButton").style.display = "none";
             document.getElementById("explanation").style.display = "block";
             document.getElementById("endOfGame").style.display = "block";
         }
@@ -445,6 +452,7 @@
                 }
             }
             document.getElementById("surveyLink").href = "https://docs.google.com/forms/d/e/1FAIpQLScW7pIow1ME2T44PTCsdZLLxpKw7-IhxnPB4VgLXyh_rlDrfg/viewform?usp=pp_url&entry.755563979=" + participantGroup + "&entry.146232743=" + confidenceValue + "&entry.1854619726=" + spellsUsed;
+            document.getElementById("explanationButton").disabled = false;
         }
 
         function campaignFinished(campaign) {
@@ -668,7 +676,7 @@
                     }
                     if(this.animationFrame == 60) {
                         var attackingEnemies = ["slime", "skeleton"];
-                        if(!attackingEnemies.includes(entities.enemy.name) && !entities.campaign.currentRoom == entities.campaign.rooms.length - 1) {
+                        if(!(attackingEnemies.includes(entities.enemy.name) && (entities.campaign.currentRoom == entities.campaign.rooms.length - 1))) {
                             this.delete();
                             delete drawables["2-TornadoLoop"];
                             document.getElementById("resisting").pause();
@@ -866,16 +874,23 @@
                                 tutorialSteps[9].draw();
                                 document.getElementById("nextButton").style.display = "block";
                             } else {
-                                drawTextBox("the next room is now");
+                                entities.campaign.drawRoomText();
                             }
                             entities.campaign.rooms[entities.campaign.currentRoom].prepareSpells();
                         }
                     }
                 } else {
                     fadeCallback = function() {
+                        if (this.animationFrame == 1 && entities.campaign.currentRoom == 4 || entities.campaign.currentRoom == 1) { //todo: delete 1
+                            var ctx = gameWindow.context3;
+                            ctx.font = "100px Arial";
+                            ctx.fillStyle = "red";
+                            var width = ctx.measureText("Game Over").width;
+                            ctx.fillText("Game Over", 600 - width / 2, 330);
+                        }
                         if (this.animationFrame == 60) {
                             drawables["8-fade"].freeze = true;
-                            campaignFinished(entities.campaign.currentRoom);
+                            setTimeout(function() {campaignFinished(entities.campaign.currentRoom);}, 100000);
                         }
                     }
                 }
@@ -888,6 +903,10 @@
             start() {
                 this.rooms[this.currentRoom].prepareEnemy();
                 this.rooms[this.currentRoom].prepareSpells();
+                this.drawRoomText();
+            }
+
+            drawRoomText() {
                 switch (entities.enemy.name) {
                     case "wizard":
                         drawTextBox("An enemy Wizard approaches.");
@@ -952,6 +971,9 @@
                 new Room(new Enemy(910, 160, "flyingEye", {x:150, y:150}, {x:400, y:400}), "air"),
                 new Room(new Enemy(910, 160, "goblin", {x:150, y:150}, {x:400, y:400}), undefined),
                 new Room(new Enemy(910, 160, "skeleton", {x:150, y:150}, {x:400, y:400}), "ice")
+            ], 144),
+            new Campaign([
+                new Room(new Enemy(910, 160, "skeleton", {x:150, y:150}, {x:400, y:400}), undefined)
             ], 144)
         ];
 
