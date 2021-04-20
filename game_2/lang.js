@@ -90,8 +90,8 @@ approaches = {
     dk: [
         " blokere din vej.",
         " gør klar til angreb.",
-        " nærmer sig",
-        " dukker op",
+        " nærmer sig.",
+        " dukker op.",
         " konfrontere dig."
     ]
 }
