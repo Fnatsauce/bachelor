@@ -908,6 +908,7 @@
                             ctx.fillStyle = "red";
                             var width = ctx.measureText("Game Over").width;
                             ctx.fillText("Game Over", 600 - width / 2, 330);
+                            backgroundMusic.muted = true;
                         }
                         if (this.animationFrame == 60) {
                             drawables["8-fade"].freeze = true;
