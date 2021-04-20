@@ -2,10 +2,6 @@
     --mute-button-size: 50px;
 }
 
-.asdf {
-    color: #1E1E1E;
-}
-
 Canvas {
     position: absolute;
     z-index: -1;
@@ -134,8 +130,6 @@ input {
     padding: 0 0 0 0px;
 }
 
-
-
 .volume-slider-container {
     padding:10px;
 }
@@ -209,10 +203,6 @@ input[type="range"] {
     display: none;
 }
 
-.poly {
-    fill: rgba(216, 0, 0, 0.3);
-}
-
 .spell {
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -251,14 +241,6 @@ input[type="range"] {
     top: 153px;
 }
 
-#svgholder {
-    position: absolute;
-    left: 50%;
-    -webkit-transform: translate(-50%, 0%);
-    -moz-transform: translate(-50%, 0%);
-    transform: translate(-50%, 0%);
-}
-
 .modal {
     display: block; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -278,10 +260,6 @@ input[type="range"] {
     padding: 20px;
     border: 1px solid #888;
     width: 50%; /* Could be more or less, depending on screen size */
-}
-
-#winScreen {
-    display: none;
 }
 
 .explanation {
@@ -319,31 +297,6 @@ input[type="range"] {
     width: 40%;
 }
 
-#tutorial-text {
-    width: 35%
-}
-
-.holder {
-    display: flex;
-}
-
-.image-holder {
-    display: grid;
-}
-
-.first-image {
-    width: 400px;
-    object-fit: cover;
-    border-radius: 3px;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-bottom: 20px;
-}
-
-.second-image {
-    width: 220px;
-    object-fit: cover;
-    border-radius: 3px;
-    margin-left: 100px;
-    margin-right: 10px;
+#explanationButton {
+    margin-top: 12px;
 }
