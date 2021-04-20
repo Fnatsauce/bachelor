@@ -375,6 +375,7 @@
         var language;
 
         function startTest() {
+            language = "dk";
             gameWindow.start();
             entities.campaign = campaigns[4];
             entities.campaign.start();
@@ -932,24 +933,8 @@
             }
 
             drawRoomText() {
-                var string = [" blocks your way.", " approaches.", " appears.", " confronts you.", " charges in to fight."][/* cycle through: */ this.currentRoom % 5 /* random: Math.floor(Math.random() * 5) */];
-                switch (entities.enemy.name) {
-                    case "wizard":
-                        drawTextBox("A Wizard" + string);
-                        break;
-                    case "skeleton":
-                        drawTextBox("A Skeleton" + string);
-                        break;
-                    case "mushroom":
-                        drawTextBox("A Fungrowth" + string);
-                        break;
-                    case "flyingEye":
-                        drawTextBox("An Eyesore" + string);
-                        break;
-                    case "goblin":
-                        drawTextBox("A Goblin" + string);
-                        break;
-                }
+                var approach = approaches[language][/* cycle through: */ this.currentRoom % 5 /* random: Math.floor(Math.random() * 5) */];
+                drawTextBox(enemyNames[language][entities.enemy.name] + approach);
             }
         }
 
@@ -999,7 +984,10 @@
                 new Room(new Enemy(910, 160, "skeleton", {x:150, y:150}, {x:400, y:400}), "ice")
             ], 144),
             new Campaign([
-                new Room(new Enemy(910, 160, "skeleton", {x:150, y:150}, {x:400, y:400}), undefined)
+            new Room(new Enemy(870, 100, "mushroom", {x:150, y:150}, {x:500, y:500}), undefined),
+                new Room(new Enemy(910, 160, "flyingEye", {x:150, y:150}, {x:400, y:400}), "air"),
+                new Room(new Enemy(910, 160, "goblin", {x:150, y:150}, {x:400, y:400}), undefined),
+                new Room(new Enemy(910, 160, "skeleton", {x:150, y:150}, {x:400, y:400}), "ice")
             ], 144)
         ];
 
