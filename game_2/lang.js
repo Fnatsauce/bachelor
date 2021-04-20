@@ -13,7 +13,7 @@ explanationTexts = {
         tornado: "Tornado"
     },
     dk: {
-        projectExplanation: "Tak fordi du vil hjælpe os med vores projekt. <br><br> Vær opmærksom på, at der er musik og lydeffekter i spillet, som vil starte, når du trykker på knappen herunder. Lyd er ikke strengt nødvendigt for oplevelsen, men vi ville anbefale at have lyd på. Du kan ændre lydstyrken og/eller slå den fra under spilvinduet, når spillet starter.",
+        projectExplanation: "Tak fordi du vil hjælpe os med vores projekt. <br><br> Vær opmærksom på at der er musik og lydeffekter i spillet, som vil starte, når du trykker på knappen herunder. Lyd er ikke strengt nødvendigt for oplevelsen, men vi ville anbefale at have lyd på. Du kan ændre lydstyrken og/eller slå den fra under spilvinduet, når spillet starter.",
         practiceExplanation: "Godt arbejde, du har gennemført introduktionen! Før spillet begynder, vil vi lige give dig en chance for at blive bekendt med alle magiske angreb, samt hvordan spillet føles uden for introduktionen. Du skal kæmpe mod syv troldmænd. Troldmænd er, som du lærte i introduktionen, svage over alle angreb, så du skal ikke bekymre dig om hvilket angreb der er bedst - prøv dem alle!",
         gameExplanation: "Her er et kort over de fjender som du vil møde i spillet, samt de evner du vil have til rådighed. På en skala fra 1 (meget usikker) til 10 (meget sikker) hvor sikker er du på at du vil kunne besejre alle fjenderne?",
         endOfGame: "Tak for du ville spille vores spil! Til slut vil vi spørge, om du lige vil bruge et øjeblik på besvare nogle spørgsmål omkring din oplevelse med spillet.",
