@@ -472,11 +472,10 @@
             if(language == "en") {
                 document.getElementById("surveyLink").href = "https://docs.google.com/forms/d/e/1FAIpQLScW7pIow1ME2T44PTCsdZLLxpKw7-IhxnPB4VgLXyh_rlDrfg/viewform?usp=pp_url&entry.755563979=" + participantGroup + "&entry.146232743=" + confidenceValue + "&entry.1854619726=" + spellsUsed;
             } else {
-                //link to danish survey
+                document.getElementById("surveyLink").href = "https://docs.google.com/forms/d/e/1FAIpQLSe5CzlYNobcSaV1i-DrmyFRa2VN7YSjIX-023TDhy7hU1xB3w/viewform?usp=pp_url&entry.755563979=" + participantGroup + "&entry.146232743=" + confidenceValue + "&entry.1854619726=" + spellsUsed;
             }
             document.getElementById("explanationButton").disabled = false;
         }
-
         function campaignFinished(campaign) {
             gameWindow.restart();
             if(campaign == 2) {
