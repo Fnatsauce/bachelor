@@ -6,7 +6,7 @@
         <link rel="stylesheet" type="text/css" href="stylesheet.css"></link>
         <script src="lang.js"></script>
     </head>
-    <body onload="startTest()">
+    <body onload="startLanguageSelection()">
         <div style="display:none;">
             <!-- Player animations -->
             <img id="playerIdleImage"
@@ -356,7 +356,7 @@
         2.0 Game...
         --------------------------------------------------------------*/
 
-        var participantGroup = Math.floor(Math.random() * 2) + 1;
+        var participantGroup = Math.floor(Math.random() * 4) + 1;
 
         var participantGroup = 1;
         var language;
@@ -368,7 +368,7 @@
             document.getElementById("explanationButton").style.display = "block";
         }
 
-        function startLanguageScreen() {
+        function startLanguageSelection() {
             document.getElementById("languageSelection").style.display = "block";
             document.getElementById("explanation").style.display = "block";
         }
@@ -890,7 +890,11 @@
                         }
                         if (this.animationFrame == 60) {
                             drawables["8-fade"].freeze = true;
-                            setTimeout(function() {campaignFinished(entities.campaign.currentRoom);}, 100000);
+                            if (gameWindow.tutorial) {
+                                campaignFinished(entities.campaign.currentRoom);
+                            } else {
+                                setTimeout(function() {campaignFinished(entities.campaign.currentRoom);}, 3000);
+                            }
                         }
                     }
                 }
