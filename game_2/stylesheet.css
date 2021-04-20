@@ -109,7 +109,7 @@ input {
 }
 
 .mute-button + label {
-    background-image: url(unmuted.png);
+    background-image: url(gui/unmuted.png);
     height: var(--mute-button-size);
     width: var(--mute-button-size);
     background-size: var(--mute-button-size) var(--mute-button-size);
@@ -122,7 +122,7 @@ input {
 }
 
 .mute-button:checked + label {
-    background-image: url(muted.png);
+    background-image: url(gui/muted.png);
     height: var(--mute-button-size);
     width: var(--mute-button-size);
     background-size: var(--mute-button-size) var(--mute-button-size);

@@ -10,15 +10,15 @@
         <div style="display:none;">
             <!-- Player animations -->
             <img id="playerIdleImage"
-                src="PlayerCharacter/Idle.png">
+                src="characters/PlayerCharacter/Idle.png">
             <img id="playerAttackFireImage"
-                src="PlayerCharacter/Attack2-fire.png">
+                src="characters/PlayerCharacter/Attack2-fire.png">
             <img id="playerAttackIceImage"
-                src="PlayerCharacter/Attack2-ice.png">
+                src="characters/PlayerCharacter/Attack2-ice.png">
             <img id="playerAttackAirImage"
-                src="PlayerCharacter/Attack1-air.png">
+                src="characters/PlayerCharacter/Attack1-air.png">
             <img id="playerDeathImage"
-                src="PlayerCharacter/Death.png">
+                src="characters/PlayerCharacter/Death.png">
 
             <!-- Player spell-attack animations -->
             <img id="fireball"
@@ -74,78 +74,78 @@
             </audio>
             
             <img id="wizardIdleImage"
-                src="enemyWizard/Idle.png">
+                src="characters/enemyWizard/Idle.png">
             <img id="wizardResistImage"
-                src="enemyWizard/Hit.png">
+                src="characters/enemyWizard/Hit.png">
             <img id="wizardDeathImage"
-                src="enemyWizard/Death.png">
+                src="characters/enemyWizard/Death.png">
             <audio id="wizardDeath" controls="none">
-                <source src="enemyWizard/wizardDeath.wav">
+                <source src="characters/enemyWizard/wizardDeath.wav">
             </audio>
           
             <img id="flyingEyeIdleImage"
-                src="flyingEye/Idle.png">
+                src="characters/flyingEye/Idle.png">
             <img id="flyingEyeResistImage"
-                src="flyingEye/Hit.png">
+                src="characters/flyingEye/Hit.png">
             <img id="flyingEyeDeathImage"
-                src="flyingEye/Death.png">
+                src="characters/flyingEye/Death.png">
             <audio id="flyingEyeDeath" controls="none"> 
-                <source src="flyingEye/flyingEyeDeath.wav">
+                <source src="characters/flyingEye/flyingEyeDeath.wav">
             </audio>
 
             <img id="mushroomIdleImage"
-                src="mushroom/Idle.png">
+                src="characters/mushroom/Idle.png">
             <img id="mushroomResistImage"
-                src="mushroom/Hit.png">
+                src="characters/mushroom/Hit.png">
             <img id="mushroomDeathImage"
-                src="mushroom/Death.png">
+                src="characters/mushroom/Death.png">
             <audio id="mushroomDeath" controls="none"> 
-                <source src="mushroom/mushroomDeath.wav">
+                <source src="characters/mushroom/mushroomDeath.wav">
             </audio>
 
             <img id="goblinIdleImage"
-                src="goblin/Idle.png">
+                src="characters/goblin/Idle.png">
             <img id="goblinResistImage"
-                src="goblin/Hit.png">
+                src="characters/goblin/Hit.png">
             <img id="goblinDeathImage"
-                src="goblin/Death.png">
+                src="characters/goblin/Death.png">
             <audio id="goblinDeath" controls="none"> 
-                <source src="goblin/goblinDeath.wav">
+                <source src="characters/goblin/goblinDeath.wav">
             </audio>
 
             <img id="skeletonIdleImage"
-                src="skeleton/Idle.png">
+                src="characters/skeleton/Idle.png">
             <img id="skeletonResistImage"
-                src="skeleton/Hit.png">
+                src="characters/skeleton/Hit.png">
             <img id="skeletonDeathImage"
-                src="skeleton/Death.png">
+                src="characters/skeleton/Death.png">
             <img id="skeletonAttackImage"
-                src="skeleton/Attack.png">
+                src="characters/skeleton/Attack.png">
             <audio id="skeletonAttackStart" controls="none"> 
-                <source src="skeleton/skeletonAttackStart.wav">
+                <source src="characters/skeleton/skeletonAttackStart.wav">
             </audio>
             <audio id="skeletonDeath" controls="none"> 
-                <source src="skeleton/skeletonDeath.wav">
+                <source src="characters/skeleton/skeletonDeath.wav">
             </audio>
 
             <img id="slimeIdleImage"
-                src="slime/Idle.png">
+                src="characters/slime/Idle.png">
             <img id="slimeResistImage"
-                src="slime/Hit.png">
+                src="characters/slime/Hit.png">
             <img id="slimeAttackImage"
-                src="slime/Attack.png">
+                src="characters/slime/Attack.png">
             <audio id="slimeAttackStart" controls="none"> 
-                <source src="slime/slimeAttackStart.wav">
+                <source src="characters/slime/slimeAttackStart.wav">
             </audio>
             <audio id="slimeAttackStart" controls="none"> 
-                <source src="slime/slimeAttackStart.wav">
+                <source src="characters/slime/slimeAttackStart.wav">
             </audio>
 
             <!-- Overview map -->
             <img id="tutorialMap"
-                src="tutorialMap.png">
+                src="gui/tutorialMap.png">
             <img id="familiarityMap"
-                src="highFamMap.png">
+                src="gui/highFamMap.png">
             <img id="resistBar"
                 src="resistBar.png">
             <img id="fade"
@@ -157,7 +157,7 @@
         
             <!-- Cross animation -->
             <img id="cross"
-                src="cross.png">
+                src="gui/cross.png">
 
             <!-- Background music -->
             <audio id="backgroundMusic" controls="none"> 
@@ -194,9 +194,9 @@
                     onmouseout="document.body.style.cursor = 'default'"
                     onclick="entities.player.attack('Air')"
                     ondragstart="return false;">
-                <img id="fadedSpells1" src="fadedSpells1.png">
-                <img id="fadedSpells2" src="fadedSpells2.png">
-                <input id="nextButton" type="image" src="nextButtonUnpressed.png" name="nextButton" ondragstart="return false;" onmousedown="document.getElementById('nextButton').src = 'nextButtonPressed.png'" onmouseup="document.getElementById('nextButton').src = 'nextButtonUnpressed.png'"/>
+                <img id="fadedSpells1" src="spells/fadedSpells1.png">
+                <img id="fadedSpells2" src="spells/fadedSpells2.png">
+                <input id="nextButton" type="image" src="gui/nextButtonUnpressed.png" name="nextButton" ondragstart="return false;" onmousedown="document.getElementById('nextButton').src = 'gui/nextButtonPressed.png'" onmouseup="document.getElementById('nextButton').src = 'gui/nextButtonUnpressed.png'"/>
             </div>
             <div class="bottom-overlay">
                 <div class="volume-controls">
@@ -243,9 +243,9 @@
                 <p class="hidden readable-tutorial" id="practiceExplanation"></p>
                 <div class="hidden readable-tutorial" id="gameExplanation">
                     <img id="noIndicationMap"
-                        src="noIndicationMap.png">
+                        src="gui/noIndicationMap.png">
                     <img id="indicationMap"
-                        src="gameMap.png">
+                        src="gui/gameMap.png">
                     <p id="gameExplanationText"></p>
                 </div>
                 <p class="hidden readable-tutorial" id="endOfGame"><a id="surveyLink" href=""> here</a></p>
@@ -414,6 +414,7 @@
         }
 
         function startGame() {
+            document.getElementById("projectExplanation").style.display = "none";
             document.getElementById("practiceExplanation").style.display = "none";
             document.getElementById("gameExplanation").style.display = "block";
             document.getElementById("confidence").style.display = "flex";
