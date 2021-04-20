@@ -12,7 +12,7 @@ explanationTexts = {
     dk: {
         projectExplanation: "Tak fordi du vil hjælpe os med vores projekt.",
         practiceExplanation: "Godt arbejde med at gennemføre introduktionen! Før spillet begynder vil vi lige give dig en chance for at blive bekendt med alle besværgelserne og hvordan spillet føles uden for guiden. Du skal kæmpe mod syv wizards. Wizards er som du lærte i introduktionen svage over alle angreb, så du skal ikke bekymre dig om hvilken besværgelse der er bedst - prøv dem alle!",
-        gameExplanation: "Her er et kort over de fjender som du vil møde i spillet, samt de evner som du vil have til rådighed. På en skala fra 1 (meget usikker) til 10 (meget sikker) hvor siker du er på at du vil kunne besejre alle fjenderne.",
+        gameExplanation: "Her er et kort over de fjender som du vil møde i spillet, samt de evner som du vil have til rådighed. På en skala fra 1 (meget usikker) til 10 (meget sikker) hvor sikker du er på at du vil kunne besejre alle fjenderne.",
         endOfGame: "Tak for du ville spille vores spil! Til slut vil vi spørge om du lige vil bruge et øjeblik på at svare på nogle spørgsmål omkring din oplevelse med spillet",
         confidenceText1: "Meget usikker",
         confidenceText2: "Meget sikker",
@@ -45,7 +45,7 @@ tutorialTexts = {
         'For at besejre din modstander må du vælge et angreb fra de mulige. \n Nogle fjender er sårbare overfor bestemte angreb og det er op til dig at regne ud hvilket angreb der vil være effektivt mod din nuværende modstander \n \n Men vælg med omtanke! Fordi du får kun ET SKUD!',
         'I øjeblikket er du mod en anden Wizard. \n Wizards er, som vi alle ved, meget svage og skrøbelige, så du skal ikke bekymre dig om hvilket angreb der er bedst - hvad som helst ville virke!',
         'Vælg nu et af de tre magiske angreb.',
-        'Når du rammer en modstander vi de forsøge at modstå angrebet. Hvis den lilla indikator når toppen, vil din modstander overkomme din magi og angribe dig tilbage! \n Lad os se hvor godt den skrøbelige Wizard klarer sig...',
+        'Når du rammer en modstander vi de forsøge at modstå angrebet. \n Hvis den lilla indikator når toppen, vil din modstander overkomme din magi og angribe dig tilbage! \n \n Lad os se hvor godt den skrøbelige Wizard klarer sig...',
         'Godt klaret! Du besejrede den gamle, svagelige troldmand. \n \n Meget imponerende... \n \n Når en modstander er besejret vil du automatisk bevæge dig til det næste rum - lad os tage derhen nu!',
         'Velkommen til rum nummer to!',
         'PAS PÅ!!! \n EN NY FJENDE NÆRMER SIG! \n \n I sandhed et afskyeligt væsen... Det må besejres!',
