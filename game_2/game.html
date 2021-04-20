@@ -176,24 +176,33 @@
             <canvas id="canvas1" width="1200" height="600"></canvas>
             <canvas id="canvas3" width="1200" height="600"></canvas>
             <div class="overlay">
-                <img id="fireIcon" class="spell"
-                    src="spells/fire.png"
-                    onmouseover="document.body.style.cursor = 'pointer'"
-                    onmouseout="document.body.style.cursor = 'default'"
-                    onclick="entities.player.attack('Fire')"
-                    ondragstart="return false;">
-                <img id="iceIcon" class="spell"
-                    src="spells/ice.png"
-                    onmouseover="document.body.style.cursor = 'pointer'"
-                    onmouseout="document.body.style.cursor = 'default'"
-                    onclick="entities.player.attack('Ice')"
-                    ondragstart="return false;">
-                <img id="airIcon" class="spell"
-                    src="spells/air.png"
-                    onmouseover="document.body.style.cursor = 'pointer'"
-                    onmouseout="document.body.style.cursor = 'default'"
-                    onclick="entities.player.attack('Air')"
-                    ondragstart="return false;">
+                <div class="fireContainer">
+                    <img id="fireIcon" class="spell"
+                        src="spells/fire.png"
+                        onmouseover="document.body.style.cursor = 'pointer'"
+                        onmouseout="document.body.style.cursor = 'default'"
+                        onclick="entities.player.attack('Fire')"
+                        ondragstart="return false;">
+                    <span id="fireTooltip" class="tooltip">Fireball</span>
+                </div>
+                <div class="iceContainer">
+                    <img id="iceIcon" class="spell"
+                        src="spells/ice.png"
+                        onmouseover="document.body.style.cursor = 'pointer'"
+                        onmouseout="document.body.style.cursor = 'default'"
+                        onclick="entities.player.attack('Ice')"
+                        ondragstart="return false;">
+                    <span id="iceTooltip" class="tooltip">Ice Spear</span>
+                </div>
+                <div class="airContainer">
+                    <img id="airIcon" class="spell"
+                        src="spells/air.png"
+                        onmouseover="document.body.style.cursor = 'pointer'"
+                        onmouseout="document.body.style.cursor = 'default'"
+                        onclick="entities.player.attack('Air')"
+                        ondragstart="return false;">
+                    <span id="airTooltip" class="tooltip">Tornado</span>
+                </div>
                 <img id="fadedSpells1" src="spells/fadedSpells1.png">
                 <img id="fadedSpells2" src="spells/fadedSpells2.png">
                 <input id="nextButton" type="image" src="gui/nextButtonUnpressed.png" name="nextButton" ondragstart="return false;" onmousedown="document.getElementById('nextButton').src = 'gui/nextButtonPressed.png'" onmouseup="document.getElementById('nextButton').src = 'gui/nextButtonUnpressed.png'"/>
@@ -387,6 +396,9 @@
             document.getElementById("explanationButton").innerHTML = explanationTexts[language].explanationButton;
             document.getElementById("endOfGame").insertBefore(document.createTextNode(explanationTexts[language].endOfGame), document.getElementById("surveyLink"));
             document.getElementById("surveyLink").innerHTML = explanationTexts[language].surveyLinkText;
+            document.getElementById("fireTooltip").innerHTML = explanationTexts[language].fireball;
+            document.getElementById("iceTooltip").innerHTML = explanationTexts[language].iceSpear;
+            document.getElementById("airTooltip").innerHTML = explanationTexts[language].tornado;
             startTutorial();
         }
 
@@ -920,21 +932,22 @@
             }
 
             drawRoomText() {
+                var string = [" blocks your way.", " approaches.", " appears.", " confronts you.", " charges in to fight."][/* cycle through: */ this.currentRoom % 5 /* random: Math.floor(Math.random() * 5) */];
                 switch (entities.enemy.name) {
                     case "wizard":
-                        drawTextBox("An enemy Wizard approaches.");
+                        drawTextBox("A Wizard" + string);
                         break;
                     case "skeleton":
-                        drawTextBox("An enemy Skeleton approaches.");
+                        drawTextBox("A Skeleton" + string);
                         break;
                     case "mushroom":
-                        drawTextBox("An enemy Fungrowth approaches.");
+                        drawTextBox("A Fungrowth" + string);
                         break;
                     case "flyingEye":
-                        drawTextBox("An enemy Eyesore approaches.");
+                        drawTextBox("An Eyesore" + string);
                         break;
                     case "goblin":
-                        drawTextBox("An enemy Goblin approaches.");
+                        drawTextBox("A Goblin" + string);
                         break;
                 }
             }

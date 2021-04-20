@@ -211,22 +211,61 @@ input[type="range"] {
     user-select: none;
 }
 
-#fireIcon {
+.fireContainer {
     position: absolute;
     left: 190px;
     top: 153px;
 }
 
-#iceIcon {
+.fireContainer:hover #fireTooltip {
+    visibility: visible;
+}
+
+.iceContainer {
     position: absolute;
     left: 240px;
     top: 253px;
 }
 
-#airIcon {
+.iceContainer:hover #iceTooltip {
+    visibility: visible;
+}
+
+.airContainer {
     position: absolute;
     left: 190px;
     top: 353px;
+}
+
+.airContainer:hover #airTooltip {
+    visibility: visible;
+}
+
+.tooltip {
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    bottom: 110%;
+    left: 50%;
+    width: 120px;
+    text-align: center;
+    border: 1px solid #fff;
+    border-radius: 6px;
+    padding: 5px 0;
+    margin-left: -60px;
+    background-color: black;
+    color: #fff;
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
 }
 
 #fadedSpells1, #fadedSpells2 {
@@ -265,7 +304,7 @@ input[type="range"] {
 .explanation {
     margin: 0% auto;
     width: 1200px;
-    height: 600px;
+    height: 800px;
     overflow: scroll;
 }
 

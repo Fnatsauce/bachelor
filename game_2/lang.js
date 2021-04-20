@@ -7,7 +7,10 @@ explanationTexts = {
         confidenceText1: "Not confident",
         confidenceText2: "Very confident",
         explanationButton: "Click here when you're done",
-        surveyLinkText: " here"
+        surveyLinkText: " here",
+        fireball: "Fireball",
+        iceSpear: "Ice Spear",
+        tornado: "Tornado"
     },
     dk: {
         projectExplanation: "Tak fordi du vil hjælpe os med vores projekt. <br><br> Vær opmærksom på at der er lyd, det er ikke strengt nødvendigt for spillet, men vi ville anbefale at have lyd på. Du kan ændre lydstyrken eller slå den fra under spilvinduet når spillet starter.",
@@ -17,7 +20,10 @@ explanationTexts = {
         confidenceText1: "Meget usikker",
         confidenceText2: "Meget sikker",
         explanationButton: "Tryk her når du er færdig",
-        surveyLinkText: " her"
+        surveyLinkText: " her",
+        fireball: "Ildkugle",
+        iceSpear: "Issyl",
+        tornado: "Tornado"
     }
 }
 
@@ -39,7 +45,7 @@ tutorialTexts = {
         'Now I wish you good luck against the Slime! \n Because this is just the tutorial, whether you win or lose you will still move on to the next part after this Slime-battle. \n \n Have fun!',
     ],
     dk: [
-        'Velkommen til One-Shot Wizard! \n Mit navn er: Værner-Vejledningstekst og jeg vil lærer dig hvordan man spiller - klik venligst på pilen til højre for at fortsætte.',
+        'Velkommen til One-Shot Wizard! \n Mit navn er: Værner-Vejledningstekst og jeg vil lærer dig hvordan man spiller - klik venlist på pilen til højre for at fortsætte.',
         'Det her er dig. Du er en Wizard (Altså en troldmand).',
         'Det her er din modstander. Hvert rum i spillet har en.',
         'For at besejre din modstander må du vælge et angreb fra de mulige. \n Nogle fjender er sårbare overfor bestemte angreb og det er op til dig at regne ud hvilket angreb der vil være effektivt mod din nuværende modstander \n \n Men vælg med omtanke! Fordi du får kun ET SKUD!',
