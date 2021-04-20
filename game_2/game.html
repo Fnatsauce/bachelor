@@ -201,7 +201,7 @@
             <div class="bottom-overlay">
                 <div class="volume-controls">
                     <div class="mute-container">
-                        <input type="checkbox" class="mute-button" onclick="toggleMuteAudio()"><label></label></button>
+                        <input id="muteButton" type="checkbox" class="mute-button" onclick="toggleMuteAudio(this.checked)"><label></label></button>
                     </div>
                     <div class="volume-slider-container">
                         <input id="volumeSlider" type="range" oninput="changeVolume(this.value)" onchange="changeVolume(this.value)" min="0" max="0.4" step="0.02" value="0.1">
@@ -324,6 +324,7 @@
             sound.setAttribute("controls", "none");
             sound.loop = true;
             sound.volume = document.getElementById("volumeSlider").value;
+            sound.muted = document.getElementById("muteButton").checked;
             sound.play();
         }
 
@@ -331,11 +332,11 @@
             backgroundMusic.volume = value;
         }
  
-        function toggleMuteAudio(){
-            if (backgroundMusic.muted == true) {
-                backgroundMusic.muted = false
+        function toggleMuteAudio(checked){
+            if (checked) {
+                backgroundMusic.muted = true;
             } else {
-                backgroundMusic.muted = true
+                backgroundMusic.muted = false;
             }
         }
 
@@ -812,7 +813,7 @@
             var ctx = gameWindow.context3;
             ctx.drawImage(document.getElementById("textBackground"), 0, 450);
             ctx.font = "15px Arial";
-            var lines = wrapText(ctx, text, 1100)
+            var lines = wrapText(ctx, text, 950)
             ctx.beginPath();
             ctx.fillStyle = "white";
             var textY = 490;
