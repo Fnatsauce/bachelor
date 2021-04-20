@@ -367,7 +367,7 @@
 
         var participantGroup = Math.floor(Math.random() * 4) + 1;
 
-        var participantGroup = 1;
+        //var participantGroup = 1;
         var confidenceRating;
         var language;
 
@@ -672,6 +672,7 @@
                     }
                 }
                 var attackAnimation = getAnimation(new Animation(this.attackImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, attackDone));
+                var resistTime = Math.floor(Math.random() * 479);
                 var resist = function() {
                     if (this.animationFrame == 30 && gameWindow.tutorial && entities.enemy.name != "slime") {
                         gameWindow.pause();
@@ -693,7 +694,7 @@
                         ctx.fillStyle = "orange";
                         ctx.fillText("RESISTED", 920, 275);
                     }
-                    if(this.animationFrame == Math.floor(Math.random() * 480)) {
+                    if(this.animationFrame == resistTime) {
                         var attackingEnemies = ["slime", "skeleton"];
                         if(!(attackingEnemies.includes(entities.enemy.name) && (entities.campaign.currentRoom == entities.campaign.rooms.length - 1))) {
                             this.delete();
