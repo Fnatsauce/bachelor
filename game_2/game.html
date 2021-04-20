@@ -6,7 +6,7 @@
         <link rel="stylesheet" type="text/css" href="stylesheet.css"></link>
         <script src="lang.js"></script>
     </head>
-    <body onload="startTest()">
+    <body onload="startLanguageScreen()">
         <div style="display:none;">
             <!-- Player animations -->
             <img id="playerIdleImage"
@@ -232,6 +232,7 @@
             <div class="modal-content explanation">
                 <div class="hidden readable-tutorial" id="languageSelection">
                     <p>Please select a language below.</p>
+                    <p>Vælg et sprog forneden.</p>
                     <button onclick="setLanguage('dk')">Dansk</button>
                     <button onclick="setLanguage('en')">English</button>
                 </div>
@@ -340,13 +341,15 @@
 
         function playSoundEffect(soundId) {
             var sound = document.getElementById(soundId);
-            sound.volume = backgroundMusic.volume + 0.1;
+            sound.volume = backgroundMusic.volume;
+            sound.muted = backgroundMusic.muted;
             sound.play();
         }
 
         function playLoopedSoundEffect(soundId) {
             var sound = document.getElementById(soundId);
-            sound.volume = backgroundMusic.volume + 0.1;
+            sound.volume = backgroundMusic.volume;
+            sound.muted = backgroundMusic.muted;
             sound.playbackRate = 1.5;
             sound.loop = true;
             sound.play();
@@ -356,7 +359,7 @@
         2.0 Game...
         --------------------------------------------------------------*/
 
-        var participantGroup = Math.floor(Math.random() * 2) + 1;
+        var participantGroup = Math.floor(Math.random() * 4) + 1;
 
         var participantGroup = 1;
         var language;
@@ -381,8 +384,8 @@
             document.getElementById("confidenceText1").innerHTML = explanationTexts[language].confidenceText1;
             document.getElementById("confidenceText2").innerHTML = explanationTexts[language].confidenceText2;
             document.getElementById("explanationButton").innerHTML = explanationTexts[language].explanationButton;
-            
             document.getElementById("endOfGame").insertBefore(document.createTextNode(explanationTexts[language].endOfGame), document.getElementById("surveyLink"));
+            document.getElementById("surveyLink").innerHTML = explanationTexts[language].surveyLink;
             startTutorial();
         }
 
@@ -451,7 +454,11 @@
                     confidenceValue = rates[i].value;
                 }
             }
-            document.getElementById("surveyLink").href = "https://docs.google.com/forms/d/e/1FAIpQLScW7pIow1ME2T44PTCsdZLLxpKw7-IhxnPB4VgLXyh_rlDrfg/viewform?usp=pp_url&entry.755563979=" + participantGroup + "&entry.146232743=" + confidenceValue + "&entry.1854619726=" + spellsUsed;
+            if(language == "en") {
+                document.getElementById("surveyLink").href = "https://docs.google.com/forms/d/e/1FAIpQLScW7pIow1ME2T44PTCsdZLLxpKw7-IhxnPB4VgLXyh_rlDrfg/viewform?usp=pp_url&entry.755563979=" + participantGroup + "&entry.146232743=" + confidenceValue + "&entry.1854619726=" + spellsUsed;
+            } else {
+                //link to danish survey
+            }
             document.getElementById("explanationButton").disabled = false;
         }
 
