@@ -1,6 +1,6 @@
 explanationTexts = {
     en: {
-        projectExplanation: "Thank you for wanting to help out in our project.",
+        projectExplanation: "Thank you for wanting to help out in our project. <br><br> Beware there is sound, it isn't integral to the experience, but we would recommend keeping it on. You can change the volume and mute the sound below the game window when it starts.",
         practiceExplanation: "Good job completing the tutorial! Now before the game actually begins you will have a chance to familiarize yourself with all the spells and how it feels to progress in the game outside of a tutorial. So now you will be fighting seven Wizards. The Wizards are, as you learned in the tutorial, weak to all attacks, so don't worry about what spell might be best - try them all out!",
         gameExplanation: "Here is a map of the enemies you will be fighting in the game as well as the abilities you will have available. Please rate on a scale from 1 (very unsure) to 10 (pretty certain) how certain you are that you will be able to defeat all the enemies.",
         endOfGame: "Thanks for playing! Please take a minute to answer our survey about your experience found",
@@ -10,7 +10,7 @@ explanationTexts = {
         surveyLinkText: " here"
     },
     dk: {
-        projectExplanation: "Tak fordi du vil hjælpe os med vores projekt.",
+        projectExplanation: "Tak fordi du vil hjælpe os med vores projekt. <br><br> Vær opmærksom på at der er lyd, det er ikke strengt nødvendigt for spillet, men vi ville anbefale at have lyd på. Du kan ændre lydstyrken eller slå den fra under spilvinduet når spillet starter.",
         practiceExplanation: "Godt arbejde med at gennemføre introduktionen! Før spillet begynder vil vi lige give dig en chance for at blive bekendt med alle besværgelserne og hvordan spillet føles uden for guiden. Du skal kæmpe mod syv wizards. Wizards er som du lærte i introduktionen svage over alle angreb, så du skal ikke bekymre dig om hvilken besværgelse der er bedst - prøv dem alle!",
         gameExplanation: "Her er et kort over de fjender som du vil møde i spillet, samt de evner som du vil have til rådighed. På en skala fra 1 (meget usikker) til 10 (meget sikker) hvor sikker du er på at du vil kunne besejre alle fjenderne.",
         endOfGame: "Tak for du ville spille vores spil! Til slut vil vi spørge om du lige vil bruge et øjeblik på at svare på nogle spørgsmål omkring din oplevelse med spillet",
