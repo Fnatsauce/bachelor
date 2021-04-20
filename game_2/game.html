@@ -673,9 +673,9 @@
                         document.getElementById("resisting").pause();
                         attackAnimation();
                         if (entities.enemy.name == "slime") {
-                            playSoundEffect("slimeAttackStart")
+                            playSoundEffect("slimeAttackStart");
                         } else {
-                            playSoundEffect("skeletonAttackStart")
+                            setTimeout(function() {playSoundEffect("skeletonAttackStart");}, 500);
                         }
                         var ctx = gameWindow.context3;
                         ctx.font = "50px Arial";
