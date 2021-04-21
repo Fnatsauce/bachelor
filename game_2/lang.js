@@ -1,6 +1,6 @@
 explanationTexts = {
     en: {
-        projectExplanation: "Thank you for wanting to help out in our project. <br><br> The game has music and sound effects that will start to play when you press the button below. Audio isn't integral to the experience, but we would recommend keeping it on. You can change the volume and/or mute the sound below the game window when it starts.",
+        projectExplanation: "Thank you for wanting to help out in our project. <br><br> Because we wish to use your feedback for our project, if you choose to provide it at the end, we ask that you only play the game once before answering our survey. Otherwise our data will be distorted. <br> If you do wish to play the game again, please do so after having answered the survey once and do not answer the survey again in following playthroughs. <br><br> The game has music and sound effects that will start to play when you press the button below. Audio isn't integral to the experience, but we would recommend keeping it on. You can change the volume and/or mute the sound below the game window when it starts.",
         practiceExplanation: "Good job completing the tutorial! Now before the game actually begins you will have a chance to familiarize yourself with all the spells and how it feels to progress in the game outside of a tutorial. So now you will be fighting seven Wizards. The Wizards, as you learned in the tutorial, are weak to all attacks, so don't worry about what spell might be best - try them all out!",
         gameExplanation: "Here is a map of the enemies you will be fighting in the game as well as the abilities you will have available. Please rate on a scale from 1 (very unsure) to 10 (pretty certain) how certain you are that you will be able to defeat all the enemies.",
         endOfGame: "Thank you for playing! Please take a minute to answer our survey about your experience.",
@@ -13,7 +13,7 @@ explanationTexts = {
         tornado: "Tornado"
     },
     dk: {
-        projectExplanation: "Tak fordi du vil hjælpe os med vores projekt. <br><br> Vær opmærksom på at der er musik og lydeffekter i spillet, som vil starte, når du trykker på knappen herunder. Lyd er ikke strengt nødvendigt for oplevelsen, men vi ville anbefale at have lyd på. Du kan ændre lydstyrken og/eller slå den fra under spilvinduet, når spillet starter.",
+        projectExplanation: "Tak fordi du vil hjælpe os med vores projekt. <br><br> Fordi vi ønsker at bruge din feedback til vores bachelorprojekt, hvis du er villig til at give den efter spillet, beder vi dig kun spille spillet én gang inden du besvarer vores spørgeskema. Ellers vil vores data være inkonsistent. <br> Hvis du ønsker at spille spillet flere gange, beder vi dig gøre dette efter du har besvaret spørgeskemaet én gang, samt at du ikke besvare spørgeskemaet igen efter fremtidige spil. <br><br>Vær opmærksom på, at der er musik og lydeffekter i spillet, som vil starte, når du trykker på knappen herunder. Lyd er ikke strengt nødvendigt for oplevelsen, men vi ville anbefale at have lyd på. Du kan ændre lydstyrken og/eller slå den fra under spilvinduet, når spillet starter.",
         practiceExplanation: "Godt arbejde, du har gennemført introduktionen! Før spillet begynder, vil vi lige give dig en chance for at blive bekendt med alle magiske angreb, samt hvordan spillet føles uden for introduktionen. Du skal kæmpe mod syv troldmænd. Troldmænd er, som du lærte i introduktionen, svage over alle angreb, så du skal ikke bekymre dig om hvilket angreb der er bedst - prøv dem alle!",
         gameExplanation: "Her er et kort over de fjender som du vil møde i spillet, samt de evner du vil have til rådighed. På en skala fra 1 (meget usikker) til 10 (meget sikker) hvor sikker er du på at du vil kunne besejre alle fjenderne?",
         endOfGame: "Tak for du ville spille vores spil! Til slut vil vi spørge, om du lige vil bruge et øjeblik på besvare nogle spørgsmål omkring din oplevelse med spillet.",
@@ -35,7 +35,7 @@ tutorialTexts = {
         'It is up to you to choose the one attack of the ones available that can defeat your enemy. \n \n But choose wisely! Because you only get one chance...',
         'You are currently facing an evil Wizard. \n Due to the lack of defense, fights between wizards tend to come down to who goes first. Thankfully in One-Hit Wizard, you always go first.',
         'Now choose an attack. All of them are fit for fighting another Wizard.',
-        'When hit, enemies will try to resist the attack. If the resistance bar reaches the top, the enemy will recover from the spell and attack you back! \n Let\'s see how well the evil Wizard can resist your attack...', 
+        'When hit, enemies will try to resist the attack. If the resistance bar reaches the top, the enemy will recover from the spell and attack you back! \n This will certainly be fatal to you, considering you are a defenseless wizard. \n \n Let\'s see how well the evil Wizard can resist your attack...',  
         'Great job! You defeated the evil Wizard! \n \n When an enemy is defeated you will automatically move to the next room - so let\'s go there now!',
         'Welcome to room 2!',
         'A Slime blocks your way.',
@@ -51,7 +51,7 @@ tutorialTexts = {
         'Det er op til dig at vælge det angreb ud af de mulige der kan besejre din nuværende modstander. \n \n Men vælg med omtanke! For du får kun en chance...',
         'I øjeblikket er du mod en ond troldmand. \n Grundet troldmænds manglende forsvar, afgøres dueller ofte af, hvem der angriber først. Heldigvis er det altid dig der starter i One-Hit Wizard.',
         'Vælg nu et af de tre magiske angreb. De er alle velegnede til at ordne troldmænd.',
-        'Når du rammer en modstander vil de forsøge at modstå angrebet. \n Hvis den blå indikator når toppen, vil din modstander overkomme din magi og angribe dig tilbage! \n \n Lad os se hvor godt den onde troldmand klarer sig...',
+        'Når du rammer en modstander, vil de forsøge at modstå angrebet. \n Hvis den blå indikator når toppen, vil din modstander overkomme din magi og angribe dig tilbage! \n Dette vil med garanti være fatalt, da du som troldmand er skrøbelig. \n \n Lad os se hvor godt den onde troldmand klarer sig...',
         'Godt klaret! Du besejrede den onde troldmand! \n \n Når en modstander er besejret, vil du automatisk bevæge dig til det næste rum - lad os tage derhen nu!',
         'Velkommen til rum nummer to!',
         'En Slimklat blokerer vejen.',
