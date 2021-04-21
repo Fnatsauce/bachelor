@@ -215,6 +215,11 @@ input[type="range"] {
     position: absolute;
     left: 190px;
     top: 153px;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .fireContainer:hover #fireTooltip {
@@ -225,6 +230,11 @@ input[type="range"] {
     position: absolute;
     left: 240px;
     top: 253px;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .iceContainer:hover #iceTooltip {
@@ -235,6 +245,11 @@ input[type="range"] {
     position: absolute;
     left: 190px;
     top: 353px;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .airContainer:hover #airTooltip {
