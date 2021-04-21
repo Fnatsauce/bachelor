@@ -367,7 +367,7 @@
 
         var participantGroup = Math.floor(Math.random() * 4) + 1;
 
-        var participantGroup = 1;
+        var participantGroup = 3;
         var confidenceRating;
         var language;
 
@@ -672,7 +672,7 @@
                     }
                 }
                 var attackAnimation = getAnimation(new Animation(this.attackImage, this.x, this.y, this.frameSize, this.size, Infinity, "1-enemy", this.fps, attackDone));
-                var resistTime = Math.floor(Math.random() * 479);
+                var resistTime = Math.floor(Math.random() * 448) + 31;
                 var resist = function() {
                     if (this.animationFrame == 30 && gameWindow.tutorial && entities.enemy.name != "slime") {
                         gameWindow.pause();
@@ -874,14 +874,16 @@
             nextRoom() {
                 this.currentRoom++;
                 var fadeCallback;
-                if(this.rooms.length > this.currentRoom) {
-                    var crossCallback = function() {
-                        if (this.currentCycle >= this.cycles) {
-                            gameWindow.context2.drawImage(document.getElementById("cross"), 825, 0, 75, 75, entities.campaign.mapPortraitPosition + 140 * (entities.campaign.currentRoom - 1), 30, 75, 75);
+                var crossCallback = function() {
+                    if (this.currentCycle >= this.cycles) {
+                        gameWindow.context2.drawImage(document.getElementById("cross"), 825, 0, 75, 75, entities.campaign.mapPortraitPosition + 140 * (entities.campaign.currentRoom - 1), 30, 75, 75);
+                        if(entities.campaign.currentRoom != 7) {
                             drawables["8-fade"].unfreezeAnimation();
                         }
                     }
-                    var cross = getAnimation(new Animation(document.getElementById("cross"), this.mapPortraitPosition + 140 * (this.currentRoom - 1), 30, {x:75, y:75}, {x:75, y:75}, 1, "9-cross", 15, crossCallback));
+                }
+                var cross = getAnimation(new Animation(document.getElementById("cross"), this.mapPortraitPosition + 140 * (this.currentRoom - 1), 30, {x:75, y:75}, {x:75, y:75}, 1, "9-cross", 15, crossCallback));
+                if(this.rooms.length > this.currentRoom) {
                     fadeCallback = function() {
                         if (this.animationFrame == 60) {
                             cross();
@@ -901,7 +903,7 @@
                     }
                 } else {
                     fadeCallback = function() {
-                        if (this.animationFrame == 1 && entities.campaign.currentRoom == 4 || entities.campaign.currentRoom == 1) { //todo: delete 1
+                        if (this.animationFrame == 1 && entities.campaign.currentRoom == 4) {
                             var ctx = gameWindow.context3;
                             ctx.font = "100px Arial";
                             ctx.fillStyle = "red";
@@ -914,6 +916,9 @@
                             if (gameWindow.tutorial) {
                                 campaignFinished(entities.campaign.currentRoom);
                             } else {
+                                if(entities.campaign.currentRoom == 7) {
+                                    cross();
+                                }
                                 setTimeout(function() {campaignFinished(entities.campaign.currentRoom);}, 4000);
                             }
                         }
@@ -963,11 +968,11 @@
             ], 493),
             new Campaign([
                 new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), undefined),
-                new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), "fire"),
-                new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), undefined),
                 new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), "air"),
                 new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), undefined),
                 new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), "ice"),
+                new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), undefined),
+                new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), "fire"),
                 new Room(new Enemy(910, 140, "wizard", {x:231, y:190}, {x:400, y:400}), undefined),
             ], 144),
             new Campaign([
